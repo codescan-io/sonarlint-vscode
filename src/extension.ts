@@ -34,7 +34,7 @@ function runJavaServer(context: VSCode.ExtensionContext) : Thenable<StreamInfo> 
 	})
 	.then(requirements => {
 		return new Promise<StreamInfo>(function(resolve, reject) {
-			PortFinder.getPort({port: 55282}, (err, languageServerPort) => {
+			PortFinder.getPort({port: 55283}, (err, languageServerPort) => {
 				let serverJar = Path.resolve(context.extensionPath, "server", "sonarlint-ls.jar");
 				let javaExecutablePath =  Path.resolve (requirements.java_home + '/bin/java');
 
