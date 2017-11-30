@@ -141,7 +141,7 @@ export function activate(context: VSCode.ExtensionContext) {
 	}
 
 	let provider = new TextDocumentContentProvider();
-	let registration = VSCode.workspace.registerTextDocumentContentProvider('codescansonarlint-rule', provider);
+	let registration = VSCode.workspace.registerTextDocumentContentProvider('codescan-rule', provider);
 	context.subscriptions.push(registration);
 
 	let showRuleUri = VSCode.Uri.parse('codescan-rule://show');
