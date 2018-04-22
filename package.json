@@ -27,10 +27,7 @@
         "linters"
     ],
     "activationEvents": [
-        "onCommand:codescan.createConfig",
-        "onCommand:codescan.updateBindings",
-        "onLanguage:apex",
-        "onLanguage:visualforce"
+        "*"
     ],
     "contributes": {
         "configuration": {
@@ -165,10 +162,6 @@
         "portfinder": "^1.0.13",
         "vscode-languageclient": "3.2.2"
     },
-    "extensionDependencies": [
-        "salesforce.salesforcedx-vscode-apex",
-        "salesforce.salesforcedx-vscode-visualforce"
-    ],
     "devDependencies": {
         "typescript": "^2.6.1",
         "vscode": "^1.1.6",
