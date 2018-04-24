@@ -89,7 +89,14 @@ export function activate(context: VSCode.ExtensionContext) {
 
 	// Options to control the language client
 	let clientOptions: LanguageClientOptions = {
-		documentSelector: ['apex', 'visualforce', 'javascript', 'php'],
+		documentSelector: [
+		        "apex",
+		        "visualforce",
+		        "javascript",
+		        "javascriptreact",
+		        "php",
+		        "python"
+		],
 		synchronize: {
 			configurationSection: 'codescan'
 		},

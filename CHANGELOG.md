@@ -1,3 +1,7 @@
+## 1.2.8
+* Support python, php and javascript
+* Don't depend on apex/visualforce
+
 ## 1.2.5
 * Support organizations
 
