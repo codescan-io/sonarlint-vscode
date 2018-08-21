@@ -153,7 +153,7 @@ export function activate(context: VSCode.ExtensionContext) {
 
 	let showRuleUri = VSCode.Uri.parse('codescan-rule://show');
 
-	let openRuleCommand = VSCode.commands.registerCommand('SonarLint.OpenRuleDesc', (ruleKey:string, ruleName:string, htmlDesc:string, ruleType:string, ruleSeverity:string) => {
+	let openRuleCommand = VSCode.commands.registerCommand('codescan.OpenRuleDesc', (ruleKey:string, ruleName:string, htmlDesc:string, ruleType:string, ruleSeverity:string) => {
 		ruleDescPanelContent = computeRuleDescPanelContent(context, ruleKey, ruleName, htmlDesc, ruleType, ruleSeverity);
 		VSCode.commands.executeCommand('vscode.previewHtml', showRuleUri, VSCode.ViewColumn.Two, 'CodeScan Rule Description')
 			.then((success) => {
