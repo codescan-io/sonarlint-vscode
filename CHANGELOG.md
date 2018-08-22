@@ -29,6 +29,17 @@
   * SonarPHP 2.12 -> 2.13
   * SonarPython 1.8 -> 1.10
 
+## 1.2.8
+* Support python, php and javascript
+* Don't depend on apex/visualforce
+
+## 1.2.5
+* Support organizations
+
+## 1.2.2
+* Support for CodeScan plugin via fork of code
+* Support for Connected Mode
+
 ## 1.2.0
 
 * Add support for TypeScript (using SonarTS analyzer)

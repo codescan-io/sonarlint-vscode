@@ -1,17 +1,18 @@
 {
-  "name": "sonarlint-vscode",
-  "displayName": "SonarLint",
-  "description": "SonarLint is an IDE extension that helps you detect and fix quality issues as you write code in JavaScript, TypeScript, Python and PHP.",
+  "name": "codescan-vscode",
+  "displayName": "CodeScan",
+  "description": "On-the-fly bug and quality issues detection for Apex and VisualForce",
   "version": "1.6.0",
-  "icon": "images/sonarlint_wave_128px.png",
-  "publisher": "SonarSource",
-  "homepage": "http://www.sonarlint.org",
+  "icon": "images/codescan_128px.png",
+  "publisher": "codescansf",
+  "homepage": "http://www.code-scan.com",
   "repository": {
     "type": "git",
-    "url": "https://github.com/SonarSource/sonarlint-vscode.git"
+        "url": "https://github.com/VillageChief/sonarlint-vscode.git#1.6.0-CODESCAN"
   },
   "bugs": {
-    "url": "https://jira.sonarsource.com/browse/SLVSCODE"
+        "url": "https://www.code-scan.com/",
+        "email": "support@code-scan.com"
   },
   "license": "SEE LICENSE IN LICENSE.txt",
   "engines": {
@@ -21,21 +22,12 @@
     "Linters"
   ],
   "keywords": [
+    "salesforce",
     "code analysis",
     "linters"
   ],
-  "qna": "https://community.sonarsource.com/c/help/sl",
   "activationEvents": [
-    "onLanguage:javascript",
-    "onLanguage:javascriptreact",
-    "onLanguage:typescript",
-    "onLanguage:typescriptreact",
-    "onLanguage:python",
-    "onLanguage:php",
-    "onLanguage:vue",
-    "onLanguage:html",
-    "onLanguage:jsp",
-    "onCommand:sonarlint.updateServersAndBinding"
+	"*"
   ],
   "extensionDependency": [
     "typescript"
@@ -43,14 +35,14 @@
   "contributes": {
     "configuration": {
       "type": "object",
-      "title": "SonarLint",
+      "title": "CodeScan",
       "properties": {
-        "sonarlint.testFilePattern": {
+        "codescan.testFilePattern": {
           "type": "string",
           "default": "{**/test/**,**/*test*,**/*Test*}",
           "markdownDescription": "Files whose name match this [glob pattern](https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob) are considered as test files by analyzers. Most rules are *not* evaluated on test files."
         },
-        "sonarlint.analyzerProperties": {
+        "codescan.analyzerProperties": {
           "type": "object",
           "patternProperties": {
             "^.*$": {
@@ -60,78 +52,87 @@
           },
           "markdownDescription": "Extra properties that could be passed to the code analyzers. e.g. `{\"sonar.javascript.globals\": \"xxx\"}`. See [documentation](https://redirect.sonarsource.com/doc/plugin-library.html) of each analyzers."
         },
-        "sonarlint.disableTelemetry": {
+        "codescan.disableTelemetry": {
           "type": "boolean",
           "default": false,
           "markdownDescription": "Disable sending anonymous usage statistics"
         },
-        "sonarlint.ls.javaHome": {
+        "codescan.ls.javaHome": {
           "type": "string",
-          "markdownDescription": "Path to a JRE (8 or more recent) used to launch the SonarLint Language Server. \n\n On Windows, backslashes must be escaped, e.g. `C:\\\\Program Files\\\\Java\\\\jdk1.8.0_161`",
+          "markdownDescription": "Path to a JRE (8 or more recent) used to launch the codescan Language Server. \n\n On Windows, backslashes must be escaped, e.g. `C:\\\\Program Files\\\\Java\\\\jdk1.8.0_161`",
           "scope": "window"
         },
-        "sonarlint.ls.vmargs": {
+        "codescan.ls.vmargs": {
           "type": "string",
-          "markdownDescription": "Extra JVM arguments used to launch the SonarLint Language Server. e.g. `-Xmx1024m`",
+          "markdownDescription": "Extra JVM arguments used to launch the codescan Language Server. e.g. `-Xmx1024m`",
           "scope": "window"
         },
-        "sonarlint.connectedMode.servers": {
+        "codescan.servers": {
           "type": "array",
           "scope": "application",
           "default": [],
-          "markdownDescription": "Configure the connection(s) to SonarQube/SonarCloud. For security reasons, the token should not be stored in SCM with workspace settings.\n\nExample:\n\n    \"sonarlint.connectedMode.servers\": [\n      {\n        \"serverId\": \"my_orga_in_sonarcloud.io\",\n        \"serverUrl\": \"https://sonarcloud.io\",\n        \"organizationKey\": \"my_organization\",\n        \"token\": \"V2VkIE1...\"\n      }\n    ]",
+          "markdownDescription": "Configure the connection(s) to SonarQube/Codescan Cloud. For security reasons, the token should not be stored in SCM with workspace settings.\n\nExample:\n\n    \"codescan.servers\": [\n      {\n        \"serverId\": \"my_orga_in_app.codescan.io\",\n        \"serverUrl\": \"https://app.codescan.io\",\n        \"organizationKey\": \"my_organization\",\n        \"token\": \"V2VkIE1...\"\n      }\n    ]",
           "items": {
             "properties": {
               "serverId": {
                 "type": "string",
-                "description": "A unique identifier for this server connection. Will be referenced from `#sonarlint.connectedMode.project#`",
+                "description": "A unique identifier for this server connection. Will be referenced from `#codescan.project#`",
                 "default": ""
               },
               "serverUrl": {
                 "type": "string",
-                "description": "URL of the server. Use https://sonarcloud.io for SonarCloud.",
+                "description": "URL of the server. Use https://app.codescan.io for CodeScanCloud.",
                 "default": ""
               },
               "token": {
                 "type": "string",
-                "description": "Token generated from My Account>Security in SonarQube/SonarCloud",
+                "description": "Token generated from My Account>Security in SonarQube/CodeScanCloud",
                 "default": ""
               },
               "organizationKey": {
                 "type": "string",
-                "description": "Only used for SonarCloud",
+                "description": "Only used for CodeScanCloud",
                 "default": ""
               }
-            }
+            },
+            "additionalProperties": false,
+            "required": [
+                "serverId",
+                "serverUrl"
+            ]
           }
         },
-        "sonarlint.connectedMode.project": {
+        "codescan.project": {
           "type": "object",
           "default": {},
-          "markdownDescription": "Specify to which SonarQube/SonarCloud project the current project is bound. Connected mode allows to use the same code analyzers, rules and configuration that are defined in the server.\n\nExample:\n\n    \"sonarlint.connectedMode.project\": {\n      \"serverId\": \"my_orga_in_sonarcloud.io\",\n      \"projectKey\": \"my_project\"\n    }",
+          "markdownDescription": "Specify to which SonarQube/CodeScanCloud project the current project is bound. Connected mode allows to use the same code analyzers, rules and configuration that are defined in the server.\n\nExample:\n\n    \"codescan.project\": {\n      \"serverId\": \"my_orga_in_app.codescan.io\",\n      \"projectKey\": \"my_project\"\n    }",
           "properties": {
             "serverId": {
               "type": "string",
-              "description": "Identifier of the server connection declared in `#sonarlint.connectedMode.servers#`",
+              "description": "Identifier of the server connection declared in `#codescan.servers#`",
               "default": ""
             },
             "projectKey": {
               "type": "string",
-              "description": "Key of the project in SonarQube/SonarCloud",
+              "description": "Key of the project in SonarQube/CodeScanCloud",
               "default": ""
             }
-          }
+          },
+          "required": [
+            "serverId",
+            "projectKey"
+          ]
         }
       }
     },
     "commands": [
       {
-        "command": "sonarlint.updateServersAndBinding",
-        "title": "Update SonarLint binding to SonarQube/SonarCloud"
+        "command": "codescan/UpdateServersAndBinding",
+        "title": "Update CodeScan binding to SonarQube/CodeScanCloud"
       }
     ]
   },
-  "main": "./out/src/extension",
+  "main": "./out/extension",
   "files": [
     "server/sonarlint-ls.jar"
   ],
