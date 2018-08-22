@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
+ * CodeScan for VisualStudio Code
  * Copyright (C) 2017-2018 SonarSource SA
  * sonarlint@sonarsource.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
@@ -41,7 +41,7 @@ function checkJavaRuntime(): Promise<any> {
     let source: string;
     let javaHome: string = readJavaConfig();
     if (javaHome) {
-      source = "The 'sonarlint.ls.javaHome' variable defined in VS Code settings";
+      source = "The 'codescan.ls.javaHome' variable defined in VS Code settings";
     } else {
       javaHome = process.env['JDK_HOME'];
       if (javaHome) {
@@ -66,7 +66,7 @@ function checkJavaRuntime(): Promise<any> {
       if (err) {
         openJREDownload(
           reject,
-          "Java runtime could not be located. Install it and set its location using 'sonarlint.ls.javaHome' variable in VS Code settings."
+          "Java runtime could not be located. Install it and set its location using 'codescan.ls.javaHome' variable in VS Code settings."
         );
       } else {
         resolve(home);
@@ -77,7 +77,7 @@ function checkJavaRuntime(): Promise<any> {
 
 function readJavaConfig(): string {
   const config = workspace.getConfiguration();
-  return config.get<string>('sonarlint.ls.javaHome', null);
+  return config.get<string>('codescan.ls.javaHome', null);
 }
 
 function checkJavaVersion(java_home: string): Promise<any> {

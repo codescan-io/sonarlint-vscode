@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
+ * CodeScan for VisualStudio Code
  * Copyright (C) 2017-2018 SonarSource SA
  * sonarlint@sonarsource.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
@@ -27,10 +27,10 @@ declare var v8debug;
 const DEBUG = typeof v8debug === 'object' || startedInDebugMode();
 var oldConfig;
 
-const updateServersAndBindingStorageCommandName = 'SonarLint/UpdateServersAndBinding';
+const updateServersAndBindingStorageCommandName = 'codescan/UpdateServersAndBinding';
 
-const connectedModeServersSectionName = 'connectedMode.servers';
-const connectedModeProjectSectionName = 'connectedMode.project';
+const connectedModeServersSectionName = 'servers';
+const connectedModeProjectSectionName = 'project';
 
 function runJavaServer(context: VSCode.ExtensionContext): Thenable<StreamInfo> {
   return requirements
@@ -91,10 +91,7 @@ function languageServerCommand(
   const vmargs = getSonarLintConfiguration().get('ls.vmargs', '');
   parseVMargs(params, vmargs);
   params.push('-jar', serverJar, '' + port);
-  params.push(toUrl(Path.resolve(context.extensionPath, 'analyzers', 'sonarjs.jar')));
-  params.push(toUrl(Path.resolve(context.extensionPath, 'analyzers', 'sonarphp.jar')));
-  params.push(toUrl(Path.resolve(context.extensionPath, 'analyzers', 'sonarpython.jar')));
-  params.push(toUrl(Path.resolve(context.extensionPath, 'analyzers', 'sonarts.jar')));
+  //params.push(toUrl(Path.resolve(context.extensionPath, 'analyzers', 'codescan.jar')));
   return { command: javaExecutablePath, args: params };
 }
 
@@ -122,6 +119,35 @@ function resolveInAnyWorkspaceFolder(tsdkPathSetting) {
   return undefined;
 }
 
+function convertProject(project){
+  if ( project.serverId == undefined || project.projectKey == 'undefined' ){
+    const sonarlintJson = resolveInAnyWorkspaceFolder("sonarlint.json");
+    if ( sonarlintJson != undefined ){
+      //fallback to sonarlint.json
+      VSCode.window.showErrorMessage("Use of sonarlint.json no longer works properly. Please switch to using codescan.project settings");
+      project = require(sonarlintJson);
+    }
+  }
+  return project
+}
+function convertServers(servers){
+  servers.forEach(function(server){
+    if ( 'id' in server ){
+      server['serverId'] = server['id'];
+      delete server['id'];
+    }
+    if ( 'url' in server ){
+      server['serverUrl'] = server['url'];
+      delete server['url'];
+    }
+    if ( 'organization' in server ){
+        server['organizationKey'] = server['organization'];
+        delete server['organization'];
+    }
+  });
+  return servers
+}
+
 function findTypeScriptLocation() {
   const tsExt = VSCode.extensions.getExtension('vscode.typescript');
   if (tsExt) {
@@ -134,7 +160,7 @@ function findTypeScriptLocation() {
     );
     if (!FS.existsSync(bundledTypeScriptPath)) {
       console.warn(
-        `Unable to locate bundled TypeScript module in '${bundledTypeScriptPath}'. Please report this error to SonarLint project.`
+        `Unable to locate bundled TypeScript module in '${bundledTypeScriptPath}'. Please report this error to CodeScan.`
       );
     }
     const tsdkPathSetting = VSCode.workspace.getConfiguration('typescript').get('tsdk');
@@ -151,7 +177,7 @@ function findTypeScriptLocation() {
     return bundledTypeScriptPath;
   } else {
     console.warn(
-      'Unable to locate TypeScript extension. TypeScript support in SonarLint might not work.'
+      'Unable to locate TypeScript extension. TypeScript support in CodeScan might not work.'
     );
   }
 }
@@ -166,35 +192,34 @@ export function activate(context: VSCode.ExtensionContext) {
   // Options to control the language client
   const clientOptions: LanguageClientOptions = {
     documentSelector: [
-      'javascript',
-      'javascriptreact',
-      'php',
-      'python',
-      'typescript',
-      'typescriptreact',
-      'vue'
+		        "apex",
+		        "visualforce",
+		        "javascript",
+		        "javascriptreact",
+		        "php",
+		        "python"
     ],
     synchronize: {
-      configurationSection: 'sonarlint'
+      configurationSection: 'codescan'
     },
-    diagnosticCollectionName: 'sonarlint',
+    diagnosticCollectionName: 'codescan',
     initializationOptions: () => {
       const configuration = getSonarLintConfiguration();
       return {
         testFilePattern: configuration && configuration.get('testFilePattern'),
         analyzerProperties: configuration && configuration.get('analyzerProperties'),
-        telemetryStorage: Path.resolve(context.extensionPath, '..', 'sonarlint_usage'),
-        productName: 'SonarLint VSCode',
-        productVersion: VSCode.extensions.getExtension('SonarSource.sonarlint-vscode').packageJSON
+        telemetryStorage: Path.resolve(context.extensionPath, '..', 'codescan_usage'),
+        productName: 'CodeScan VSCode',
+        productVersion: VSCode.extensions.getExtension('codescansf.codescan-vscode').packageJSON
           .version,
         disableTelemetry: configuration ? configuration.get('disableTelemetry', false) : false,
         typeScriptLocation: tsPath ? Path.dirname(Path.dirname(tsPath)) : undefined,
         includeRuleDetailsInCodeAction: true,
-        connectedModeServers: configuration && configuration.get(connectedModeServersSectionName),
-        connectedModeProject: configuration && configuration.get(connectedModeProjectSectionName)
+        connectedModeServers: configuration && convertServers(configuration.get(connectedModeServersSectionName)),
+        connectedModeProject: configuration && convertProject(configuration.get(connectedModeProjectSectionName))
       };
     },
-    outputChannelName: 'SonarLint',
+    outputChannelName: 'CodeScan',
     revealOutputChannelOn: 4 // never
   };
 
@@ -202,8 +227,8 @@ export function activate(context: VSCode.ExtensionContext) {
 
   // Create the language client and start the client.
   languageClient = new LanguageClient(
-    'sonarlint-vscode',
-    'SonarLint Language Server',
+    'codescan-vscode',
+    'CodeScan Language Server',
     serverOptions,
     clientOptions
   );
@@ -235,15 +260,15 @@ export function activate(context: VSCode.ExtensionContext) {
 
   const provider = new TextDocumentContentProvider();
   const registration = VSCode.workspace.registerTextDocumentContentProvider(
-    'sonarlint-rule',
+    'codescan-rule',
     provider
   );
   context.subscriptions.push(registration);
 
-  const showRuleUri = VSCode.Uri.parse('sonarlint-rule://show');
+  const showRuleUri = VSCode.Uri.parse('codescan-rule://show');
 
   const openRuleCommand = VSCode.commands.registerCommand(
-    'SonarLint.OpenRuleDesc',
+    'codescan.OpenRuleDesc',
     (
       ruleKey: string,
       ruleName: string,
@@ -264,7 +289,7 @@ export function activate(context: VSCode.ExtensionContext) {
           'vscode.previewHtml',
           showRuleUri,
           VSCode.ViewColumn.Two,
-          'SonarLint Rule Description'
+          'CodeScan Rule Description'
         )
         .then(
           success => {
@@ -283,7 +308,7 @@ export function activate(context: VSCode.ExtensionContext) {
     updateServerStorage()
       .then(updateProjectBinding)
       .then(() => {
-        VSCode.window.showInformationMessage('SonarLint server storage updated');
+        VSCode.window.showInformationMessage('Codescan server storage updated');
       });
   };
   const updateServerStorageCommand = VSCode.commands.registerCommand(
@@ -295,26 +320,26 @@ export function activate(context: VSCode.ExtensionContext) {
 
 function updateServerStorage(): Thenable<void> {
   const params: ExecuteCommandParams = {
-    command: 'SonarLint.UpdateServerStorage',
-    arguments: getSonarLintConfiguration().get(connectedModeServersSectionName)
+    command: 'codescan.UpdateServerStorage',
+    arguments: convertServers(getSonarLintConfiguration().get(connectedModeServersSectionName))
   };
   return languageClient.sendRequest(ExecuteCommandRequest.type, params).then(
     success => {},
     reason => {
-      VSCode.window.showWarningMessage('Failed to update SonarLint server storage');
+      VSCode.window.showWarningMessage('Failed to update CodeScan server storage');
     }
   );
 }
 
 function updateProjectBinding(): Thenable<void> {
   const params: ExecuteCommandParams = {
-    command: 'SonarLint.UpdateProjectBinding',
-    arguments: getSonarLintConfiguration().get(connectedModeProjectSectionName)
+    command: 'codescan.UpdateProjectBinding',
+    arguments: convertProject(getSonarLintConfiguration().get(connectedModeProjectSectionName))
   };
   return languageClient.sendRequest(ExecuteCommandRequest.type, params).then(
     success => {},
     reason => {
-      VSCode.window.showWarningMessage('Failed to update SonarLint project binding');
+      VSCode.window.showWarningMessage('Failed to update CodeScan project binding');
     }
   );
 }
@@ -416,7 +441,7 @@ function onConfigurationChange() {
     );
 
     if (sonarLintLsConfigChanged) {
-      const msg = 'SonarLint Language Server configuration changed, please restart VS Code.';
+      const msg = 'CodeScan Language Server configuration changed, please restart VS Code.';
       const action = 'Restart Now';
       const restartId = 'workbench.action.reloadWindow';
       oldConfig = newConfig;
@@ -489,7 +514,7 @@ function startedInDebugMode(): boolean {
 }
 
 function getSonarLintConfiguration(): VSCode.WorkspaceConfiguration {
-  return VSCode.workspace.getConfiguration('sonarlint');
+  return VSCode.workspace.getConfiguration('codescan');
 }
 
 export function deactivate(): Thenable<void> {
@@ -498,3 +523,4 @@ export function deactivate(): Thenable<void> {
   }
   return languageClient.stop();
 }
+

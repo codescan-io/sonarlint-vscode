@@ -145,9 +145,9 @@ gulp.task('sonarqube', callback => {
 });
 
 function runSonnarQubeScanner(callback, options = {}) {
-  const commonOptions = {
+  let commonOptions = {
     'sonar.projectKey': 'org.sonarsource.sonarlint.vscode:sonarlint-vscode',
-    'sonar.projectName': 'SonarLint for VSCode',
+    'sonar.projectName': 'CodeScan for VSCode',
     'sonar.projectVersion': snapshotVersion(),
     'sonar.exclusions': 'build/**, out/**, coverage/**, node_modules/**, **/node_modules/**',
     'sonar.coverage.exclusions': 'gulpfile.js, build/**, config/**, coverage/**, scripts/**',
@@ -155,14 +155,14 @@ function runSonnarQubeScanner(callback, options = {}) {
     'sonar.analysis.pipeline': process.env.TRAVIS_BUILD_NUMBER,
     'sonar.analysis.repository': process.env.TRAVIS_REPO_SLUG
   };
+  for (var property in options) {
+    commonOptions[property] = options[property]
+  }
   sonarqubeScanner(
     {
       serverUrl: process.env.SONAR_HOST_URL,
       token: process.env.SONAR_TOKEN,
-      options: {
-        ...commonOptions,
-        ...options
-      }
+      options: commonOptions
     },
     callback
   );

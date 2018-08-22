@@ -1,4 +1,4 @@
-SonarLint for Visual Studio Code
+CodeScan for Visual Studio Code
 Copyright (C) 2017-2018 SonarSource SA
 mailto:info AT sonarsource DOT com
 
