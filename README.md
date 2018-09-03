@@ -17,7 +17,7 @@ You can find all available rules descriptions on the dedicated [CodeScan website
 # Prerequisites
 You will need:
 
-* A working SonarQube (6.1+) installation
+* A working SonarQube (6.7.4+) installation
 * A recent version of VS Code installed (v1.12 or above).
 * A licensed version of CodeScan plugin to get started (see <a href="https://www.code-scan.com/overview/installing-all/" >here</a>
 
@@ -27,23 +27,32 @@ You will need:
 
 * Restart VS Code.
 
-* In the VS Code User Settings, copy over the CodeScan section to the right hand pane and edit the following:
+* In the VS Code User Settings, in the CodeScan section, copy over the codescan.servers and codescan.project settings to the right hand pane.
 
-  - Generate a token in your SonarQube/CodeScan Cloud My Account section.
-  - Replace the value of "token" with your token
-  - Replace the value of "url" with your SonarQube server URL.
-  - Replace the value of "id" with a value you will remember.
-  - Optionally replace the value of "organization" with the organization key of the CodeScan Cloud server you are connecting to
+* Edit the following in codescan.servers.
+
+* For CodeScan Cloud
+
+    - Add organizationKey as your CodeScan Cloud organization key.
+    - Add token with a token generated in here in CodeScan Cloud.
+    - Add serverUrl as https://app.codescan.io/
+    - Add serverId with a value you will remember.
+
+* For Self-Hosted CodeScan
+
+    - Add token with a token generated in SonarQube.
+    - Add serverUrl as your SonarQube server URL (Default is http://localhost:9000).
+    - Add serverId with a value you will remember.
+
+* Edit the following in codescan.project
+    - Add projectKey with the key of the project you would like to use the settings from.
+    - Add serverId with the serverId you used when editing your codescan.servers settings.
 
 * Now hit Ctrl+Shift+P (Windows/Linux) or Shift+Command+P(Mac) to open the Command Palette.
 
-* Type in CodeScan to bring up the CodeScan commands and click "CodeScan: Create a 'sonarlint.json' file".
+* Type in CodeScan to bring up the CodeScan commands and run “Update CodeScan binding to SonarQube/CodeScan Cloud”. If any changes are made on the SonarQube server you should repeat this step.
 
-* Open the sonarlint.json file.
-  - Change the value of "serverId" to the id you set in the VS Code User Settings.
-  - Change the value of "projectKey" to the name of the associated project in SonarQube.
-
-* Open the Command Palette again and run "CodeScan: Update all project bindings"
+* Open a file, you should see the issues in your code underlined.
 
 # Troubleshooting
 
@@ -53,7 +62,7 @@ You can check for any errors here by going to Help > Toggle Developer Tools to b
 
 ### Connected mode
 
-You can connect CodeScan to SonarQube >= 5.6 or CodeScan Cloud to benefit from the same rules and settings that are used to inspect your project on the server. CodeScan then hides in VSCode the issues that are marked as **Won’t Fix** or **False Positive**.
+You can connect CodeScan to SonarQube >= v6.7.4 or CodeScan Cloud to benefit from the same rules and settings that are used to inspect your project on the server. CodeScan then hides in VSCode the issues that are marked as **Won’t Fix** or **False Positive**.
 
 To configure the connection, have a look at CodeScan in default user settings.
 
