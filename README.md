@@ -38,21 +38,29 @@ You will need:
     - Add serverUrl as https://app.codescan.io/
     - Add serverId with a value you will remember.
 
+![Cloud Settings](images/vscode/cloud-settings.png)   
+
 * For Self-Hosted CodeScan
 
     - Add token with a token generated in SonarQube.
     - Add serverUrl as your SonarQube server URL (Default is http://localhost:9000).
     - Add serverId with a value you will remember.
 
+![Self-hosted Settings](images/vscode/hosted-settings.png)
+
 * Edit the following in codescan.project
     - Add projectKey with the key of the project you would like to use the settings from.
     - Add serverId with the serverId you used when editing your codescan.servers settings.
+
+![Project Settings](images/vscode/project-settings.png)
 
 * Now hit Ctrl+Shift+P (Windows/Linux) or Shift+Command+P(Mac) to open the Command Palette.
 
 * Type in CodeScan to bring up the CodeScan commands and run “Update CodeScan binding to SonarQube/CodeScan Cloud”. If any changes are made on the SonarQube server you should repeat this step.
 
 * Open a file, you should see the issues in your code underlined.
+
+![Example](images/vscode/example.png)
 
 # Troubleshooting
 
