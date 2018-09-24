@@ -2,7 +2,7 @@
   "name": "codescan-vscode",
   "displayName": "CodeScan",
   "description": "On-the-fly bug and quality issues detection for Apex and VisualForce",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "icon": "images/codescan_128px.png",
   "publisher": "codescansf",
     "homepage": "http://www.code-scan.com",
@@ -16,7 +16,7 @@
   },
   "license": "SEE LICENSE IN LICENSE.txt",
   "engines": {
-    "vscode": "^1.23.0"
+    "vscode": "^1.25.0"
   },
   "categories": [
     "Linters"

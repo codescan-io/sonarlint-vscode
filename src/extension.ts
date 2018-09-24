@@ -197,7 +197,8 @@ export function activate(context: VSCode.ExtensionContext) {
 		        "javascript",
 		        "javascriptreact",
 		        "php",
-		        "python"
+		        "python",
+		        "html"
     ],
     synchronize: {
       configurationSection: 'codescan'
