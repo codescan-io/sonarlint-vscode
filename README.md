@@ -62,7 +62,7 @@ You will need:
 
 * Open a file, you should see the issues in your code underlined.
 
-![example](images/vscode/example.png)
+![Bad example](images/vscode/example.png)
 
 # Troubleshooting
 
