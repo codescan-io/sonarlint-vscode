@@ -53,7 +53,7 @@ You will need:
 * Edit the following in codescan.project
     - Add projectKey with the key of the project you would like to use the settings from.
     - Add serverId with the serverId you used when editing your codescan.servers settings.
-
+    
 ![project-settings](images/vscode/project-settings.png)
 
 * Now hit Ctrl+Shift+P (Windows/Linux) or Shift+Command+P(Mac) to open the Command Palette.

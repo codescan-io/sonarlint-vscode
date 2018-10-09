@@ -18,6 +18,6 @@ function copyIfNeeded(url, dest) {
 	fs.writeFileSync(dest, fs.readFileSync(url));
     }
 }
-copyIfNeeded(`/home/ben/dev/apex-scan/sonarlint-core/language-server/target/sonarlint-language-server-${languageServerVersion}.jar`, 'server/sonarlint-ls.jar');
+copyIfNeeded(`/home/lior/dev/sonarlint-core/language-server/target/sonarlint-language-server-${languageServerVersion}.jar`, 'server/sonarlint-ls.jar');
 
 
