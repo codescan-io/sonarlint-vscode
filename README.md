@@ -27,7 +27,9 @@ You will need:
 
 * Restart VS Code.
 
-* In the VS Code User Settings, in the CodeScan section, copy over the codescan.servers and codescan.project settings to the right hand pane.
+* In the VS Code Settings, search CodeScan.
+
+* Click "Edit in settings.json" under any setting and copy the codescan.servers and codescan.project settings to the right hand pane.
 
 * Edit the following in codescan.servers.
 
@@ -38,7 +40,7 @@ You will need:
     - Add serverUrl as https://app.codescan.io/
     - Add serverId with a value you will remember.
 
-![Cloud Settings](images/vscode/cloud-settings.png)   
+![cloud-settings](images/vscode/cloud-settings.png)   
 
 * For Self-Hosted CodeScan
 
@@ -46,13 +48,13 @@ You will need:
     - Add serverUrl as your SonarQube server URL (Default is http://localhost:9000).
     - Add serverId with a value you will remember.
 
-![Self-hosted Settings](images/vscode/hosted-settings.png)
+![hosted-settings](images/vscode/hosted-settings.png)
 
 * Edit the following in codescan.project
     - Add projectKey with the key of the project you would like to use the settings from.
     - Add serverId with the serverId you used when editing your codescan.servers settings.
-
-![Project Settings](images/vscode/project-settings.png)
+    
+![project-settings](images/vscode/project-settings.png)
 
 * Now hit Ctrl+Shift+P (Windows/Linux) or Shift+Command+P(Mac) to open the Command Palette.
 
@@ -60,7 +62,7 @@ You will need:
 
 * Open a file, you should see the issues in your code underlined.
 
-![Example](images/vscode/example.png)
+![example](images/vscode/example.png)
 
 # Troubleshooting
 
