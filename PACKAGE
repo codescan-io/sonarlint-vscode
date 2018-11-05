@@ -1,0 +1,25 @@
+
+docker run -ti --rm -v `pwd`/../sonarlint-core:/sonarlint-core -v `pwd`:/app -w /app node:7.8.0 bash
+
+npm install
+npm run postinstall
+
+npm install gulp --save --global
+npm install -g vsce
+npm install -g typescript@2.2.1
+gulp clean
+npm run compile
+
+# BACK INSIDE AGAIN:
+node node_modules/gulp/bin/gulp.js package
+
+# Upload at:
+https://marketplace.visualstudio.com/manage/publishers/codescansf?src=vsgallery
+
+OR:
+npm install -g tfx-cli
+tfx extension publish --vsix codescan-vscode-1.2.*.vsix -t cyjayvwf6nghlzh46c7eqbfachat27v6agi4bdqz5bnxb5qikswq
+
+TROUBLESHOOTING:
+* remove all node_modules and restart docker
+do npm install (without -g) before doing global

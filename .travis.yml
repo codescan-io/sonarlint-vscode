@@ -2,15 +2,18 @@ sudo: false
 
 language: node_js
 node_js:
-- "6"
+  - "lts/*"
 
-before_install:
-- npm install -g typescript
-- npm install --global gulp-cli
+cache:
+  directories:
+    - "node_modules"
+    - "~/.sonar"
+
+install:
+  - npm install
 
 script:
-- npm install
-- gulp clean deploy
+  - ./node_modules/.bin/gulp clean deploy && ./node_modules/.bin/gulp sonarqube
 
 notifications:
   email: false
