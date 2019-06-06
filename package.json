@@ -2,13 +2,13 @@
   "name": "codescan-vscode",
   "displayName": "CodeScan",
   "description": "On-the-fly bug and quality issues detection for Apex and VisualForce",
-  "version": "1.6.0",
+  "version": "1.6.2",
   "icon": "images/codescan_128px.png",
   "publisher": "codescansf",
   "homepage": "http://www.code-scan.com",
   "repository": {
     "type": "git",
-        "url": "https://github.com/VillageChief/sonarlint-vscode.git#1.6.0-CODESCAN"
+        "url": "https://github.com/VillageChief/sonarlint-vscode.git"
   },
   "bugs": {
         "url": "https://www.code-scan.com/",
