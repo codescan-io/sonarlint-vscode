@@ -16,5 +16,5 @@ if (!fs.existsSync('analyzers')) {
 function copy(url, dest) {
     fs.writeFileSync(dest, fs.readFileSync(url));
 }
-copy(`/sonarlint-core/language-server/target/sonarlint-language-server-${languageServerVersion}.jar`, 'server/sonarlint-ls.jar');
+copy(`../sonarlint-core/language-server/target/sonarlint-language-server-${languageServerVersion}.jar`, 'server/sonarlint-ls.jar');
 

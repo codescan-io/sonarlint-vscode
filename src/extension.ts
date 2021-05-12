@@ -194,6 +194,8 @@ export function activate(context: VSCode.ExtensionContext) {
     documentSelector: [
       { scheme: 'file', language: 'javascript' },
       { scheme: 'file', language: 'javascriptreact' },
+      { scheme: 'file', language: 'css' },
+      { scheme: 'file', language: 'scss' },
       { scheme: 'file', language: 'php' },
       { scheme: 'file', language: 'python' },
       { scheme: 'file', language: 'typescript' },
