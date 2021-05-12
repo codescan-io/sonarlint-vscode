@@ -1,3 +1,6 @@
+## 1.6.5
+* Included SonarCSS 4.19
+
 ## 1.6.0
 
 * Update SonarPHP 2.14 -> [2.15](https://jira.sonarsource.com/secure/ReleaseNote.jspa?projectId=10956&version=14493) -> [2.16](https://jira.sonarsource.com/secure/ReleaseNote.jspa?projectId=10956&version=14751)

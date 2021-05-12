@@ -2,17 +2,17 @@
   "name": "codescan-vscode",
   "displayName": "CodeScan",
   "description": "On-the-fly bug and quality issues detection for Apex and VisualForce",
-  "version": "1.6.2",
+  "version": "1.6.5",
   "icon": "images/codescan_128px.png",
   "publisher": "codescansf",
-  "homepage": "http://www.code-scan.com",
+  "homepage": "https://codescan.io",
   "repository": {
     "type": "git",
-        "url": "https://github.com/VillageChief/sonarlint-vscode.git"
+    "url": "https://github.com/VillageChief/sonarlint-vscode.git"
   },
   "bugs": {
-        "url": "https://www.code-scan.com/",
-        "email": "support@code-scan.com"
+    "url": "https://codescan.io/",
+    "email": "support@codescan.io"
   },
   "license": "SEE LICENSE IN LICENSE.txt",
   "engines": {
@@ -27,7 +27,7 @@
     "linters"
   ],
   "activationEvents": [
-	"*"
+    "*"
   ],
   "extensionDependency": [
     "typescript"
@@ -97,8 +97,8 @@
             },
             "additionalProperties": false,
             "required": [
-                "serverId",
-                "serverUrl"
+              "serverId",
+              "serverUrl"
             ]
           }
         },
@@ -147,7 +147,6 @@
     "find-java-home": "0.2.0",
     "open": "0.0.5",
     "path-exists": "3.0.0",
-    "vscode": "1.1.21",
     "vscode-languageclient": "5.2.1"
   },
   "devDependencies": {
@@ -167,6 +166,7 @@
     "sonarqube-scanner": "^2.4.0",
     "through2": "^2.0.3",
     "typescript": "^2.6.2",
+    "vscode": "1.1.37",
     "vsce": "^1.36.1"
   },
   "prettier": {
