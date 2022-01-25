@@ -1,3 +1,9 @@
+## 1.6.7
+* Fixed compatibility issue with CodeScan Cloud 22.1
+
+## 1.6.6
+* Added support of Sonarqube 8.9 LTS
+
 ## 1.6.5
 * Included SonarCSS 4.19
 
