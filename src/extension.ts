@@ -84,10 +84,10 @@ function languageServerCommand(
   const javaExecutablePath = Path.resolve(requirements.java_home + '/bin/java');
 
   const params = [];
-  if (DEBUG) {
+  // if (DEBUG) {
     params.push('-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000');
     params.push('-Dsonarlint.telemetry.disabled=true');
-  }
+  // }
   const vmargs = getSonarLintConfiguration().get('ls.vmargs', '');
   parseVMargs(params, vmargs);
   params.push('-jar', serverJar, '' + port);
