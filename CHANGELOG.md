@@ -1,3 +1,6 @@
+## 1.6.8
+* Fixed compability issue with Sonarqube 8.9 LTS for Javascript plugin
+
 ## 1.6.7
 * Fixed compatibility issue with CodeScan Cloud 22.1
 
