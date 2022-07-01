@@ -3,7 +3,7 @@
   "publisher": "codescansf",
   "repository": {
     "type": "git",
-    "url": "https://github.com/SonarSource/codescan-vscode.git"
+    "url": "https://github.com/codescan-io/sonarlint-vscode.git"
   },
   "displayName": "CodeScan Dogfood",
   "description": "Streamline dogfooding of CodeScan for VSCode",
