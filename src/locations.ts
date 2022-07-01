@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
+ * CodeScan for VisualStudio Code
  * Copyright (C) 2017-2022 SonarSource SA
  * sonarlint@sonarsource.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
@@ -16,10 +16,10 @@ import { resolveExtensionFile } from './util';
  * See contributes.colors in package.json for theme color values.
  */
 const SECONDARY_LOCATION_DECORATIONS = vscode.window.createTextEditorDecorationType({
-  backgroundColor: new vscode.ThemeColor('sonarlint.locations.background'),
+  backgroundColor: new vscode.ThemeColor('codescan.locations.background'),
   before: {
-    backgroundColor: new vscode.ThemeColor('sonarlint.locations.indexBackground'),
-    color: new vscode.ThemeColor('sonarlint.locations.indexText'),
+    backgroundColor: new vscode.ThemeColor('codescan.locations.indexBackground'),
+    color: new vscode.ThemeColor('codescan.locations.indexText'),
     margin: '0.2em'
   },
   rangeBehavior: vscode.DecorationRangeBehavior.ClosedClosed
@@ -30,10 +30,10 @@ const SECONDARY_LOCATION_DECORATIONS = vscode.window.createTextEditorDecorationT
  * See contributes.colors in package.json for theme color values.
  */
 const SELECTED_SECONDARY_LOCATION_DECORATION = vscode.window.createTextEditorDecorationType({
-  backgroundColor: new vscode.ThemeColor('sonarlint.locations.background'),
+  backgroundColor: new vscode.ThemeColor('codescan.locations.background'),
   before: {
-    backgroundColor: new vscode.ThemeColor('sonarlint.locations.indexSelectedBackground'),
-    color: new vscode.ThemeColor('sonarlint.locations.indexSelectedText'),
+    backgroundColor: new vscode.ThemeColor('codescan.locations.indexSelectedBackground'),
+    color: new vscode.ThemeColor('codescan.locations.indexSelectedText'),
     fontWeight: 'bold',
     margin: '0.2em'
   },

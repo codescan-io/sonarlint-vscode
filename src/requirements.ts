@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
+ * CodeScan for VisualStudio Code
  * Copyright (C) 2017-2022 SonarSource SA
  * sonarlint@sonarsource.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
@@ -24,7 +24,7 @@ const REQUIRED_JAVA_VERSION = 11;
 
 const isWindows = process.platform.indexOf('win') === 0;
 const JAVA_FILENAME = `java${isWindows ? '.exe' : ''}`;
-export const JAVA_HOME_CONFIG = 'sonarlint.ls.javaHome';
+export const JAVA_HOME_CONFIG = 'codescan.ls.javaHome';
 
 export interface RequirementsData {
   javaHome: string;
@@ -136,9 +136,9 @@ export function parseMajorVersion(content: string): number {
 function suggestManagedJre(reject) {
   reject({
     message: `The Java Runtime Environment can not be located. Please install a JRE, or configure its path with the
-      ${JAVA_HOME_CONFIG} property. You can also let SonarLint download the JRE from AdoptOpenJDK. This JRE will be
-      used only by SonarLint.`,
-    label: 'Let SonarLint download the JRE',
+      ${JAVA_HOME_CONFIG} property. You can also let CodeScan download the JRE from AdoptOpenJDK. This JRE will be
+      used only by CodeScan.`,
+    label: 'Let CodeScan download the JRE',
     command: Commands.INSTALL_MANAGED_JRE
   });
 }
@@ -170,7 +170,7 @@ function invalidJavaHome(reject, cause: string) {
 
 export function installManagedJre() {
   return vscode.window.withProgress(
-    { location: vscode.ProgressLocation.Notification, title: 'SonarLint JRE Install' },
+    { location: vscode.ProgressLocation.Notification, title: 'CodeScan JRE Install' },
     (progress, cancelToken) => {
       return PlatformInformation.GetPlatformInformation()
         .then(platformInfo => {
@@ -180,7 +180,7 @@ export function installManagedJre() {
             version: REQUIRED_JAVA_VERSION as jre.Version
           };
           progress.report({ message: 'Downloading' });
-          return jre.download(options, path.join(util.extensionPath, '..', 'sonarsource.sonarlint_managed-jre'));
+          return jre.download(options, path.join(util.extensionPath, '..', 'sonarsource.codescan_managed-jre'));
         })
         .then(downloadResponse => {
           progress.report({ message: 'Uncompressing' });
@@ -189,7 +189,7 @@ export function installManagedJre() {
         .then(jreInstallDir => {
           progress.report({ message: 'Done' });
           vscode.workspace
-            .getConfiguration('sonarlint.ls')
+            .getConfiguration('codescan.ls')
             .update('javaHome', jreInstallDir, vscode.ConfigurationTarget.Global);
         })
         .catch(err => {

@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
+ * CodeScan for VisualStudio Code
  * Copyright (C) 2017-2022 SonarSource SA
  * sonarlint@sonarsource.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
@@ -8,8 +8,8 @@
 
 import * as vscode from 'vscode';
 import { API, GitExtension, Repository } from './git';
-import { SonarLintExtendedLanguageClient } from './client';
-import { logToSonarLintOutput } from './extension';
+import { CodeScanExtendedLanguageClient } from './client';
+import { logToCodeScanOutput } from './extension';
 
 const GIT_EXTENSION_ID = 'vscode.git';
 const GIT_API_VERSION = 1;
@@ -52,7 +52,7 @@ class GitScm implements Scm {
 
   constructor(
       private readonly gitApi: API,
-      private readonly client: SonarLintExtendedLanguageClient,
+      private readonly client: CodeScanExtendedLanguageClient,
       private readonly referenceBranchStatusItem: vscode.StatusBarItem) {
     this.listeners = [
       gitApi.onDidOpenRepository(r => {
@@ -79,7 +79,7 @@ class GitScm implements Scm {
     this.gitApi.repositories.forEach(this.subscribeToRepositoryChanges, this);
     vscode.workspace.workspaceFolders.forEach(folder => {
       const branchName = this.gitApi.getRepository(folder.uri)?.state.HEAD?.name;
-      logToSonarLintOutput(`Initializing ${folder.uri} on branch ${branchName}`);
+      logToCodeScanOutput(`Initializing ${folder.uri} on branch ${branchName}`);
       this.client.didLocalBranchNameChange(folder.uri, branchName);
     });
   }
@@ -89,7 +89,7 @@ class GitScm implements Scm {
       vscode.workspace.workspaceFolders.forEach(folder => {
         if (folder.uri.toString().startsWith(repository.rootUri.toString())) {
           const branchName = repository.state.HEAD?.name;
-          logToSonarLintOutput(`Folder ${folder.uri} is now on branch ${branchName}`);
+          logToCodeScanOutput(`Folder ${folder.uri} is now on branch ${branchName}`);
           this.client.didLocalBranchNameChange(folder.uri, branchName);
         }
       });
@@ -114,7 +114,7 @@ class GitScm implements Scm {
   updateReferenceBranchStatusItem(event?: vscode.TextEditor) {
     const referenceBranchName = this.getReferenceBranchNameForFile(event?.document?.uri);
     if (referenceBranchName) {
-      this.referenceBranchStatusItem.text = `SonarLint branch: ${referenceBranchName}`;
+      this.referenceBranchStatusItem.text = `CodeScan branch: ${referenceBranchName}`;
       this.referenceBranchStatusItem.show();
     } else {
       this.referenceBranchStatusItem.hide();
@@ -132,12 +132,12 @@ class GitScm implements Scm {
   }
 }
 
-export function initScm(client: SonarLintExtendedLanguageClient, referenceBranchStatusItem: vscode.StatusBarItem) {
+export function initScm(client: CodeScanExtendedLanguageClient, referenceBranchStatusItem: vscode.StatusBarItem) {
   try {
     const gitApi = vscode.extensions.getExtension<GitExtension>(GIT_EXTENSION_ID).exports?.getAPI(GIT_API_VERSION);
     return new GitScm(gitApi, client, referenceBranchStatusItem);
   } catch(e) {
-    logToSonarLintOutput(`Exception occurred while initializing the Git API: ${e}`);
+    logToCodeScanOutput(`Exception occurred while initializing the Git API: ${e}`);
     return new NoopScm();
   }
 }

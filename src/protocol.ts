@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
+ * CodeScan for VisualStudio Code
  * Copyright (C) 2017-2022 SonarSource SA
  * sonarlint@sonarsource.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
@@ -9,7 +9,7 @@
 import * as lsp from 'vscode-languageserver-protocol';
 
 export namespace ShowRuleDescriptionRequest {
-  export const type = new lsp.RequestType<ShowRuleDescriptionParams, any, void>('sonarlint/showRuleDescription');
+  export const type = new lsp.RequestType<ShowRuleDescriptionParams, any, void>('codescan/showRuleDescription');
 }
 
 export interface ShowRuleDescriptionParams {
@@ -26,15 +26,15 @@ export interface ShowRuleDescriptionParams {
 }
 
 export namespace GetJavaConfigRequest {
-  export const type = new lsp.RequestType<string, GetJavaConfigResponse, void>('sonarlint/getJavaConfig');
+  export const type = new lsp.RequestType<string, GetJavaConfigResponse, void>('codescan/getJavaConfig');
 }
 
 export namespace ScmCheckRequest {
-  export const type = new lsp.RequestType<string, boolean, void>('sonarlint/isIgnoredByScm');
+  export const type = new lsp.RequestType<string, boolean, void>('codescan/isIgnoredByScm');
 }
 
 export namespace ShowNotificationForFirstSecretsIssueRequest {
-  export const type = new lsp.RequestType<void, void, void>('sonarlint/showNotificationForFirstSecretsIssue');
+  export const type = new lsp.RequestType<void, void, void>('codescan/showNotificationForFirstSecretsIssue');
 }
 
 export interface GetJavaConfigResponse {
@@ -45,25 +45,25 @@ export interface GetJavaConfigResponse {
   vmLocation: string;
 }
 
-export namespace ShowSonarLintOutput {
-  export const type = new lsp.RequestType('sonarlint/showSonarLintOutput');
+export namespace ShowCodeScanOutput {
+  export const type = new lsp.RequestType('codescan/showCodeScanOutput');
 }
 
 export namespace OpenJavaHomeSettings {
-  export const type = new lsp.RequestType('sonarlint/openJavaHomeSettings');
+  export const type = new lsp.RequestType('codescan/openJavaHomeSettings');
 }
 
 export namespace OpenPathToNodeSettings {
-  export const type = new lsp.RequestType('sonarlint/openPathToNodeSettings');
+  export const type = new lsp.RequestType('codescan/openPathToNodeSettings');
 }
 
 export namespace BrowseTo {
-  export const type = new lsp.RequestType<string, void, void>('sonarlint/browseTo');
+  export const type = new lsp.RequestType<string, void, void>('codescan/browseTo');
 }
 
 export namespace OpenConnectionSettings {
   export const type = new lsp.RequestType<boolean, void, void>(
-    'sonarlint/openConnectionSettings'
+    'codescan/openConnectionSettings'
   );
 }
 
@@ -102,7 +102,7 @@ export interface RemoteHotspot {
 }
 
 export namespace ShowHotspotRequest {
-  export const type = new lsp.RequestType<RemoteHotspot, void, void>('sonarlint/showHotspot');
+  export const type = new lsp.RequestType<RemoteHotspot, void, void>('codescan/showHotspot');
 }
 
 export interface TextRange {
@@ -136,11 +136,11 @@ export interface Issue {
 }
 
 export namespace ShowTaintVulnerabilityRequest {
-  export const type = new lsp.RequestType<Issue, void, void>('sonarlint/showTaintVulnerability');
+  export const type = new lsp.RequestType<Issue, void, void>('codescan/showTaintVulnerability');
 }
 
 export namespace GetBranchNameForFolderRequest {
-  export const type = new lsp.RequestType<string, string, void>('sonarlint/getBranchNameForFolder');
+  export const type = new lsp.RequestType<string, string, void>('codescan/getBranchNameForFolder');
 }
 
 export interface BranchNameForFolder {
@@ -149,6 +149,6 @@ export interface BranchNameForFolder {
 }
 
 export namespace SetReferenceBranchNameForFolderRequest {
-  export const type = new lsp.RequestType<BranchNameForFolder, void, void>('sonarlint/setReferenceBranchNameForFolder');
+  export const type = new lsp.RequestType<BranchNameForFolder, void, void>('codescan/setReferenceBranchNameForFolder');
 }
 

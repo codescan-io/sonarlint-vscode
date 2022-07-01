@@ -11,6 +11,6 @@
 	}
 ],
   "settings": {
-		"sonarlint.testFilePattern": "**/*.test.ts"
+		"codescan.testFilePattern": "**/*.test.ts"
 	}
 }

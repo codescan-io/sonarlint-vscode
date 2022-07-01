@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
+ * CodeScan for VisualStudio Code
  * Copyright (C) 2017-2022 SonarSource SA
  * sonarlint@sonarsource.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
@@ -12,7 +12,7 @@ import * as CompareVersions from 'compare-versions';
 // as well as import your extension to test it
 import * as vscode from 'vscode';
 
-import { waitForSonarLintDiagnostics } from '../common/util';
+import { waitForCodeScanDiagnostics } from '../common/util';
 
 const sampleFolderLocation = '../../../samples/';
 const sampleJavaFolderLocation = '../../../samples/sample-java-maven-multi-module/';
@@ -21,7 +21,7 @@ suite('Java Test Suite', () => {
   vscode.window.showInformationMessage('Start java tests.');
 
   test('Extension should be present', () => {
-    assert.ok(vscode.extensions.getExtension('sonarsource.sonarlint-vscode'));
+    assert.ok(vscode.extensions.getExtension('codescansf.codescan-vscode'));
   });
 
   test('Java extension should be present', () => {
@@ -43,7 +43,7 @@ suite('Java Test Suite', () => {
       const editor = await vscode.window.showTextDocument(document);
 
       // Check that we have 2 diagnostics in the right order
-      const diags = await waitForSonarLintDiagnostics(fileUri);
+      const diags = await waitForCodeScanDiagnostics(fileUri);
       assert.deepEqual(diags.map(d => [ d.code, d.message ]), [
         [ 'java:S1130', 'Remove the declaration of thrown exception \'edu.marcelo.App$MyException\', as it cannot be thrown from method\'s body.' ],
         [ 'java:S106', 'Replace this use of System.out or System.err by a logger.' ]
@@ -54,15 +54,15 @@ suite('Java Test Suite', () => {
       const codeActionsResult = (await vscode.commands.executeCommand<(vscode.Command | vscode.CodeAction)[]>('vscode.executeCodeActionProvider', document.uri, rangeInMiddleOfThrowsMyException, vscode.CodeActionKind.QuickFix.value))!;
       // With old versions of VSCode, code actions are not necessarily filtered on kind
       const expectedActionTitles = [
-        'SonarLint: Remove "MyException"',
-        "SonarLint: Open description of rule 'java:S1130'",
-        "SonarLint: Deactivate rule 'java:S1130'"
+        'CodeScan: Remove "MyException"',
+        "CodeScan: Open description of rule 'java:S1130'",
+        "CodeScan: Deactivate rule 'java:S1130'"
       ];
       const actualCodeActionTitles = codeActionsResult.filter(c => expectedActionTitles.indexOf(c.title) >= 0).map(c => c.title);
       assert.deepEqual(actualCodeActionTitles, expectedActionTitles);
 
       // Check that first fix has an edit that can be applied
-      const quickFix = codeActionsResult.filter(c => c.title === 'SonarLint: Remove "MyException"')[0] as vscode.CodeAction;
+      const quickFix = codeActionsResult.filter(c => c.title === 'CodeScan: Remove "MyException"')[0] as vscode.CodeAction;
       const fixApplied = await vscode.workspace.applyEdit(quickFix.edit!);
       assert.equal(fixApplied, true);
 
@@ -81,7 +81,7 @@ suite('Java Test Suite', () => {
       const document = await vscode.workspace.openTextDocument(fileUri);
       const editor = await vscode.window.showTextDocument(document);
 
-      const diags = await waitForSonarLintDiagnostics(fileUri);
+      const diags = await waitForCodeScanDiagnostics(fileUri);
 
       assert.deepEqual(diags.length, 1);
       assert.equal(diags[0].message, 'Add at least one assertion to this test case.');

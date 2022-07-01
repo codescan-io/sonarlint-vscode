@@ -1,17 +1,18 @@
 {
-  "name": "sonarlint-vscode",
-  "displayName": "SonarLint",
-  "description": "SonarLint is an IDE extension that helps you detect and fix quality issues as you write code in JavaScript, TypeScript, Python, Java, HTML and PHP.",
-  "version": "3.2.0",
-  "icon": "images/sonarlint_wave_128px.png",
-  "publisher": "SonarSource",
-  "homepage": "http://www.sonarlint.org",
+  "name": "codescan-vscode",
+  "displayName": "CodeScan",
+  "description": "On-the-fly bug and quality issues detection for Apex and VisualForce",
+  "version": "1.6.9",
+  "icon": "images/codescan_128px.png",
+  "publisher": "codescansf",
+  "homepage": "https://codescan.io",
   "repository": {
     "type": "git",
-    "url": "https://github.com/SonarSource/sonarlint-vscode.git"
+    "url": "https://github.com/VillageChief/sonarlint-vscode.git"
   },
   "bugs": {
-    "url": "https://jira.sonarsource.com/browse/SLVSCODE"
+    "url": "https://codescan.io/",
+    "email": "support@codescan.io"
   },
   "license": "SEE LICENSE IN LICENSE.txt",
   "engines": {
@@ -24,7 +25,7 @@
     "code analysis",
     "linters"
   ],
-  "qna": "https://community.sonarsource.com/c/help/sl",
+  "qna": "knowledgebase.autorabit.com/codescan/docs",
   "activationEvents": [
     "onStartupFinished"
   ],
@@ -34,23 +35,23 @@
   "contributes": {
     "configuration": {
       "type": "object",
-      "title": "SonarLint",
+      "title": "CodeScan",
       "properties": {
-        "sonarlint.output.showAnalyzerLogs": {
+        "codescan.output.showAnalyzerLogs": {
           "type": "boolean",
           "default": false,
-          "description": "Show analyzer's logs in the SonarLint output.",
+          "description": "Show analyzer's logs in the CodeScan output.",
           "scope": "window"
         },
-        "sonarlint.output.showVerboseLogs": {
+        "codescan.output.showVerboseLogs": {
           "type": "boolean",
           "default": false,
-          "description": "Enable verbose log level (for both SonarLint and analyzer) in the SonarLint output.",
+          "description": "Enable verbose log level (for both CodeScan and analyzer) in the CodeScan output.",
           "scope": "window"
         },
-        "sonarlint.trace.server": {
+        "codescan.trace.server": {
           "default": "off",
-          "description": "Traces the communication between VS Code and the SonarLint language server.",
+          "description": "Traces the communication between VS Code and the CodeScan language server.",
           "scope": "window",
           "anyOf": [
             {
@@ -87,13 +88,13 @@
             }
           ]
         },
-        "sonarlint.testFilePattern": {
+        "codescan.testFilePattern": {
           "type": "string",
           "default": "",
           "markdownDescription": "Files whose name match this [glob pattern](https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob) are considered as test files by analyzers. Most rules are *not* evaluated on test files. Example: `{**/test/**,**/*test*,**/*Test*}`",
           "scope": "resource"
         },
-        "sonarlint.analyzerProperties": {
+        "codescan.analyzerProperties": {
           "type": "object",
           "patternProperties": {
             "^.*$": {
@@ -105,17 +106,17 @@
           "markdownDescription": "Extra properties that could be passed to the code analyzers. e.g. `{\"sonar.javascript.globals\": \"xxx\"}`. See [documentation](https://redirect.sonarsource.com/doc/plugin-library.html) of each analyzers.",
           "scope": "resource"
         },
-        "sonarlint.disableTelemetry": {
+        "codescan.disableTelemetry": {
           "type": "boolean",
           "default": false,
-          "markdownDescription": "Disable sending anonymous usage statistics to SonarSource. Click [here](https://github.com/SonarSource/sonarlint-vscode/blob/master/telemetry-sample.md) to see a sample of the data that are collected.",
+          "markdownDescription": "Disable sending anonymous usage statistics.",
           "scope": "window"
         },
-        "sonarlint.rules": {
+        "codescan.rules": {
           "type": "object",
           "scope": "application",
           "default": {},
-          "markdownDescription": "Customize applied rule set. This property contains a list of rules whose activation level or parameter values differ from the one provided by default. See _SonarLint Rules_ view for the full list of available rules. In connected mode, this configuration is overridden by the projects's quality profile, as configured on server side.\n\nExample:\n\n    \"sonarlint.rules\": {\n        \"javascript:1481\": {\n            \"level\": \"off\",\n        \"javascript:S103\": {\n            \"level\": \"on\",\n            \"parameters\": {\n                \"maximumLineLength\": \"120\"\n            }\n        }\n    }\n",
+          "markdownDescription": "Customize applied rule set. This property contains a list of rules whose activation level or parameter values differ from the one provided by default. See _CodeScan Rules_ view for the full list of available rules. In connected mode, this configuration is overridden by the projects's quality profile, as configured on server side.\n\nExample:\n\n    \"codescan.rules\": {\n        \"javascript:1481\": {\n            \"level\": \"off\",\n        \"javascript:S103\": {\n            \"level\": \"on\",\n            \"parameters\": {\n                \"maximumLineLength\": \"120\"\n            }\n        }\n    }\n",
           "patternProperties": {
             "^[^:]+:[^:]+$": {
               "type": "object",
@@ -139,146 +140,54 @@
           },
           "additionalProperties": false
         },
-        "sonarlint.ls.javaHome": {
+        "codescan.ls.javaHome": {
           "type": "string",
-          "markdownDescription": "Path to a Java Runtime Environment (11 or more recent) used to launch the SonarLint Language Server. \n* On Windows, backslashes must be escaped, e.g. `C:\\\\Program Files\\\\Java\\\\jdk-11.0.12+7` \n* On macOS, this path should include the `/Contents/Home` directory, e.g `/Library/Java/JavaVirtualMachines/jdk-11.0.12+7.jdk/Contents/Home`",
+          "markdownDescription": "Path to a Java Runtime Environment (11 or more recent) used to launch the CodeScan Language Server. \n* On Windows, backslashes must be escaped, e.g. `C:\\\\Program Files\\\\Java\\\\jdk-11.0.12+7` \n* On macOS, this path should include the `/Contents/Home` directory, e.g `/Library/Java/JavaVirtualMachines/jdk-11.0.12+7.jdk/Contents/Home`",
           "scope": "machine"
         },
-        "sonarlint.ls.vmargs": {
+        "codescan.ls.vmargs": {
           "type": "string",
-          "markdownDescription": "Extra JVM arguments used to launch the SonarLint Language Server. e.g. `-Xmx1024m`",
+          "markdownDescription": "Extra JVM arguments used to launch the CodeScan Language Server. e.g. `-Xmx1024m`",
           "scope": "machine"
         },
-        "sonarlint.pathToNodeExecutable": {
+        "codescan.pathToNodeExecutable": {
           "type": "string",
           "markdownDescription": "Path to a Node.js executable (8 or more recent) used to analyze JavaScript and TypeScript code. \nOn Windows, backslashes must be escaped, e.g. `C:\\\\Program Files\\\\NodeJS\\\\12-lts\\\\bin\\\\node.exe`",
           "scope": "machine"
         },
-        "sonarlint.connectedMode.servers": {
-          "deprecationMessage": "The setting is deprecated. Use `sonarlint.connectedMode.connections.sonarqube` or `sonarlint.connectedMode.connections.sonarcloud` instead.",
+        "codescan.servers": {
           "type": "array",
           "scope": "application",
           "default": [],
-          "markdownDescription": "Configure one or more connection(s) to SonarQube/SonarCloud. For security reasons, the token should not be stored in SCM with workspace settings. The `serverId` can be any identifier and will be referenced in `#sonarlint.connectedMode.project#`.\n\nExample for SonarCloud:\n\n    \"sonarlint.connectedMode.servers\": [\n      {\n        \"serverId\": \"my_orga_in_sonarcloud.io\",\n        \"serverUrl\": \"https://sonarcloud.io\",\n        \"organizationKey\": \"my_organization\",\n        \"token\": \"V2VkIE1...\"\n      }\n    ]\n\nExample for SonarQube:\n\n    \"sonarlint.connectedMode.servers\": [\n      {\n        \"serverId\": \"my_sonarqube\",\n        \"serverUrl\": \"https://sonar.mycompany.com\",\n        \"token\": \"V2VkIE1...\"\n      }\n    ]",
+          "markdownDescription": "Configure one or more connection(s) to SonarQube/CodescanCloud. For security reasons, the token should not be stored in SCM with workspace settings. The `serverId` can be any identifier and will be referenced in `#codescan.project#`.\n\nExample for CodescanCloud:\n\n    \"codescan.servers\": [\n      {\n        \"serverId\": \"my_orga_in_CodescanCloud.io\",\n        \"serverUrl\": \"https://app.codescan.io\",\n        \"organizationKey\": \"my_organization\",\n        \"token\": \"V2VkIE1...\"\n      }\n    ]\n\nExample for SonarQube:\n\n    \"codescan.servers\": [\n      {\n        \"serverId\": \"my_sonarqube\",\n        \"serverUrl\": \"https://sonar.mycompany.com\",\n        \"token\": \"V2VkIE1...\"\n      }\n    ]",
           "items": {
             "properties": {
               "serverId": {
                 "type": "string",
-                "description": "A unique identifier for this server connection. Will be referenced from `#sonarlint.connectedMode.project#`"
+                "description": "A unique identifier for this server connection. Will be referenced from `#codescan.project#`"
               },
               "serverUrl": {
                 "type": "string",
-                "description": "URL of the server. Use https://sonarcloud.io for SonarCloud."
+                "description": "URL of the server. Use https://app.codescan.io for CodescanCloud."
               },
               "token": {
                 "type": "string",
-                "description": "Token generated from My Account>Security in SonarQube/SonarCloud"
+                "description": "Token generated from My Account>Security in SonarQube/CodescanCloud"
               },
               "organizationKey": {
                 "type": "string",
-                "description": "Only used for SonarCloud"
-              }
-            },
-            "additionalProperties": false
-          }
-        },
-        "sonarlint.connectedMode.connections.sonarqube": {
-          "type": "array",
-          "scope": "application",
-          "default": [],
-          "markdownDescription": "Configure connection(s) to [SonarQube](https://sonarqube.org). Don't forget to also configure the project binding in `#sonarlint.connectedMode.project#`.\n\nExample:\n\n    \"sonarlint.connectedMode.connections.sonarqube\": [\n      {\n        \"serverUrl\": \"https://sonar.mycompany.com\",\n        \"token\": \"V2VkIE1...\"\n      }\n    ]\n\nSpecify a `connectionId` if you want to define multiple connections. Add `\"disableNotifications\": true` to disable notifications.",
-          "examples": [
-            {
-              "serverUrl": "https://<myServerUrl>",
-              "token": "<mySQToken>"
-            },
-            {
-              "connectionId": "<myConnectionId>",
-              "serverUrl": "https://<myServerUrl>",
-              "token": "<mySQToken>"
-            }
-          ],
-          "items": {
-            "type": "object",
-            "properties": {
-              "connectionId": {
-                "type": "string",
-                "description": "A unique identifier for this connection to be used as a reference in `#sonarlint.connectedMode.project#`. Only needed if you plan to use multiple connections to SonarQube/SonarCloud."
-              },
-              "serverUrl": {
-                "type": "string",
-                "description": "URL of the server."
-              },
-              "token": {
-                "type": "string",
-                "description": "Token generated from My Account>Security in SonarQube"
-              },
-              "disableNotifications": {
-                "type": "boolean",
-                "description": "SonarLint will show notifications for bound projects when there are new issues assigned to you, or when the quality gate status changed. Set to false to disable all notifications for projects bound to this connection."
+                "description": "Only used for CodescanCloud"
               }
             },
             "additionalProperties": false,
             "required": [
-              "serverUrl",
-              "token"
+              "serverId",
+              "serverUrl"
             ]
           }
         },
-        "sonarlint.connectedMode.connections.sonarcloud": {
-          "type": "array",
-          "scope": "application",
-          "default": [],
-          "markdownDescription": "Configure connection(s) to [SonarCloud](https://sonarcloud.io). Don't forget to also configure the project binding in `#sonarlint.connectedMode.project#`.\nIf you have projects in multiple SonarCloud organizations, simply declare multiple connections.\n\nExample:\n\n    \"sonarlint.connectedMode.connections.sonarcloud\": [\n      {\n        \"organizationKey\": \"myOrg\",\n        \"token\": \"V2VkIE1...\"\n      }\n    ]\n\nSpecify a `connectionId` if you want to define multiple connections. Add `\"disableNotifications\": true` to disable notifications.",
-          "examples": [
-            {
-              "organizationKey": "<myOrgKey>",
-              "token": "<mySCToken>"
-            },
-            {
-              "connectionId": "<myConnectionId>",
-              "organizationKey": "<myOrgKey>",
-              "token": "<mySCToken>"
-            }
-          ],
-          "items": {
-            "type": "object",
-            "properties": {
-              "connectionId": {
-                "type": "string",
-                "description": "A unique identifier for this connection to be used as a reference in `#sonarlint.connectedMode.project#`. Only needed if you plan to use multiple connections to SonarQube/SonarCloud."
-              },
-              "organizationKey": {
-                "type": "string",
-                "description": "A SonarCloud organization key. If you want to bind different projects that are in different organizations, simply declare multiple connections."
-              },
-              "token": {
-                "type": "string",
-                "description": "Token generated from [My Account>Security](https://sonarcloud.io/account/security/) in SonarCloud"
-              },
-              "disableNotifications": {
-                "type": "boolean",
-                "description": "SonarLint will show notifications for bound projects when there are new issues assigned to you, or when the quality gate status changed. Set to false to disable all notifications for projects bound to this connection."
-              }
-            },
-            "additionalProperties": false,
-            "required": [
-              "organizationKey",
-              "token"
-            ]
-          }
-        },
-        "sonarlint.connectedMode.project": {
-          "markdownDescription": "Bind the current workspace folder to a [SonarQube](https://sonarqube.org) or [SonarCloud](https://sonarcloud.io) project. Requires connection details to be defined in the setting `#sonarlint.connectedMode.connections.sonarqube#` or `#sonarlint.connectedMode.connections.sonarcloud#`.\n\nBinding a workspace folder to a project allows to use the same code analyzers, rules and configuration that are defined in the server, as well as issue suppressions.\n\nExample:\n\n    \"sonarlint.connectedMode.project\": {\n      \"projectKey\": \"my_project\"\n    }\n\nSpecify the `connectionId` if you have defined multiple connections.",
-          "examples": [
-            {
-              "projectKey": "<myProjectKey>"
-            },
-            {
-              "connectionId": "<myConnectionId>",
-              "projectKey": "<myProjectKey>"
-            }
-          ],
+        "codescan.project": {
+          "markdownDescription": "Specify to which SonarQube/CodeScanCloud project the current project is bound. Connected mode allows to use the same code analyzers, rules and configuration that are defined in the server.\n\nExample:\n\n    \"codescan.project\": {\n      \"serverId\": \"my_orga_in_app.codescan.io\",\n      \"projectKey\": \"my_project\"\n    }",
           "default": {},
           "anyOf": [
             {
@@ -286,30 +195,29 @@
               "properties": {
                 "serverId": {
                   "type": "string",
-                  "description": "Identifier of the server connection declared in `#sonarlint.connectedMode.connections.sonarqube#` or `#sonarlint.connectedMode.connections.sonarcloud#`"
+                  "description": "Identifier of the server connection declared in `#codescan.server`"
                 },
                 "projectKey": {
                   "type": "string",
-                  "description": "Key of the project in SonarQube/SonarCloud"
+                  "description": "Key of the project in SonarQube/CodescanCloud"
                 }
               },
               "additionalProperties": false,
               "required": [
                 "serverId",
-                "projectKey"
-              ],
-              "deprecationMessage": "Replace `serverId` attribute by `connectionId`."
+                "serverUrl"
+              ]
             },
             {
               "type": "object",
               "properties": {
-                "connectionId": {
+                "serverId": {
                   "type": "string",
-                  "description": "Identifier of the server connection declared in `#sonarlint.connectedMode.connections.sonarqube#` or `#sonarlint.connectedMode.connections.sonarcloud#`"
+                  "description": "Identifier of the server connection declared in `#codescan.server`"
                 },
                 "projectKey": {
                   "type": "string",
-                  "description": "Key of the project in SonarQube/SonarCloud (can be found on project homepage)"
+                  "description": "Key of the project in SonarQube/CodescanCloud (can be found on project homepage)"
                 }
               },
               "additionalProperties": false,
@@ -324,17 +232,17 @@
     },
     "commands": [
       {
-        "command": "SonarLint.UpdateAllBindings",
-        "title": "Update all project bindings to SonarQube/SonarCloud",
-        "category": "SonarLint"
+        "command": "CodeScan.UpdateAllBindings",
+        "title": "Update all project bindings to SonarQube/CodescanCloud",
+        "category": "CodeScan"
       },
       {
-        "command": "SonarLint.ShowSonarLintOutput",
-        "title": "Show SonarLint Output",
-        "category": "SonarLint"
+        "command": "CodeScan.ShowCodeScanOutput",
+        "title": "Show CodeScan Output",
+        "category": "CodeScan"
       },
       {
-        "command": "SonarLint.DeactivateRule",
+        "command": "CodeScan.DeactivateRule",
         "title": "Deactivate",
         "icon": {
           "light": "images/activation/light/cross.svg",
@@ -342,7 +250,7 @@
         }
       },
       {
-        "command": "SonarLint.ActivateRule",
+        "command": "CodeScan.ActivateRule",
         "title": "Activate",
         "icon": {
           "light": "images/activation/light/check.svg",
@@ -350,98 +258,98 @@
         }
       },
       {
-        "command": "SonarLint.ResetDefaultRule",
+        "command": "CodeScan.ResetDefaultRule",
         "title": "Reset",
-        "enablement": "view == SonarLint.AllRules"
+        "enablement": "view == CodeScan.AllRules"
       },
       {
-        "command": "SonarLint.ShowAllRules",
+        "command": "CodeScan.ShowAllRules",
         "title": "All",
-        "enablement": "view == SonarLint.AllRules"
+        "enablement": "view == CodeScan.AllRules"
       },
       {
-        "command": "SonarLint.ShowActiveRules",
+        "command": "CodeScan.ShowActiveRules",
         "title": "Active",
-        "enablement": "view == SonarLint.AllRules"
+        "enablement": "view == CodeScan.AllRules"
       },
       {
-        "command": "SonarLint.ShowInactiveRules",
+        "command": "CodeScan.ShowInactiveRules",
         "title": "Inactive",
-        "enablement": "view == SonarLint.AllRules"
+        "enablement": "view == CodeScan.AllRules"
       },
       {
-        "command": "SonarLint.FindRuleByKey",
+        "command": "CodeScan.FindRuleByKey",
         "title": "Find Rule By Key",
-        "enablement": "view == SonarLint.AllRules"
+        "enablement": "view == CodeScan.AllRules"
       },
       {
-        "command": "SonarLint.ClearLocations",
+        "command": "CodeScan.ClearLocations",
         "title": "Clear",
-        "enablement": "view == SonarLint.IssueLocations"
+        "enablement": "view == CodeScan.IssueLocations"
       }
     ],
     "views": {
       "explorer": [
         {
-          "id": "SonarLint.AllRules",
-          "name": "SonarLint Rules"
+          "id": "CodeScan.AllRules",
+          "name": "CodeScan Rules"
         },
         {
-          "id": "SonarLint.IssueLocations",
-          "name": "SonarLint Issue Locations"
+          "id": "CodeScan.IssueLocations",
+          "name": "CodeScan Issue Locations"
         }
       ]
     },
     "viewsWelcome": [
       {
-        "view": "SonarLint.IssueLocations",
-        "contents": "No locations to show.\nUse \"Show all locations\" code action from a SonarLint issue."
+        "view": "CodeScan.IssueLocations",
+        "contents": "No locations to show.\nUse \"Show all locations\" code action from a CodeScan issue."
       }
     ],
     "menus": {
       "view/title": [
         {
-          "command": "SonarLint.ShowAllRules",
-          "when": "view == SonarLint.AllRules",
+          "command": "CodeScan.ShowAllRules",
+          "when": "view == CodeScan.AllRules",
           "group": "navigation"
         },
         {
-          "command": "SonarLint.ShowActiveRules",
-          "when": "view == SonarLint.AllRules",
+          "command": "CodeScan.ShowActiveRules",
+          "when": "view == CodeScan.AllRules",
           "group": "navigation"
         },
         {
-          "command": "SonarLint.ShowInactiveRules",
-          "when": "view == SonarLint.AllRules",
+          "command": "CodeScan.ShowInactiveRules",
+          "when": "view == CodeScan.AllRules",
           "group": "navigation"
         },
         {
-          "command": "SonarLint.FindRuleByKey",
-          "when": "view == SonarLint.AllRules"
+          "command": "CodeScan.FindRuleByKey",
+          "when": "view == CodeScan.AllRules"
         },
         {
-          "command": "SonarLint.ClearLocations",
-          "when": "view == SonarLint.IssueLocations",
+          "command": "CodeScan.ClearLocations",
+          "when": "view == CodeScan.IssueLocations",
           "group": "navigation"
         }
       ],
       "view/item/context": [
         {
-          "command": "SonarLint.DeactivateRule",
-          "when": "view == SonarLint.AllRules && viewItem == rule-on",
+          "command": "CodeScan.DeactivateRule",
+          "when": "view == CodeScan.AllRules && viewItem == rule-on",
           "group": "inline"
         },
         {
-          "command": "SonarLint.ActivateRule",
-          "when": "view == SonarLint.AllRules && viewItem == rule-off",
+          "command": "CodeScan.ActivateRule",
+          "when": "view == CodeScan.AllRules && viewItem == rule-off",
           "group": "inline"
         }
       ]
     },
     "colors": [
       {
-        "id": "sonarlint.locations.background",
-        "description": "Background color for highlighted secondary locations of SonarLint issues",
+        "id": "codescan.locations.background",
+        "description": "Background color for highlighted secondary locations of CodeScan issues",
         "defaults": {
           "light": "#f2dede",
           "dark": "#523e3e",
@@ -449,8 +357,8 @@
         }
       },
       {
-        "id": "sonarlint.locations.indexText",
-        "description": "Text color for secondary location index of SonarLint issues",
+        "id": "codescan.locations.indexText",
+        "description": "Text color for secondary location index of CodeScan issues",
         "defaults": {
           "light": "#fff",
           "dark": "#ccc",
@@ -458,8 +366,8 @@
         }
       },
       {
-        "id": "sonarlint.locations.indexBackground",
-        "description": "Background color for secondary location index of SonarLint issues",
+        "id": "codescan.locations.indexBackground",
+        "description": "Background color for secondary location index of CodeScan issues",
         "defaults": {
           "light": "#d18582",
           "dark": "#74232f",
@@ -467,8 +375,8 @@
         }
       },
       {
-        "id": "sonarlint.locations.indexSelectedText",
-        "description": "Text color for active secondary location index of SonarLint issues",
+        "id": "codescan.locations.indexSelectedText",
+        "description": "Text color for active secondary location index of CodeScan issues",
         "defaults": {
           "light": "#fff",
           "dark": "#fff",
@@ -476,8 +384,8 @@
         }
       },
       {
-        "id": "sonarlint.locations.indexSelectedBackground",
-        "description": "Background color for active secondary location index of SonarLint issues",
+        "id": "codescan.locations.indexSelectedBackground",
+        "description": "Background color for active secondary location index of CodeScan issues",
         "defaults": {
           "light": "#a4030f",
           "dark": "#b4131f",

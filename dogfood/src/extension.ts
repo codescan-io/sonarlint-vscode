@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint Dogfood
+ * CodeScan Dogfood
  * Copyright (C) 2021-2022 SonarSource SA
  * sonarlint@sonarsource.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
@@ -11,11 +11,11 @@ import * as path from 'path';
 import * as semver from 'semver';
 import * as vscode from 'vscode';
 
-const CONFIG_SECTION = 'sonarlint-dogfood';
-const COMMAND_CHECK_NOW = 'SonarLintDogfood.CheckNow';
+const CONFIG_SECTION = 'codescan-dogfood';
+const COMMAND_CHECK_NOW = 'CodeScanDogfood.CheckNow';
 
 const ARTIFACTORY_BASE_URL = 'https://repox.jfrog.io/repox';
-const ARTIFACTORY_VSCODE_PATH = `${ARTIFACTORY_BASE_URL}/sonarsource/org/sonarsource/sonarlint/vscode/sonarlint-vscode`;
+const ARTIFACTORY_VSCODE_PATH = `${ARTIFACTORY_BASE_URL}/sonarsource/org/sonarsource/codescan/vscode/codescan-vscode`;
 const ARTIFACTORY_DOGFOOD_URL = `${ARTIFACTORY_VSCODE_PATH}/dogfood.json`;
 
 let statusBar: StatusBar;
@@ -74,7 +74,7 @@ class StatusBar {
 
   private refreshStatus() {
     this.statusBarItem.text = this.status.text;
-    this.statusBarItem.tooltip = `SonarLint Dogfood: ${this.status.tooltip}`;
+    this.statusBarItem.tooltip = `CodeScan Dogfood: ${this.status.tooltip}`;
     if (this.lastCheck) {
       this.statusBarItem.tooltip += `\nLast checked: ${this.lastCheck}`;
     }
@@ -106,12 +106,12 @@ async function checkUpdate() {
   const dogfoodFile = await fetch(ARTIFACTORY_DOGFOOD_URL);
   if (dogfoodFile.status === 200) {
     const { version, url } = await dogfoodFile.json();
-    const installedSonarLint = vscode.extensions.getExtension('SonarSource.sonarlint-vscode');
+    const installedCodeScan = vscode.extensions.getExtension('codescansf.codescan-vscode');
     if (
-      installedSonarLint === undefined ||
-      semver.compareBuild(installedSonarLint.packageJSON.version, version) < 0
+      installedCodeScan === undefined ||
+      semver.compareBuild(installedCodeScan.packageJSON.version, version) < 0
     ) {
-      await updateAvailable(version, url, installedSonarLint);
+      await updateAvailable(version, url, installedCodeScan);
     }
     statusBar.setStatus(Status.IDLE);
   } else {
@@ -119,18 +119,18 @@ async function checkUpdate() {
   }
 }
 
-async function updateAvailable(version: string, url: string, installedSonarLint: any) {
+async function updateAvailable(version: string, url: string, installedCodeScan: any) {
   statusBar.setStatus(Status.UPDATE_AVAILABLE);
   const installNow = await vscode.window.showInformationMessage(`New dogfood build ${version} found.`, 'Install');
   if (installNow === 'Install') {
-    await installAndRestart(version, url, installedSonarLint);
+    await installAndRestart(version, url, installedCodeScan);
   }
 }
 
-async function installAndRestart(version: string, url: string, installedSonarLint: any) {
-  if(installedSonarLint) {
+async function installAndRestart(version: string, url: string, installedCodeScan: any) {
+  if(installedCodeScan) {
     statusBar.setStatus(Status.UNINSTALLING);
-    await(vscode.commands.executeCommand('workbench.extensions.uninstallExtension', 'SonarSource.sonarlint-vscode'));
+    await(vscode.commands.executeCommand('workbench.extensions.uninstallExtension', 'codescansf.codescan-vscode'));
   }
   statusBar.setStatus(Status.DOWNLOADING);
   const vsixUri = await downloadVsix(version, url);

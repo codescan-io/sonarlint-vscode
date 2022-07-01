@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
+ * CodeScan for VisualStudio Code
  * Copyright (C) 2017-2022 SonarSource SA
  * sonarlint@sonarsource.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
@@ -75,13 +75,13 @@ function base64encode(file: string) {
 
 function renderRuleParams(rule: ShowRuleDescriptionParams) {
   if (rule.parameters && rule.parameters.length > 0) {
-    const ruleParamsConfig = VSCode.workspace.getConfiguration(`sonarlint.rules.${rule.key}.parameters`);
+    const ruleParamsConfig = VSCode.workspace.getConfiguration(`codescan.rules.${rule.key}.parameters`);
     return `<table class="rule-params">
   <caption>Parameters</caption>
   <thead>
     <tr>
       <td colspan="2">
-        Following parameter values can be set in the <em>SonarLint:Rules</em> user settings.
+        Following parameter values can be set in the <em>CodeScan:Rules</em> user settings.
         In connected mode, server side configuration overrides local settings.
       </td>
     </tr>

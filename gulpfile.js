@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
+ * CodeScan for VisualStudio Code
  * Copyright (C) 2017-2022 SonarSource SA
  * sonarlint@sonarsource.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
@@ -69,7 +69,7 @@ gulp.task('deploy-vsix', function () {
   } = process.env;
   const packageJSON = getPackageJSON();
   const { version, name } = packageJSON;
-  const packagePath = 'org/sonarsource/sonarlint/vscode';
+  const packagePath = 'org/sonarsource/codescan/vscode';
   const artifactoryTargetUrl = `${ARTIFACTORY_URL}/${ARTIFACTORY_DEPLOY_REPO}/${packagePath}/${name}/${version}`;
   return gulp
     .src('*.vsix')
@@ -154,9 +154,9 @@ function buildInfo(name, version, buildNumber) {
     vcsUrl: `https://github.com/${BUILD_REPOSITORY_NAME}.git`,
     modules: [
       {
-        id: `org.sonarsource.sonarlint.vscode:${name}:${version}`,
+        id: `org.sonarsource.codescan.vscode:${name}:${version}`,
         properties: {
-          artifactsToDownload: `org.sonarsource.sonarlint.vscode:${name}:vsix`
+          artifactsToDownload: `org.sonarsource.codescan.vscode:${name}:vsix`
         },
         artifacts: [
           {

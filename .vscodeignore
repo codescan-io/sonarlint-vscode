@@ -10,7 +10,7 @@ tsconfig.json
 gulpfile.js
 node_modules
 webpack.config.js
-sonarlint-vscode.code-workspace
+codescan-vscode.code-workspace
 coverage/
 its/
 dogfood/

@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
+ * CodeScan for VisualStudio Code
  * Copyright (C) 2017-2022 SonarSource SA
  * sonarlint@sonarsource.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
@@ -8,14 +8,14 @@
 
 import * as vscode from 'vscode';
 import { Commands } from './commands';
-import { logToSonarLintOutput } from './extension';
+import { logToCodeScanOutput } from './extension';
 import { computeHotspotContextPanelContent } from './hotspotContextPanel';
 import { HotspotProbability, RemoteHotspot } from './protocol';
 import { resolveExtensionFile } from './util';
 
 export const HOTSPOT_SOURCE = 'SonarQube Security Hotspot';
 
-export const hotspotsCollection = vscode.languages.createDiagnosticCollection('sonarlint-hotspots');
+export const hotspotsCollection = vscode.languages.createDiagnosticCollection('codescan-hotspots');
 
 let activeHotspot: RemoteHotspot;
 let hotspotDescriptionPanel: vscode.WebviewPanel;
@@ -39,7 +39,7 @@ Please make sure that the right folder is open and bound to the right project on
     activeHotspot = hotspot;
     const documentUri = foundUris[0];
     if (foundUris.length > 1) {
-      logToSonarLintOutput(`Multiple candidates found for '${hotspot.filePath}', using first match '${documentUri}'`);
+      logToCodeScanOutput(`Multiple candidates found for '${hotspot.filePath}', using first match '${documentUri}'`);
     }
     const editor = await vscode.window.showTextDocument(documentUri);
     const hotspotDiag = createHotspotDiagnostic(hotspot);
@@ -122,7 +122,7 @@ export const showHotspotDescription = () => {
 
   if (!hotspotDescriptionPanel) {
     hotspotDescriptionPanel = vscode.window.createWebviewPanel(
-      'sonarlint.DiagContext',
+      'codescan.DiagContext',
       'SonarQube Security Hotspot',
       vscode.ViewColumn.Two,
       {
