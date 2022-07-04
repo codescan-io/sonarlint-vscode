@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
+ * CodeScan for VisualStudio Code
  * Copyright (C) 2017-2022 SonarSource SA
  * sonarlint@sonarsource.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
@@ -12,7 +12,7 @@ import * as Net from 'net';
 import * as Path from 'path';
 import * as VSCode from 'vscode';
 import { LanguageClientOptions, StreamInfo } from 'vscode-languageclient/node';
-import { SonarLintExtendedLanguageClient } from './client';
+import { CodeScanExtendedLanguageClient } from './client';
 import { Commands } from './commands';
 import { GitExtension } from './git';
 import {
@@ -39,15 +39,15 @@ const FIRST_SECRET_ISSUE_DETECTED_KEY = 'FIRST_SECRET_ISSUE_DETECTED_KEY';
 
 const DOCUMENT_SELECTOR = [{ scheme: 'file', pattern: '**/*' }];
 
-let sonarlintOutput: VSCode.OutputChannel;
+let codescanOutput: VSCode.OutputChannel;
 let ruleDescriptionPanel: VSCode.WebviewPanel;
 let secondaryLocationsTree: SecondaryLocationsTree;
 let issueLocationsView: VSCode.TreeView<LocationTreeItem>;
-let languageClient: SonarLintExtendedLanguageClient;
+let languageClient: CodeScanExtendedLanguageClient;
 
-export function logToSonarLintOutput(message) {
-  if (sonarlintOutput) {
-    sonarlintOutput.appendLine(message);
+export function logToCodeScanOutput(message) {
+  if (codescanOutput) {
+    codescanOutput.appendLine(message);
   }
 }
 
@@ -67,7 +67,7 @@ function runJavaServer(context: VSCode.ExtensionContext): Promise<StreamInfo> {
       return new Promise<StreamInfo>((resolve, reject) => {
         const server = Net.createServer(socket => {
           if (isVerboseEnabled()) {
-            logToSonarLintOutput(`Child process connected on port ${(server.address() as Net.AddressInfo).port}`);
+            logToCodeScanOutput(`Child process connected on port ${(server.address() as Net.AddressInfo).port}`);
           }
           resolve({
             reader: socket,
@@ -79,7 +79,7 @@ function runJavaServer(context: VSCode.ExtensionContext): Promise<StreamInfo> {
           const port = (server.address() as Net.AddressInfo).port;
           const { command, args } = languageServerCommand(context, requirements, port);
           if (isVerboseEnabled()) {
-            logToSonarLintOutput(`Executing ${command} ${args.join(' ')}`);
+            logToCodeScanOutput(`Executing ${command} ${args.join(' ')}`);
           }
           const process = ChildProcess.spawn(command, args);
 
@@ -99,7 +99,7 @@ function logWithPrefix(data, prefix) {
     const lines: string[] = data.toString().split(/\r\n|\r|\n/);
     lines.forEach((l: string) => {
       if (l.length > 0) {
-        logToSonarLintOutput(`${prefix} ${l}`);
+        logToCodeScanOutput(`${prefix} ${l}`);
       }
     });
   }
@@ -120,22 +120,11 @@ function languageServerCommand(
   const params = [];
   if (DEBUG) {
     params.push('-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000');
-    params.push('-Dsonarlint.telemetry.disabled=true');
+    params.push('-Dcodescan.telemetry.disabled=true');
   }
-  const vmargs = getSonarLintConfiguration().get('ls.vmargs', '');
+  const vmargs = getCodeScanConfiguration().get('ls.vmargs', '');
   parseVMargs(params, vmargs);
   params.push('-jar', serverJar, `${port}`);
-  params.push('-analyzers');
-  params.push(toUrl(Path.resolve(context.extensionPath, 'analyzers', 'sonarjava.jar')));
-  params.push(toUrl(Path.resolve(context.extensionPath, 'analyzers', 'sonarjs.jar')));
-  params.push(toUrl(Path.resolve(context.extensionPath, 'analyzers', 'sonarphp.jar')));
-  params.push(toUrl(Path.resolve(context.extensionPath, 'analyzers', 'sonarpython.jar')));
-  params.push(toUrl(Path.resolve(context.extensionPath, 'analyzers', 'sonarhtml.jar')));
-  const secrets = Path.resolve(context.extensionPath, 'analyzers', 'sonarsecrets.jar');
-  if (FS.existsSync(secrets)) {
-    params.push('-extraAnalyzers');
-    params.push(toUrl(Path.resolve(context.extensionPath, 'analyzers', 'sonarsecrets.jar')));
-  }
   return { command: javaExecutablePath, args: params };
 }
 
@@ -168,8 +157,8 @@ function findTypeScriptLocation(): string | undefined {
   if (tsExt) {
     const bundledTypeScriptPath = Path.resolve(tsExt.extensionPath, '..', 'node_modules', 'typescript', 'lib');
     if (!FS.existsSync(bundledTypeScriptPath)) {
-      logToSonarLintOutput(
-        `Unable to locate bundled TypeScript module in "${bundledTypeScriptPath}". Please report this error to SonarLint project.`
+      logToCodeScanOutput(
+        `Unable to locate bundled TypeScript module in "${bundledTypeScriptPath}". Please report this error to CodeScan project.`
       );
     }
     const tsdkPathSetting = VSCode.workspace.getConfiguration('typescript').get('tsdk');
@@ -179,20 +168,20 @@ function findTypeScriptLocation(): string | undefined {
       if (configuredTsPath !== undefined) {
         return configuredTsPath;
       }
-      logToSonarLintOutput(
+      logToCodeScanOutput(
         `Unable to locate TypeScript module in "${configuredTsPath}". Falling back to the VSCode's one at "${bundledTypeScriptPath}"`
       );
     }
     return bundledTypeScriptPath;
   } else {
-    logToSonarLintOutput('Unable to locate TypeScript extension. TypeScript support in SonarLint might not work.');
+    logToCodeScanOutput('Unable to locate TypeScript extension. TypeScript support in CodeScan might not work.');
     return undefined;
   }
 }
 
 function toggleRule(level: ConfigLevel) {
   return (ruleKey: string | RuleNode) => {
-    const configuration = getSonarLintConfiguration();
+    const configuration = getCodeScanConfiguration();
     const rules = configuration.get('rules') || {};
 
     if (typeof ruleKey === 'string') {
@@ -215,11 +204,11 @@ function toggleRule(level: ConfigLevel) {
 }
 
 export function activate(context: VSCode.ExtensionContext) {
-  currentConfig = getSonarLintConfiguration();
+  currentConfig = getCodeScanConfiguration();
 
   util.setExtensionContext(context);
-  sonarlintOutput = VSCode.window.createOutputChannel('SonarLint');
-  context.subscriptions.push(sonarlintOutput);
+  codescanOutput = VSCode.window.createOutputChannel('CodeScan');
+  context.subscriptions.push(codescanOutput);
 
   const serverOptions = () => runJavaServer(context);
 
@@ -232,19 +221,19 @@ export function activate(context: VSCode.ExtensionContext) {
   const clientOptions: LanguageClientOptions = {
     documentSelector: DOCUMENT_SELECTOR,
     synchronize: {
-      configurationSection: 'sonarlint',
+      configurationSection: 'codescan',
       fileEvents: pythonWatcher
     },
     uriConverters: {
       code2Protocol: code2ProtocolConverter,
       protocol2Code: protocol2CodeConverter
     },
-    diagnosticCollectionName: 'sonarlint',
+    diagnosticCollectionName: 'codescan',
     initializationOptions: () => {
       return {
         productKey: 'vscode',
-        telemetryStorage: Path.resolve(context.extensionPath, '..', 'sonarlint_usage'),
-        productName: 'SonarLint VSCode',
+        telemetryStorage: Path.resolve(context.extensionPath, '..', 'codescan_usage'),
+        productName: 'CodeScan VSCode',
         productVersion: util.packageJson.version,
         workspaceName: VSCode.workspace.name,
         typeScriptLocation: tsPath ? Path.dirname(Path.dirname(tsPath)) : undefined,
@@ -257,15 +246,15 @@ export function activate(context: VSCode.ExtensionContext) {
         }
       };
     },
-    outputChannel: sonarlintOutput,
+    outputChannel: codescanOutput,
     revealOutputChannelOn: 4 // never
   };
 
   // Create the language client and start the client.
-  // id parameter is used to load 'sonarlint.trace.server' configuration
-  languageClient = new SonarLintExtendedLanguageClient(
-    'sonarlint',
-    'SonarLint Language Server',
+  // id parameter is used to load 'codescan.trace.server' configuration
+  languageClient = new CodeScanExtendedLanguageClient(
+    'codescan',
+    'CodeScan Language Server',
     serverOptions,
     clientOptions
   );
@@ -294,13 +283,13 @@ export function activate(context: VSCode.ExtensionContext) {
   const allRulesTreeDataProvider = new AllRulesTreeDataProvider(() =>
     languageClient.onReady().then(() => languageClient.listAllRules())
   );
-  const allRulesView = VSCode.window.createTreeView('SonarLint.AllRules', {
+  const allRulesView = VSCode.window.createTreeView('CodeScan.AllRules', {
     treeDataProvider: allRulesTreeDataProvider
   });
   context.subscriptions.push(allRulesView);
 
   secondaryLocationsTree = new SecondaryLocationsTree();
-  issueLocationsView = VSCode.window.createTreeView('SonarLint.IssueLocations', {
+  issueLocationsView = VSCode.window.createTreeView('CodeScan.IssueLocations', {
     treeDataProvider: secondaryLocationsTree
   });
   context.subscriptions.push(issueLocationsView);
@@ -340,7 +329,7 @@ export function activate(context: VSCode.ExtensionContext) {
   );
   context.subscriptions.push(
     VSCode.commands.registerCommand(Commands.SHOW_SONARLINT_OUTPUT, () => {
-      sonarlintOutput.show();
+      codescanOutput.show();
     })
   );
 
@@ -359,7 +348,7 @@ export function activate(context: VSCode.ExtensionContext) {
   );
 
   VSCode.workspace.onDidChangeConfiguration(async event => {
-    if (event.affectsConfiguration('sonarlint.rules')) {
+    if (event.affectsConfiguration('codescan.rules')) {
       allRulesTreeDataProvider.refresh();
     }
   });
@@ -380,7 +369,7 @@ async function showNotificationForFirstSecretsIssue(context: VSCode.ExtensionCon
   const showProblemsViewActionTitle = 'Show Problems View';
   VSCode.window
     .showWarningMessage(
-      'SonarLint detected some secrets in one of the open files.\n' +
+      'CodeScan detected some secrets in one of the open files.\n' +
         'We strongly advise you to review those secrets and ensure they are not committed into repositories. ' +
         'Please refer to the Problems view for more information.',
       showProblemsViewActionTitle
@@ -397,8 +386,8 @@ function installCustomRequestHandlers(context: VSCode.ExtensionContext) {
   languageClient.onRequest(protocol.ShowRuleDescriptionRequest.type, params => {
     if (!ruleDescriptionPanel) {
       ruleDescriptionPanel = VSCode.window.createWebviewPanel(
-        'sonarlint.RuleDesc',
-        'SonarLint Rule Description',
+        'codescan.RuleDesc',
+        'CodeScan Rule Description',
         VSCode.ViewColumn.Two,
         {
           enableScripts: false
@@ -426,20 +415,20 @@ function installCustomRequestHandlers(context: VSCode.ExtensionContext) {
   languageClient.onRequest(protocol.ShowNotificationForFirstSecretsIssueRequest.type, () =>
     showNotificationForFirstSecretsIssue(context)
   );
-  languageClient.onRequest(protocol.ShowSonarLintOutput.type, () =>
+  languageClient.onRequest(protocol.ShowCodeScanOutput.type, () =>
     VSCode.commands.executeCommand(Commands.SHOW_SONARLINT_OUTPUT)
   );
   languageClient.onRequest(protocol.OpenJavaHomeSettings.type, () =>
     VSCode.commands.executeCommand(Commands.OPEN_SETTINGS, JAVA_HOME_CONFIG)
   );
   languageClient.onRequest(protocol.OpenPathToNodeSettings.type, () =>
-    VSCode.commands.executeCommand(Commands.OPEN_SETTINGS, 'sonarlint.pathToNodeExecutable')
+    VSCode.commands.executeCommand(Commands.OPEN_SETTINGS, 'codescan.pathToNodeExecutable')
   );
   languageClient.onRequest(protocol.BrowseTo.type, browseTo =>
     VSCode.commands.executeCommand(Commands.OPEN_BROWSER, VSCode.Uri.parse(browseTo))
   );
   languageClient.onRequest(protocol.OpenConnectionSettings.type, isSonarCloud => {
-    const targetSection = `sonarlint.connectedMode.connections.${isSonarCloud ? 'sonarcloud' : 'sonarqube'}`;
+    const targetSection = `codescan.connections.${isSonarCloud ? 'sonarcloud' : 'sonarqube'}`;
     return VSCode.commands.executeCommand(Commands.OPEN_SETTINGS, targetSection);
   });
   languageClient.onRequest(protocol.ShowHotspotRequest.type, showSecurityHotspot);
@@ -464,7 +453,7 @@ async function isIgnored(workspaceFolderPath: string, gitCommand: string): Promi
       (error: Error & { code?: GitReturnCode }, stdout, stderr) => {
         if (error && isNeitherOkNorFail(error.code)) {
           if (isVerboseEnabled()) {
-            logToSonarLintOutput(`Error on git command "${gitCommand}": ${error}`);
+            logToCodeScanOutput(`Error on git command "${gitCommand}": ${error}`);
           }
           reject(error);
           return;
@@ -527,16 +516,16 @@ function clearLocations() {
 
 function onConfigurationChange() {
   return VSCode.workspace.onDidChangeConfiguration(event => {
-    if (!event.affectsConfiguration('sonarlint')) {
+    if (!event.affectsConfiguration('codescan')) {
       return;
     }
-    const newConfig = getSonarLintConfiguration();
+    const newConfig = getCodeScanConfiguration();
 
     const sonarLintLsConfigChanged =
-      hasSonarLintLsConfigChanged(currentConfig, newConfig) || hasNodeJsConfigChanged(currentConfig, newConfig);
+      hasCodeScanLsConfigChanged(currentConfig, newConfig) || hasNodeJsConfigChanged(currentConfig, newConfig);
 
     if (sonarLintLsConfigChanged) {
-      const msg = 'SonarLint Language Server configuration changed, please restart VS Code.';
+      const msg = 'CodeScan Language Server configuration changed, please restart VS Code.';
       const action = 'Restart Now';
       const restartId = 'workbench.action.reloadWindow';
       currentConfig = newConfig;
@@ -549,7 +538,7 @@ function onConfigurationChange() {
   });
 }
 
-function hasSonarLintLsConfigChanged(oldConfig, newConfig) {
+function hasCodeScanLsConfigChanged(oldConfig, newConfig) {
   return !configKeyEquals('ls.javaHome', oldConfig, newConfig) || !configKeyEquals('ls.vmargs', oldConfig, newConfig);
 }
 
@@ -588,8 +577,8 @@ export function parseVMargs(params: string[], vmargsLine: string) {
   });
 }
 
-function getSonarLintConfiguration(): VSCode.WorkspaceConfiguration {
-  return VSCode.workspace.getConfiguration('sonarlint');
+function getCodeScanConfiguration(): VSCode.WorkspaceConfiguration {
+  return VSCode.workspace.getConfiguration('codescan');
 }
 
 export function deactivate(): Thenable<void> {

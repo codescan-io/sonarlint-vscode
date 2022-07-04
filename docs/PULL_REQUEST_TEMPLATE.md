@@ -1,4 +1,4 @@
-Please review our [contribution guidelines](https://github.com/SonarSource/sonarlint-vscode/blob/master/docs/contributing.md).
+Please review our [contribution guidelines](https://github.com/codescan-io/sonarlint-vscode/blob/master/docs/contributing.md).
 
 And please ensure your pull request adheres to the following guidelines:
 

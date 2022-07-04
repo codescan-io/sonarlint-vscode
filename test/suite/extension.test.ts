@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
+ * CodeScan for VisualStudio Code
  * Copyright (C) 2017-2022 SonarSource SA
  * sonarlint@sonarsource.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
@@ -35,7 +35,7 @@ suite('Extension Test Suite', () => {
     const document = await vscode.workspace.openTextDocument(fileUri);
     const editor = await vscode.window.showTextDocument(document);
 
-    var diags = await waitForSonarLintDiagnostics(fileUri);
+    var diags = await waitForCodeScanDiagnostics(fileUri);
 
     assert.deepEqual(diags.length, 1);
     assert.equal(diags[0].message, "Remove the declaration of the unused 'i' variable.");
@@ -73,11 +73,11 @@ suite('Extension Test Suite', () => {
     assert.strictEqual(notIgnored, false);
   }).timeout(60 * 1000);
 
-  async function waitForSonarLintDiagnostics(fileUri) {
-    var diags = getSonarLintDiagnostics(fileUri);
+  async function waitForCodeScanDiagnostics(fileUri) {
+    var diags = getCodeScanDiagnostics(fileUri);
     while (diags.length == 0) {
       await sleep(200);
-      diags = getSonarLintDiagnostics(fileUri);
+      diags = getCodeScanDiagnostics(fileUri);
     }
     return diags;
   }
@@ -88,6 +88,6 @@ suite('Extension Test Suite', () => {
     });
   }
 });
-function getSonarLintDiagnostics(fileUri: any) {
-  return vscode.languages.getDiagnostics(fileUri).filter(d => d.source == 'sonarlint');
+function getCodeScanDiagnostics(fileUri: any) {
+  return vscode.languages.getDiagnostics(fileUri).filter(d => d.source == 'codescan');
 }

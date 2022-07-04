@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
+ * CodeScan for VisualStudio Code
  * Copyright (C) 2017-2022 SonarSource SA
  * sonarlint@sonarsource.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
@@ -16,7 +16,6 @@ const through = require('through2');
 const request = require('request');
 const bump = require('gulp-bump');
 const dateformat = require('dateformat');
-const jarDependencies = require('./scripts/dependencies.json');
 //...
 
 gulp.task('clean:vsix', () => del(['*.vsix', 'server', 'out', 'out-cov']));
@@ -69,7 +68,7 @@ gulp.task('deploy-vsix', function () {
   } = process.env;
   const packageJSON = getPackageJSON();
   const { version, name } = packageJSON;
-  const packagePath = 'org/sonarsource/sonarlint/vscode';
+  const packagePath = 'org/sonarsource/codescan/vscode';
   const artifactoryTargetUrl = `${ARTIFACTORY_URL}/${ARTIFACTORY_DEPLOY_REPO}/${packagePath}/${name}/${version}`;
   return gulp
     .src('*.vsix')
@@ -131,17 +130,6 @@ function buildInfo(name, version, buildNumber) {
     BUILD_SOURCEBRANCH
   } = process.env;
 
-  const dependencies = jarDependencies.map(dep => {
-    const id = `${dep.groupId}:${dep.artifactId}:${dep.version}`;
-    const { md5, sha1 } = computeDependencyHashes(dep.output);
-    return {
-      type: 'jar',
-      id,
-      md5,
-      sha1
-    };
-  });
-
   const fixedBranch = (SYSTEM_PULLREQUEST_TARGETBRANCH || BUILD_SOURCEBRANCH).replace('refs/heads/', '');
 
   return {
@@ -154,9 +142,9 @@ function buildInfo(name, version, buildNumber) {
     vcsUrl: `https://github.com/${BUILD_REPOSITORY_NAME}.git`,
     modules: [
       {
-        id: `org.sonarsource.sonarlint.vscode:${name}:${version}`,
+        id: `org.sonarsource.codescan.vscode:${name}:${version}`,
         properties: {
-          artifactsToDownload: `org.sonarsource.sonarlint.vscode:${name}:vsix`
+          artifactsToDownload: `org.sonarsource.codescan.vscode:${name}:vsix`
         },
         artifacts: [
           {
@@ -165,8 +153,7 @@ function buildInfo(name, version, buildNumber) {
             md5: hashes.md5,
             name: `${name}-${version}.vsix`
           }
-        ],
-        dependencies
+        ]
       }
     ],
     properties: {
@@ -200,13 +187,6 @@ function updateHashes(file) {
     return;
   }
   updateBinaryHashes(file.contents, hashes);
-}
-
-function computeDependencyHashes(dependencyLocation) {
-  const dependencyContents = fs.readFileSync(dependencyLocation);
-  const dependencyHashes = Object.assign({}, hashes);
-  updateBinaryHashes(dependencyContents, dependencyHashes);
-  return dependencyHashes;
 }
 
 function updateBinaryHashes(binaryContent, hashesObject) {

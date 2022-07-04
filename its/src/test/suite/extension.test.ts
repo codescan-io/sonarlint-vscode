@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
+ * CodeScan for VisualStudio Code
  * Copyright (C) 2017-2022 SonarSource SA
  * sonarlint@sonarsource.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
@@ -11,7 +11,7 @@ import * as path from 'path';
 // as well as import your extension to test it
 import * as vscode from 'vscode';
 
-import { waitForSonarLintDiagnostics, dumpLogOutput } from '../common/util';
+import { waitForCodeScanDiagnostics, dumpLogOutput } from '../common/util';
 
 const sampleFolderLocation = '../../../samples/';
 
@@ -19,20 +19,20 @@ suite('Extension Test Suite', () => {
   vscode.window.showInformationMessage('Start all tests.');
 
   test('Extension should be present', () => {
-    assert.ok(vscode.extensions.getExtension('sonarsource.sonarlint-vscode'));
+    assert.ok(vscode.extensions.getExtension('codescansf.codescan-vscode'));
   });
 
   test('should report issue on single js file', async function () {
-    const ext = vscode.extensions.getExtension('sonarsource.sonarlint-vscode')!;
+    const ext = vscode.extensions.getExtension('codescansf.codescan-vscode')!;
     await ext.activate();
 
-    vscode.commands.executeCommand('SonarLint.ShowSonarLintOutput');
+    vscode.commands.executeCommand('CodeScan.ShowCodeScanOutput');
 
     const fileUri = vscode.Uri.file(path.join(__dirname, sampleFolderLocation, 'sample-js', 'main.js'));
     const document = await vscode.workspace.openTextDocument(fileUri);
     await vscode.window.showTextDocument(document);
 
-    const diags = await waitForSonarLintDiagnostics(fileUri);
+    const diags = await waitForCodeScanDiagnostics(fileUri);
 
     dumpLogOutput();
 

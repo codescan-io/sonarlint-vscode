@@ -1,7 +1,7 @@
 {
-  "name": "sonarlint-its",
-  "displayName": "sonarlint-its",
-  "description": "SonarLint ITs",
+  "name": "codescan-its",
+  "displayName": "codescan-its",
+  "description": "CodeScan ITs",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.36.0"

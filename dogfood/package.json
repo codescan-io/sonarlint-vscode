@@ -1,14 +1,14 @@
 {
-  "name": "sonarlint-dogfood",
-  "publisher": "SonarSource",
+  "name": "codescan-dogfood",
+  "publisher": "codescansf",
   "repository": {
     "type": "git",
-    "url": "https://github.com/SonarSource/sonarlint-vscode.git"
+    "url": "https://github.com/codescan-io/sonarlint-vscode.git"
   },
-  "displayName": "SonarLint Dogfood",
-  "description": "Streamline dogfooding of SonarLint for VSCode",
+  "displayName": "CodeScan Dogfood",
+  "description": "Streamline dogfooding of CodeScan for VSCode",
   "version": "1.0.0",
-  "icon": "sonarlint-dogfood.png",
+  "icon": "codescan-dogfood.png",
   "engines": {
     "vscode": "^1.55.0"
   },
@@ -17,20 +17,20 @@
   ],
   "activationEvents": [
     "onStartupFinished",
-    "onCommand:SonarLintDogfood.CheckNow"
+    "onCommand:CodeScanDogfood.CheckNow"
   ],
   "main": "./dist/extension.js",
   "contributes": {
     "configuration": {
-      "title": "SonarLint Dogfood",
+      "title": "CodeScan Dogfood",
       "properties": {
-        "sonarlint-dogfood.check.disable": {
+        "codescan-dogfood.check.disable": {
           "type": "boolean",
           "default": false,
           "description": "Disable check at startup",
           "scope": "application"
         },
-        "sonarlint-dogfood.check.periodInSeconds": {
+        "codescan-dogfood.check.periodInSeconds": {
           "type": "number",
           "default": 3600,
           "description": "Number of seconds before next automated check",
@@ -41,8 +41,8 @@
     "commands": [
       {
         "title": "Check now",
-        "category": "SonarLint Dogfood",
-        "command": "SonarLintDogfood.CheckNow"
+        "category": "CodeScan Dogfood",
+        "command": "CodeScanDogfood.CheckNow"
       }
     ]
   },

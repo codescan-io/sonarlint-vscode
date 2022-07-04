@@ -1,4 +1,4 @@
-# SonarLint Dogfood 🥫
+# CodeScan Dogfood 🥫
 
 Get notified 📢 about new dogfooding builds 🥫 and install them in one click 👍.
 
@@ -10,8 +10,8 @@ Get notified 📢 about new dogfooding builds 🥫 and install them in one click
 
 ## Extension Settings
 
-* `sonarlint-dogfood.check.disable`: disable automated checks (default is enabled)
-* `sonarlint-dogfood.check.periodInSeconds`: number of seconds before next automated check (defaults to one hour)
+* `codescan-dogfood.check.disable`: disable automated checks (default is enabled)
+* `codescan-dogfood.check.periodInSeconds`: number of seconds before next automated check (defaults to one hour)
 
 ## Contributing
 
@@ -27,4 +27,4 @@ This extension has been successfully built with Node 14.16.1 LTS (Fermium) and N
 
 ## Feedback
 
-Please create a thread in the [Dogfood SonarLint category on Discuss](https://discuss.sonarsource.com/c/dogfood/sl/39).
+Please create a thread in the [Dogfood CodeScan category on Discuss](https://discuss.sonarsource.com/c/dogfood/sl/39).

@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
+ * CodeScan for VisualStudio Code
  * Copyright (C) 2017-2022 SonarSource SA
  * sonarlint@sonarsource.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
@@ -8,8 +8,8 @@
 import * as CompareVersions from 'compare-versions';
 import * as VSCode from 'vscode';
 import { Disposable } from 'vscode-languageclient';
-import { SonarLintExtendedLanguageClient } from './client';
-import { logToSonarLintOutput } from './extension';
+import { CodeScanExtendedLanguageClient } from './client';
+import { logToCodeScanOutput } from './extension';
 import { GetJavaConfigResponse } from './protocol';
 
 let classpathChangeListener: Disposable;
@@ -27,7 +27,7 @@ export enum ServerMode {
   HYBRID = 'Hybrid'
 }
 
-export function installClasspathListener(languageClient: SonarLintExtendedLanguageClient) {
+export function installClasspathListener(languageClient: CodeScanExtendedLanguageClient) {
   const extension = getJavaExtension();
   if (extension?.isActive) {
     if (!classpathChangeListener) {
@@ -47,7 +47,7 @@ export function installClasspathListener(languageClient: SonarLintExtendedLangua
   }
 }
 
-function newServerModeChangeListener(languageClient: SonarLintExtendedLanguageClient) {
+function newServerModeChangeListener(languageClient: CodeScanExtendedLanguageClient) {
   return (serverMode: ServerMode) => {
     if (serverMode !== ServerMode.LIGHTWEIGHT) {
       // Reset state of LightWeight mode warning
@@ -57,7 +57,7 @@ function newServerModeChangeListener(languageClient: SonarLintExtendedLanguageCl
   };
 }
 
-export function installServerModeChangeListener(languageClient: SonarLintExtendedLanguageClient) {
+export function installServerModeChangeListener(languageClient: CodeScanExtendedLanguageClient) {
   const extension = getJavaExtension();
   if (extension?.isActive) {
     if (!serverModeListener) {
@@ -80,14 +80,14 @@ function isJavaApiRecentEnough(apiVersion: string): boolean {
     return true;
   }
   if (!javaApiTooLowAlreadyLogged) {
-    logToSonarLintOutput(`SonarLint requires VSCode Java extension 0.56 or greater to enable analysis of Java files`);
+    logToCodeScanOutput(`CodeScan requires VSCode Java extension 0.56 or greater to enable analysis of Java files`);
     javaApiTooLowAlreadyLogged = true;
   }
   return false;
 }
 
 export async function getJavaConfig(
-  languageClient: SonarLintExtendedLanguageClient,
+  languageClient: CodeScanExtendedLanguageClient,
   fileUri: string
 ): Promise<GetJavaConfigResponse> {
   const extension = getJavaExtension();
@@ -126,7 +126,7 @@ export async function getJavaConfig(
 
 function javaConfigDisabledInLightWeightMode() {
   if (!javaServerInLightWeightModeAlreadyLogged) {
-    logToSonarLintOutput(
+    logToCodeScanOutput(
       `Java analysis is disabled in LightWeight mode. Please check java.server.launchMode in user settings`
     );
     javaServerInLightWeightModeAlreadyLogged = true;

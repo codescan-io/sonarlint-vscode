@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
+ * CodeScan for VisualStudio Code
  * Copyright (C) 2017-2022 SonarSource SA
  * sonarlint@sonarsource.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
@@ -15,7 +15,7 @@ import * as os from 'os';
 // as well as import your extension to test it
 import * as vscode from 'vscode';
 
-import { waitForSonarLintDiagnostics } from '../common/util';
+import { waitForCodeScanDiagnostics } from '../common/util';
 
 const secretsFolderLocation = '../../../samples/sample-secrets';
 const secretIssueMessage = 'Make sure this AWS Secret Access Key is not disclosed.';
@@ -28,7 +28,7 @@ suite('Secrets Test Suite', () => {
     const document = await vscode.workspace.openTextDocument(fileUri);
     await vscode.window.showTextDocument(document);
 
-    const diags = await waitForSonarLintDiagnostics(fileUri);
+    const diags = await waitForCodeScanDiagnostics(fileUri);
 
     assert.deepStrictEqual(diags.length, 1);
     assert.strictEqual(diags[0].message, secretIssueMessage);
@@ -39,7 +39,7 @@ suite('Secrets Test Suite', () => {
     const document = await vscode.workspace.openTextDocument(fileUri);
     await vscode.window.showTextDocument(document);
 
-    const diags = await waitForSonarLintDiagnostics(fileUri);
+    const diags = await waitForCodeScanDiagnostics(fileUri);
 
     assert.deepStrictEqual(diags.length, 1);
     assert.strictEqual(diags[0].message, secretIssueMessage);
@@ -50,7 +50,7 @@ suite('Secrets Test Suite', () => {
     const document = await vscode.workspace.openTextDocument(fileUri);
     await vscode.window.showTextDocument(document);
 
-    const diags = await waitForSonarLintDiagnostics(fileUri);
+    const diags = await waitForCodeScanDiagnostics(fileUri);
 
     assert.deepStrictEqual(diags.length, 1);
     assert.strictEqual(diags[0].message, secretIssueMessage);
@@ -61,7 +61,7 @@ suite('Secrets Test Suite', () => {
     const document = await vscode.workspace.openTextDocument(fileUri);
     await vscode.window.showTextDocument(document);
 
-    const diags = await waitForSonarLintDiagnostics(fileUri);
+    const diags = await waitForCodeScanDiagnostics(fileUri);
 
     assert.deepStrictEqual(diags.length, 1);
     assert.strictEqual(diags[0].message, secretIssueMessage);
@@ -72,7 +72,7 @@ suite('Secrets Test Suite', () => {
     await vscode.workspace.fs.writeFile(fileUri, new TextEncoder().encode('AWS_SECRET_KEY: h1ByXvzhN6O8/UQACtwMuSkjE5/oHmWG1MJziTDw'));
     await vscode.window.showTextDocument(fileUri);
 
-    const diags = await waitForSonarLintDiagnostics(fileUri, 5000);
+    const diags = await waitForCodeScanDiagnostics(fileUri, 5000);
 
     assert.deepStrictEqual(diags.length, 0);
   }).timeout(60 * 1000);
@@ -86,7 +86,7 @@ suite('Secrets Test Suite', () => {
         .encode('AWS_SECRET_KEY: h1ByXvzhN6O8/UQACtwMuSkjE5/oHmWG1MJziTDw'));
     await vscode.window.showTextDocument(tmpFileUri);
 
-    const diags = await waitForSonarLintDiagnostics(tmpFileUri, 5000);
+    const diags = await waitForCodeScanDiagnostics(tmpFileUri, 5000);
 
     assert.deepStrictEqual(diags.length, 1);
     assert.strictEqual(diags[0].message, secretIssueMessage);

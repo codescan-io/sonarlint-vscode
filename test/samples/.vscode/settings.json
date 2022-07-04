@@ -1,4 +1,4 @@
 {
-    "sonarlint.testFilePattern": "**/test/samples/**/test/**",
+    "codescan.testFilePattern": "**/test/samples/**/test/**",
     "telemetry.enableTelemetry": false
 }

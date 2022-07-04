@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
+ * CodeScan for VisualStudio Code
  * Copyright (C) 2017-2022 SonarSource SA
  * sonarlint@sonarsource.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
@@ -43,7 +43,7 @@ export class RuleNode extends VSCode.TreeItem {
     this.id = rule.key.toUpperCase();
     this.description = `${actualLevel(rule)}`;
     this.command = {
-      command: 'SonarLint.OpenStandaloneRuleDesc',
+      command: 'CodeScan.OpenStandaloneRuleDesc',
       title: 'Show Description',
       arguments: [rule.key]
     };
@@ -61,7 +61,7 @@ export class AllRulesTreeDataProvider implements VSCode.TreeDataProvider<AllRule
   constructor(private readonly allRulesProvider: () => Thenable<RulesResponse>) {}
 
   async getChildren(node: AllRulesNode) {
-    const localRuleConfig = VSCode.workspace.getConfiguration('sonarlint.rules');
+    const localRuleConfig = VSCode.workspace.getConfiguration('codescan.rules');
     return this.getAllRules()
       .then(response => {
         Object.keys(response).forEach(language => response[language].sort(byName));
