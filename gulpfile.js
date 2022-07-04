@@ -16,7 +16,6 @@ const through = require('through2');
 const request = require('request');
 const bump = require('gulp-bump');
 const dateformat = require('dateformat');
-const jarDependencies = require('./scripts/dependencies.json');
 //...
 
 gulp.task('clean:vsix', () => del(['*.vsix', 'server', 'out', 'out-cov']));
@@ -131,17 +130,6 @@ function buildInfo(name, version, buildNumber) {
     BUILD_SOURCEBRANCH
   } = process.env;
 
-  const dependencies = jarDependencies.map(dep => {
-    const id = `${dep.groupId}:${dep.artifactId}:${dep.version}`;
-    const { md5, sha1 } = computeDependencyHashes(dep.output);
-    return {
-      type: 'jar',
-      id,
-      md5,
-      sha1
-    };
-  });
-
   const fixedBranch = (SYSTEM_PULLREQUEST_TARGETBRANCH || BUILD_SOURCEBRANCH).replace('refs/heads/', '');
 
   return {
@@ -165,8 +153,7 @@ function buildInfo(name, version, buildNumber) {
             md5: hashes.md5,
             name: `${name}-${version}.vsix`
           }
-        ],
-        dependencies
+        ]
       }
     ],
     properties: {
@@ -200,13 +187,6 @@ function updateHashes(file) {
     return;
   }
   updateBinaryHashes(file.contents, hashes);
-}
-
-function computeDependencyHashes(dependencyLocation) {
-  const dependencyContents = fs.readFileSync(dependencyLocation);
-  const dependencyHashes = Object.assign({}, hashes);
-  updateBinaryHashes(dependencyContents, dependencyHashes);
-  return dependencyHashes;
 }
 
 function updateBinaryHashes(binaryContent, hashesObject) {
