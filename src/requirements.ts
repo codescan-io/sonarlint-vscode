@@ -25,6 +25,7 @@ const REQUIRED_JAVA_VERSION = 11;
 const isWindows = process.platform.indexOf('win') === 0;
 const JAVA_FILENAME = `java${isWindows ? '.exe' : ''}`;
 export const JAVA_HOME_CONFIG = 'codescan.ls.javaHome';
+export const HTTP_CLIENT_VERSION = 'codescan.httpclient.version';
 
 export interface RequirementsData {
   javaHome: string;
@@ -109,6 +110,10 @@ Please download and install a recent JRE.`);
       }
     });
   });
+}
+
+export function readHttpClientVersion(): string {
+  return vscode.workspace.getConfiguration().get<string>(HTTP_CLIENT_VERSION, "NEGOTIATE");
 }
 
 export function parseMajorVersion(content: string): number {
