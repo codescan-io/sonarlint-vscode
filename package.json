@@ -150,6 +150,11 @@
           "markdownDescription": "Extra JVM arguments used to launch the CodeScan Language Server. e.g. `-Xmx1024m`",
           "scope": "machine"
         },
+        "codescan.httpclient.version": {
+          "type": "string",
+          "markdownDescription": "This argument will help customer to choose their HTTP protocol version. Default value is 'NEGOTIATE'",
+          "scope": "machine"
+        },
         "codescan.pathToNodeExecutable": {
           "type": "string",
           "markdownDescription": "Path to a Node.js executable (8 or more recent) used to analyze JavaScript and TypeScript code. \nOn Windows, backslashes must be escaped, e.g. `C:\\\\Program Files\\\\NodeJS\\\\12-lts\\\\bin\\\\node.exe`",
