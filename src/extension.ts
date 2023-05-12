@@ -25,7 +25,7 @@ import {
 import { getJavaConfig, installClasspathListener } from './java';
 import { LocationTreeItem, navigateToLocation, SecondaryLocationsTree } from './locations';
 import * as protocol from './protocol';
-import { installManagedJre, JAVA_HOME_CONFIG, RequirementsData, resolveRequirements } from './requirements';
+import { installManagedJre, JAVA_HOME_CONFIG, RequirementsData, resolveRequirements, readHttpClientVersion } from './requirements';
 import { computeRuleDescPanelContent } from './rulepanel';
 import { AllRulesTreeDataProvider, ConfigLevel, Rule, RuleNode } from './rules';
 import { initScm } from './scm';
@@ -122,6 +122,7 @@ function languageServerCommand(
     params.push('-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000');
     params.push('-Dcodescan.telemetry.disabled=true');
   }
+  params.push('-Dcodescan.httpclient.version=' + readHttpClientVersion());
   const vmargs = getCodeScanConfiguration().get('ls.vmargs', '');
   parseVMargs(params, vmargs);
   params.push('-jar', serverJar, `${port}`);
