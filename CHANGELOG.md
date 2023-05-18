@@ -1,4 +1,7 @@
 ## 1.6.10
+* Made HTTP version configurable for user from settings.json file.
+
+## 1.6.9
 * Fixed compatibility issues with Sonarqube 8.9+ LTS
 * For Java analysis, Language Support for Java(TM) by Red Hat extension (version 0.56.0 or higher) is required.
 * Codescan ouput default log level set to INFO. Added settings options to change log level.
