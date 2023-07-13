@@ -1,3 +1,6 @@
+## 1.6.11
+* Fixed compatibility issue with CodeScan Cloud 23.2
+
 ## 1.6.10
 * Made HTTP version configurable for user from settings.json file.
 
