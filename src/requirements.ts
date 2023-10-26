@@ -26,6 +26,11 @@ const isWindows = process.platform.indexOf('win') === 0;
 const JAVA_FILENAME = `java${isWindows ? '.exe' : ''}`;
 export const JAVA_HOME_CONFIG = 'codescan.ls.javaHome';
 export const HTTP_CLIENT_VERSION = 'codescan.httpclient.version';
+export const CODESCAN_WHITELABEL_PRODUCT = 'codescan.whitelabel.product';
+export const CODESCAN_AWS_ACCESS_KEY = 'codescan.sigv4.cred.accessKey';
+export const CODESCAN_AWS_SECRET_KEY = 'codescan.sigv4.cred.secretKey';
+export const CODESCAN_AWS_REGION = 'codescan.sigv4.cred.awsRegion';
+export const CODESCAN_AWS_SERVICE_NAME = 'codescan.sigv4.cred.serviceName';
 
 export interface RequirementsData {
   javaHome: string;
@@ -114,6 +119,26 @@ Please download and install a recent JRE.`);
 
 export function readHttpClientVersion(): string {
   return vscode.workspace.getConfiguration().get<string>(HTTP_CLIENT_VERSION, "NEGOTIATE");
+}
+
+export function readWhiteLabelProduct(): string {
+  return vscode.workspace.getConfiguration().get<string>(CODESCAN_WHITELABEL_PRODUCT, "");
+}
+
+export function readCodescanAwsAccessKey(): string {
+  return vscode.workspace.getConfiguration().get<string>(CODESCAN_AWS_ACCESS_KEY, "");
+}
+
+export function readCodescanAwsSecretKey(): string {
+  return vscode.workspace.getConfiguration().get<string>(CODESCAN_AWS_SECRET_KEY, "");
+}
+
+export function readCodescanAwsRegion(): string {
+  return vscode.workspace.getConfiguration().get<string>(CODESCAN_AWS_REGION, "eu-central-1");
+}
+
+export function readCodescanAwsServiceName(): string {
+  return vscode.workspace.getConfiguration().get<string>(CODESCAN_AWS_SERVICE_NAME, "execute-api");
 }
 
 export function parseMajorVersion(content: string): number {

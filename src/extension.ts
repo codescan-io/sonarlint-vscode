@@ -25,7 +25,7 @@ import {
 import { getJavaConfig, installClasspathListener } from './java';
 import { LocationTreeItem, navigateToLocation, SecondaryLocationsTree } from './locations';
 import * as protocol from './protocol';
-import { installManagedJre, JAVA_HOME_CONFIG, RequirementsData, resolveRequirements, readHttpClientVersion } from './requirements';
+import { installManagedJre, JAVA_HOME_CONFIG, RequirementsData, resolveRequirements, readHttpClientVersion, readWhiteLabelProduct, readCodescanAwsAccessKey, readCodescanAwsSecretKey, readCodescanAwsRegion, readCodescanAwsServiceName } from './requirements';
 import { computeRuleDescPanelContent } from './rulepanel';
 import { AllRulesTreeDataProvider, ConfigLevel, Rule, RuleNode } from './rules';
 import { initScm } from './scm';
@@ -123,6 +123,11 @@ function languageServerCommand(
     params.push('-Dcodescan.telemetry.disabled=true');
   }
   params.push('-Dcodescan.httpclient.version=' + readHttpClientVersion());
+  params.push('-Dcodescan.whitelabel.product=' + readWhiteLabelProduct());
+  params.push('-Dcodescan.sigv4.cred.accessKey=' + readCodescanAwsAccessKey());
+  params.push('-Dcodescan.sigv4.cred.secretKey=' + readCodescanAwsSecretKey());
+  params.push('-Dcodescan.sigv4.cred.awsRegion=' + readCodescanAwsRegion);
+  params.push('-Dcodescan.sigv4.cred.serviceName=' + readCodescanAwsServiceName);
   const vmargs = getCodeScanConfiguration().get('ls.vmargs', '');
   parseVMargs(params, vmargs);
   params.push('-jar', serverJar, `${port}`);
