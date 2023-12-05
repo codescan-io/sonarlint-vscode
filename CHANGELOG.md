@@ -1,3 +1,6 @@
+## 1.6.12
+* Fixed issue with SonarCSS 4.19
+
 ## 1.6.11
 * Fixed compatibility issue with CodeScan Cloud 23.2
 
