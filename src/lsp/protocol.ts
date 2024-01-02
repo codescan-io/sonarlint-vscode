@@ -116,7 +116,7 @@ export interface GetJavaConfigResponse {
 }
 
 export namespace ShowSonarLintOutputNotification {
-  export const type = new lsp.NotificationType('codescan/showSonarLintOutput');
+  export const type = new lsp.NotificationType('codescan/showCodeScanOutput');
 }
 
 export namespace OpenJavaHomeSettingsNotification {

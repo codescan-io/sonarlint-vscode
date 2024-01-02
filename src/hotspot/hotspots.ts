@@ -46,7 +46,7 @@ import {
   HotspotTreeViewItem
 } from './hotspotsTreeDataProvider';
 
-export const HOTSPOTS_VIEW_ID = 'SonarLint.SecurityHotspots';
+export const HOTSPOTS_VIEW_ID = 'CodeScan.SecurityHotspots';
 
 export const OPEN_HOTSPOT_IN_IDE_SOURCE = 'openInIde';
 

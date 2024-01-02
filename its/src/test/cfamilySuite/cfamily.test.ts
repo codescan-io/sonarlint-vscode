@@ -34,19 +34,19 @@ describe('CFamily Test Suite', () => {
     const document = await vscode.workspace.openTextDocument(fileUri);
     await vscode.window.showTextDocument(document);
 
-    await vscode.commands.executeCommand('SonarLint.ConfigureCompilationDatabase');
+    await vscode.commands.executeCommand('CodeScan.ConfigureCompilationDatabase');
     const emptyPathToCompileCommands = getProjectConfiguration().get('pathToCompileCommands');
     assert.equal(emptyPathToCompileCommands, '', 'should have empty compile commands initially');
 
     createCompilationDatabase(firstCompileDbToCreate.path);
-    await vscode.commands.executeCommand('SonarLint.ConfigureCompilationDatabase');
+    await vscode.commands.executeCommand('CodeScan.ConfigureCompilationDatabase');
     let pathToCompileCommands = getProjectConfiguration().get('pathToCompileCommands');
     assert.equal(pathToCompileCommands, '${workspaceFolder}/compile_commands.json', 'should have selected default one');
 
     createDir(innerDir);
     const secondCompileDbToCreate = vscode.Uri.file(path.join(__dirname, sampleCFamilyFolderLocation, 'inner', 'compile_commands.json'));
     createCompilationDatabase(secondCompileDbToCreate.path);
-    vscode.commands.executeCommand('SonarLint.ConfigureCompilationDatabase');
+    vscode.commands.executeCommand('CodeScan.ConfigureCompilationDatabase');
     // Wait for the input field to show
     await sleep(1000);
     await vscode.commands.executeCommand('workbench.action.quickOpenNavigateNext');

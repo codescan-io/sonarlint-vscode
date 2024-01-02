@@ -39,7 +39,7 @@ suite('Java Test Suite', () => {
   });
 
   test('should report issue on java file', async function () {
-    await vscode.commands.executeCommand('SonarLint.ShowSonarLintOutput');
+    await vscode.commands.executeCommand('SonarLint.ShowCodeScanOutput');
 
     const fileUri = vscode.Uri.file(
       path.join(
@@ -82,7 +82,7 @@ suite('Java Test Suite', () => {
   }).timeout(60 * 1000);
 
   test('should report issue on single java test file', async function () {
-    await vscode.commands.executeCommand('SonarLint.ShowSonarLintOutput');
+    await vscode.commands.executeCommand('CodeScan.ShowCodeScanOutput');
     const fileUri = vscode.Uri.file(
       path.join(__dirname, sampleJavaFolderLocation, 'module-java/src/test/java/edu/marcelo', 'AppTest.java')
     );

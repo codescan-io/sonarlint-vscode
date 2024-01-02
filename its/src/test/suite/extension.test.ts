@@ -26,7 +26,7 @@ suite('Extension Test Suite', () => {
     const ext = vscode.extensions.getExtension('sonarsource.sonarlint-vscode')!;
     await ext.activate();
 
-    vscode.commands.executeCommand('SonarLint.ShowSonarLintOutput');
+    vscode.commands.executeCommand('CodeScan.ShowCodeScanOutput');
 
     const fileUri = vscode.Uri.file(path.join(__dirname, sampleFolderLocation, 'sample-js', 'main.js'));
     const document = await vscode.workspace.openTextDocument(fileUri);
@@ -48,7 +48,7 @@ suite('Extension Test Suite', () => {
     const ext = vscode.extensions.getExtension('sonarsource.sonarlint-vscode')!;
     await ext.activate();
 
-    vscode.commands.executeCommand('SonarLint.ShowSonarLintOutput');
+    vscode.commands.executeCommand('CodeScan.ShowCodeScanOutput');
 
     const fileUri = vscode.Uri.file(path.join(__dirname, sampleFolderLocation, 'sample-js', 'lambda.yaml'));
     const document = await vscode.workspace.openTextDocument(fileUri);

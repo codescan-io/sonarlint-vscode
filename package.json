@@ -1,7 +1,7 @@
 {
   "name": "sonarlint-vscode",
-  "displayName": "SonarLint",
-  "description": "Linter to detect & fix coding issues locally in JS/TS, Python, PHP, Java, C, C++, Go, IaC. Use with SonarQube & SonarCloud for optimal team performance.",
+  "displayName": "CodeScan",
+  "description": "Linter to detect & fix coding issues locally in JS/TS, Python, PHP, Java, C, C++, Go, IaC. Use with CodeScan for optimal team performance.",
   "version": "3.20.2",
   "icon": "images/sonarlint_wave_128px.png",
   "publisher": "SonarSource",
@@ -48,7 +48,7 @@
           "type": "object",
           "scope": "application",
           "default": {},
-          "markdownDescription": "Customize applied rule set. This property contains a list of rules whose activation level or parameter values differ from the one provided by default. See _SonarLint Rules_ view for the full list of available rules. In connected mode, this configuration is overridden by the projects's quality profile, as configured on server side.\n\nExample:\n\n    \"codescan.rules\": {\n        \"javascript:1481\": {\n            \"level\": \"off\",\n        \"javascript:S103\": {\n            \"level\": \"on\",\n            \"parameters\": {\n                \"maximumLineLength\": \"120\"\n            }\n        }\n    }\n",
+          "markdownDescription": "Customize applied rule set. This property contains a list of rules whose activation level or parameter values differ from the one provided by default. See _CodeScan Rules_ view for the full list of available rules. In connected mode, this configuration is overridden by the projects's quality profile, as configured on server side.\n\nExample:\n\n    \"codescan.rules\": {\n        \"javascript:1481\": {\n            \"level\": \"off\",\n        \"javascript:S103\": {\n            \"level\": \"on\",\n            \"parameters\": {\n                \"maximumLineLength\": \"120\"\n            }\n        }\n    }\n",
           "patternProperties": {
             "^[^:]+:[^:]+$": {
               "type": "object",
@@ -77,7 +77,7 @@
           "type": "array",
           "scope": "application",
           "default": [],
-          "markdownDescription": "Configure one or more connection(s) to SonarQube/SonarCloud. For security reasons, the token should not be stored in SCM with workspace settings. The `serverId` can be any identifier and will be referenced in `#sonarlint.connectedMode.project#`.\n\nExample for SonarCloud:\n\n    \"sonarlint.connectedMode.servers\": [\n      {\n        \"serverId\": \"my_orga_in_sonarcloud.io\",\n        \"serverUrl\": \"https://sonarcloud.io\",\n        \"organizationKey\": \"my_organization\",\n        \"token\": \"V2VkIE1...\"\n      }\n    ]\n\nExample for SonarQube:\n\n    \"sonarlint.connectedMode.servers\": [\n      {\n        \"serverId\": \"my_sonarqube\",\n        \"serverUrl\": \"https://sonar.mycompany.com\",\n        \"token\": \"V2VkIE1...\"\n      }\n    ]",
+          "markdownDescription": "Configure one or more connection(s) to CodeScan. For security reasons, the token should not be stored in SCM with workspace settings. The `serverId` can be any identifier and will be referenced in `#sonarlint.connectedMode.project#`.\n\nExample for CodeScan Cloud:\n\n    \"sonarlint.connectedMode.servers\": [\n      {\n        \"serverId\": \"my_orga_in_sonarcloud.io\",\n        \"serverUrl\": \"https://sonarcloud.io\",\n        \"organizationKey\": \"my_organization\",\n        \"token\": \"V2VkIE1...\"\n      }\n    ]\n\nExample for CodeScan Self-Hosted:\n\n    \"sonarlint.connectedMode.servers\": [\n      {\n        \"serverId\": \"my_codescan\",\n        \"serverUrl\": \"https://codescan.mycompany.com\",\n        \"token\": \"V2VkIE1...\"\n      }\n    ]",
           "items": {
             "properties": {
               "serverId": {
@@ -86,11 +86,11 @@
               },
               "serverUrl": {
                 "type": "string",
-                "description": "URL of the server. Use https://sonarcloud.io for SonarCloud."
+                "description": "URL of the server. Use https://app.codescan.io for CodeScan Cloud."
               },
               "token": {
                 "type": "string",
-                "description": "Token generated from My Account>Security in SonarQube/SonarCloud"
+                "description": "Token generated from My Account>Security in CodeScan"
               },
               "organizationKey": {
                 "type": "string",
@@ -105,25 +105,25 @@
           "type": "array",
           "scope": "application",
           "default": [],
-          "markdownDescription": "In connected mode, SonarLint applies the SonarQube quality profile to the local analysis and synchronizes the issue status and other analysis settings. Please find the documentation [here](https://github.com/codescan-io/codescan-vscode/wiki/Connected-Mode)",
+          "markdownDescription": "In connected mode, CodeScan applies the quality profile to the local analysis and synchronizes the issue status and other analysis settings. Please find the documentation [here](https://github.com/codescan-io/codescan-vscode/wiki/Connected-Mode)",
           "items": {
             "type": "object",
             "properties": {
               "connectionId": {
                 "type": "string",
-                "description": "A unique identifier for this connection to be used as a reference in `#sonarlint.connectedMode.project#`. Only needed if you plan to use multiple connections to SonarQube/SonarCloud."
+                "description": "A unique identifier for this connection to be used as a reference in `#sonarlint.connectedMode.project#`. Only needed if you plan to use multiple connections to CodeScan."
               },
               "serverUrl": {
                 "type": "string",
-                "description": "URL of the SonarQube server."
+                "description": "URL of the CodeScan Self-Hosted server."
               },
               "token": {
                 "type": "string",
-                "description": "Token generated from 'My Account>Security' in SonarQube"
+                "description": "Token generated from 'My Account>Security' in CodeScan"
               },
               "disableNotifications": {
                 "type": "boolean",
-                "description": "SonarLint will show notifications for bound projects when there are new issues assigned to you, or when the quality gate status changed. Set to false to disable all notifications for projects bound to this connection."
+                "description": "CodeScan will show notifications for bound projects when there are new issues assigned to you, or when the quality gate status changed. Set to false to disable all notifications for projects bound to this connection."
               }
             },
             "additionalProperties": false,
@@ -132,11 +132,11 @@
             ],
             "examples": [
               {
-                "serverUrl": "https://<replace_with_your_sonarqube_server_url>"
+                "serverUrl": "https://<replace_with_your_codescan_server_url>"
               },
               {
-                "connectionId": "MyCompanySonarQube",
-                "serverUrl": "https://<replace_with_your_sonarqube_server_url>",
+                "connectionId": "MyCompany",
+                "serverUrl": "https://<replace_with_your_codescan_server_url>",
                 "disableNotifications": false
               }
             ]
@@ -147,13 +147,13 @@
           "type": "array",
           "scope": "application",
           "default": [],
-          "markdownDescription": "In connected mode, SonarLint applies the SonarQube quality profile to the local analysis and synchronizes the issue status and other analysis settings. Please find the documentation [here](https://github.com/codescan-io/codescan-vscode/wiki/Connected-Mode)",
+          "markdownDescription": "In connected mode, CodeScan applies the quality profile to the local analysis and synchronizes the issue status and other analysis settings. Please find the documentation [here](https://github.com/codescan-io/codescan-vscode/wiki/Connected-Mode)",
           "items": {
             "type": "object",
             "properties": {
               "connectionId": {
                 "type": "string",
-                "description": "A unique identifier for this connection to be used as a reference in `#sonarlint.connectedMode.project#`. Only needed if you plan to use multiple connections to SonarQube/SonarCloud."
+                "description": "A unique identifier for this connection to be used as a reference in `#sonarlint.connectedMode.project#`. Only needed if you plan to use multiple connections to CodeScan."
               },
               "organizationKey": {
                 "type": "string",
@@ -165,7 +165,7 @@
               },
               "disableNotifications": {
                 "type": "boolean",
-                "description": "SonarLint will show notifications for bound projects when there are new issues assigned to you, or when the quality gate status changed. Set to false to disable all notifications for projects bound to this connection."
+                "description": "CodeScan will show notifications for bound projects when there are new issues assigned to you, or when the quality gate status changed. Set to false to disable all notifications for projects bound to this connection."
               }
             },
             "additionalProperties": false,
@@ -186,7 +186,7 @@
         },
         "sonarlint.connectedMode.project": {
           "order": 4,
-          "markdownDescription": "Bind the current workspace folder to a [SonarQube](https://sonarqube.org) or [SonarCloud](https://sonarcloud.io) project. Requires connection details to be defined in the setting `#sonarlint.connectedMode.connections.sonarqube#` or `#sonarlint.connectedMode.connections.sonarcloud#`.\n\nBinding a workspace folder to a project allows to use the same rules and configuration that are defined in the server, as well as issue suppressions.\n\nExample:\n\n    \"sonarlint.connectedMode.project\": {\n      \"projectKey\": \"my_project\"\n    }\n\nSpecify the `connectionId` only if you have defined multiple connections.",
+          "markdownDescription": "Bind the current workspace folder to [CodeScan](https://codescan.io)t. Requires connection details to be defined in the setting `#sonarlint.connectedMode.connections.sonarqube#` or `#sonarlint.connectedMode.connections.sonarcloud#`.\n\nBinding a workspace folder to a project allows to use the same rules and configuration that are defined in the server, as well as issue suppressions.\n\nExample:\n\n    \"sonarlint.connectedMode.project\": {\n      \"projectKey\": \"my_project\"\n    }\n\nSpecify the `connectionId` only if you have defined multiple connections.",
           "examples": [
             {
               "projectKey": "<replace_with_server_project_key>"
@@ -207,7 +207,7 @@
                 },
                 "projectKey": {
                   "type": "string",
-                  "description": "Key of the project in SonarQube/SonarCloud"
+                  "description": "Key of the project in CodeScan"
                 }
               },
               "additionalProperties": false,
@@ -226,7 +226,7 @@
                 },
                 "projectKey": {
                   "type": "string",
-                  "description": "Key of the project in SonarQube/SonarCloud (can be found on project homepage)"
+                  "description": "Key of the project in CodeScan (can be found on project homepage)"
                 }
               },
               "additionalProperties": false,
@@ -259,27 +259,27 @@
         "sonarlint.ls.javaHome": {
           "order": 20,
           "type": "string",
-          "markdownDescription": "Path to a Java Runtime Environment (11 or more recent) used to launch the SonarLint Language Server.\n* On Windows, backslashes must be escaped, e.g. `C:\\\\Program Files\\\\Java\\\\jdk-11.0.12+7` \n* On macOS, this path should include the `/Contents/Home` directory, e.g `/Library/Java/JavaVirtualMachines/jdk-11.0.12+7.jdk/Contents/Home`",
+          "markdownDescription": "Path to a Java Runtime Environment (11 or more recent) used to launch the CodeScan Language Server.\n* On Windows, backslashes must be escaped, e.g. `C:\\\\Program Files\\\\Java\\\\jdk-11.0.12+7` \n* On macOS, this path should include the `/Contents/Home` directory, e.g `/Library/Java/JavaVirtualMachines/jdk-11.0.12+7.jdk/Contents/Home`",
           "scope": "machine"
         },
         "sonarlint.ls.vmargs": {
           "order": 21,
           "type": "string",
-          "markdownDescription": "Extra JVM arguments used to launch the SonarLint Language Server. e.g. `-Xmx1024m`",
+          "markdownDescription": "Extra JVM arguments used to launch the CodeScan Language Server. e.g. `-Xmx1024m`",
           "scope": "machine"
         },
         "sonarlint.output.showVerboseLogs": {
           "order": 90,
           "type": "boolean",
           "default": false,
-          "description": "Enable verbose log level in the SonarLint output.",
+          "description": "Enable verbose log level in the CodeScan output.",
           "scope": "window"
         },
         "sonarlint.output.showAnalyzerLogs": {
           "order": 91,
           "type": "boolean",
           "default": false,
-          "description": "Show analyzer's logs in the SonarLint output.",
+          "description": "Show analyzer's logs in the CodeScan output.",
           "scope": "window"
         },
         "sonarlint.analyzerProperties": {
@@ -298,7 +298,7 @@
         "sonarlint.trace.server": {
           "order": 98,
           "default": "off",
-          "description": "Traces the communication between VS Code and the SonarLint language server.",
+          "description": "Traces the communication between VS Code and the CodeScan language server.",
           "scope": "window",
           "anyOf": [
             {
@@ -347,425 +347,372 @@
     "commands": [
       {
         "command": "CodeScan.UpdateAllBindings",
-        "title": "Update all project bindings to SonarQube/SonarCloud",
+        "title": "Update all project bindings to CodeScan",
         "icon": "$(refresh)",
-        "category": "SonarLint"
+        "category": "CodeScan"
       },
       {
-        "command": "SonarLint.ShowSonarLintOutput",
-        "title": "Show SonarLint Output",
-        "category": "SonarLint"
+        "command": "CodeScan.ShowCodeScanOutput",
+        "title": "Show CodeScan Output",
+        "category": "CodeScan"
       },
       {
-        "command": "SonarLint.ConfigureCompilationDatabase",
+        "command": "CodeScan.ConfigureCompilationDatabase",
         "title": "Configure the compilation database for C and C++ analysis",
-        "category": "SonarLint"
+        "category": "CodeScan"
       },
       {
-        "command": "SonarLint.AutoBindWorkspaceFolders",
-        "title": "Bind all workspace folders to SonarQube or SonarCloud",
-        "category": "SonarLint"
+        "command": "CodeScan.AutoBindWorkspaceFolders",
+        "title": "Bind all workspace folders to CodeScan",
+        "category": "CodeScan"
       },
       {
         "command": "CodeScan.DeactivateRule",
         "title": "Deactivate",
         "icon": "$(x)",
-        "enablement": "view == SonarLint.AllRules"
+        "enablement": "view == CodeScan.AllRules"
       },
       {
-        "command": "SonarLint.ActivateRule",
+        "command": "CodeScan.ActivateRule",
         "title": "Activate",
         "icon": "$(check)",
-        "enablement": "view == SonarLint.AllRules"
+        "enablement": "view == CodeScan.AllRules"
       },
       {
-        "command": "SonarLint.ResetDefaultRule",
+        "command": "CodeScan.ResetDefaultRule",
         "title": "Reset",
-        "enablement": "view == SonarLint.AllRules"
+        "enablement": "view == CodeScan.AllRules"
       },
       {
-        "command": "SonarLint.ShowAllRules",
+        "command": "CodeScan.ShowAllRules",
         "title": "All",
-        "enablement": "view == SonarLint.AllRules"
+        "enablement": "view == CodeScan.AllRules"
       },
       {
-        "command": "SonarLint.ShowActiveRules",
+        "command": "CodeScan.ShowActiveRules",
         "title": "Active",
-        "enablement": "view == SonarLint.AllRules"
+        "enablement": "view == CodeScan.AllRules"
       },
       {
-        "command": "SonarLint.ShowInactiveRules",
+        "command": "CodeScan.ShowInactiveRules",
         "title": "Inactive",
-        "enablement": "view == SonarLint.AllRules"
+        "enablement": "view == CodeScan.AllRules"
       },
       {
-        "command": "SonarLint.ScanForHotspotsInFolder",
+        "command": "CodeScan.ScanForHotspotsInFolder",
         "title": "In Whole Folder",
-        "enablement": "view == SonarLint.SecurityHotspots && SonarLint.Hotspots.ShowMode == 'OpenFiles'"
+        "enablement": "view == CodeScan.SecurityHotspots && CodeScan.Hotspots.ShowMode == 'OpenFiles'"
       },
       {
-        "command": "SonarLint.ShowHotspotsInOpenFiles",
+        "command": "CodeScan.ShowHotspotsInOpenFiles",
         "title": "In Open Files",
-        "enablement": "view == SonarLint.SecurityHotspots && SonarLint.Hotspots.ShowMode == 'Folder'"
+        "enablement": "view == CodeScan.SecurityHotspots && CodeScan.Hotspots.ShowMode == 'Folder'"
       },
       {
         "command": "CodeScan.FindRuleByKey",
         "title": "Find Rule By Key",
-        "enablement": "view == SonarLint.AllRules"
+        "enablement": "view == CodeScan.AllRules"
       },
       {
         "command": "CodeScan.ClearLocations",
         "title": "Clear",
-        "enablement": "view == SonarLint.IssueLocations || view == SonarLint.SecurityHotspots"
+        "enablement": "view == CodeScan.IssueLocations || view == CodeScan.SecurityHotspots"
       },
       {
-        "command": "SonarLint.ClearHotspotLocations",
+        "command": "CodeScan.ClearHotspotLocations",
         "title": "Clear Highlighting",
-        "enablement": "view == SonarLint.SecurityHotspots"
+        "enablement": "view == CodeScan.SecurityHotspots"
       },
       {
         "command": "CodeScan.ConnectToCodeScanSH",
         "title": "Connect to CodeScan Self-Hosted",
-        "category": "SonarLint",
+        "category": "CodeScan",
         "icon": "$(plus)"
       },
       {
         "command": "CodeScan.ConnectToCodeScanCloud",
         "title": "Connect to CodeScan Cloud",
-        "category": "SonarLint",
+        "category": "CodeScan",
         "icon": "$(plus)"
       },
       {
         "command": "CodeScan.EditCodeScanSHConnection",
         "title": "Edit CodeScan Self-Hosted Connection",
-        "category": "SonarLint",
+        "category": "CodeScan",
         "icon": "$(pencil)",
-        "enablement": "view == SonarLint.ConnectedMode"
+        "enablement": "view == CodeScan.ConnectedMode"
       },
       {
         "command": "CodeScan.EditCodeScanCloudConnection",
         "title": "Edit CodeScan Cloud Connection",
-        "category": "SonarLint",
+        "category": "CodeScan",
         "icon": "$(pencil)",
-        "enablement": "view == SonarLint.ConnectedMode"
+        "enablement": "view == CodeScan.ConnectedMode"
       },
       {
-        "command": "SonarLint.AddProjectBinding",
+        "command": "CodeScan.AddProjectBinding",
         "title": "Add Project Binding",
-        "category": "SonarLint",
+        "category": "CodeScan",
         "icon": "$(plus)",
-        "enablement": "view == SonarLint.ConnectedMode"
+        "enablement": "view == CodeScan.ConnectedMode"
       },
       {
-        "command": "SonarLint.RemoveConnection",
-        "title": "Remove SonarQube/SonarCloud Connection",
-        "category": "SonarLint",
+        "command": "CodeScan.RemoveConnection",
+        "title": "Remove CodeScan Connection",
+        "category": "CodeScan",
         "icon": "$(trash)",
-        "enablement": "view == SonarLint.ConnectedMode"
+        "enablement": "view == CodeScan.ConnectedMode"
       },
       {
-        "command": "SonarLint.EditProjectBinding",
+        "command": "CodeScan.EditProjectBinding",
         "title": "Edit Project Binding",
-        "category": "SonarLint",
+        "category": "CodeScan",
         "icon": "$(pencil)",
-        "enablement": "view == SonarLint.ConnectedMode"
+        "enablement": "view == CodeScan.ConnectedMode"
       },
       {
-        "command": "SonarLint.RemoveProjectBinding",
+        "command": "CodeScan.RemoveProjectBinding",
         "title": "Remove Project Binding",
-        "category": "SonarLint",
+        "category": "CodeScan",
         "icon": "$(trash)",
-        "enablement": "view == SonarLint.ConnectedMode"
+        "enablement": "view == CodeScan.ConnectedMode"
       },
       {
-        "command": "SonarLint.OpenHotspotOnServer",
+        "command": "CodeScan.OpenHotspotOnServer",
         "title": "Review on Server",
-        "category": "SonarLint",
-        "enablement": "view == SonarLint.SecurityHotspots && viewItem == knownHotspotItem"
+        "category": "CodeScan",
+        "enablement": "view == CodeScan.SecurityHotspots && viewItem == knownHotspotItem"
       },
       {
-        "command": "SonarLint.ShowHotspotRuleDescription",
+        "command": "CodeScan.ShowHotspotRuleDescription",
         "title": "Show Rule Description",
-        "category": "SonarLint",
-        "enablement": "view == SonarLint.SecurityHotspots && viewItem == newHotspotItem"
+        "category": "CodeScan",
+        "enablement": "view == CodeScan.SecurityHotspots && viewItem == newHotspotItem"
       },
       {
-        "command": "SonarLint.ShowHotspotDetails",
+        "command": "CodeScan.ShowHotspotDetails",
         "title": "Show Hotspot Details",
-        "category": "SonarLint",
-        "enablement": "view == SonarLint.SecurityHotspots && (viewItem == knownHotspotItem || viewItem == remoteHotspotItem)"
+        "category": "CodeScan",
+        "enablement": "view == CodeScan.SecurityHotspots && (viewItem == knownHotspotItem || viewItem == remoteHotspotItem)"
       },
       {
-        "command": "SonarLint.HideHotspot",
+        "command": "CodeScan.HideHotspot",
         "title": "Hide Security Hotspot",
-        "category": "SonarLint",
-        "enablement": "view == SonarLint.SecurityHotspots && viewItem == remoteHotspotItem"
+        "category": "CodeScan",
+        "enablement": "view == CodeScan.SecurityHotspots && viewItem == remoteHotspotItem"
       },
       {
-        "command": "SonarLint.ChangeHotspotStatus",
+        "command": "CodeScan.ChangeHotspotStatus",
         "title": "Change Status",
-        "category": "SonarLint",
-        "enablement": "view == SonarLint.SecurityHotspots && viewItem == knownHotspotItem"
+        "category": "CodeScan",
+        "enablement": "view == CodeScan.SecurityHotspots && viewItem == knownHotspotItem"
       },
       {
-        "command": "SonarLint.HelpAndFeedbackLinkClicked",
+        "command": "CodeScan.HelpAndFeedbackLinkClicked",
         "title": "Share feedback",
-        "category": "SonarLint"
+        "category": "CodeScan"
       },
       {
-        "command": "SonarLint.EnableVerboseLogs",
+        "command": "CodeScan.EnableVerboseLogs",
         "title": "Enable Verbose Logging",
-        "category": "SonarLint"
+        "category": "CodeScan"
       }
     ],
     "viewsContainers": {
       "activitybar": [
         {
           "icon": "images/sonarlint.svg",
-          "id": "SonarLint",
-          "title": "SonarLint"
+          "id": "CodeScan",
+          "title": "CodeScan"
         }
       ]
     },
     "views": {
       "explorer": [
         {
-          "id": "SonarLint.IssueLocations",
-          "name": "SonarLint Issue Locations"
+          "id": "CodeScan.IssueLocations",
+          "name": "CodeScan Issue Locations"
         }
       ],
-      "SonarLint": [
+      "CodeScan": [
         {
-          "id": "SonarLint.AllRules",
+          "id": "CodeScan.AllRules",
           "name": "Rules"
         },
         {
-          "id": "SonarLint.ConnectedMode",
+          "id": "CodeScan.ConnectedMode",
           "name": "Connected Mode"
         },
         {
-          "id": "SonarLint.SecurityHotspots",
+          "id": "CodeScan.SecurityHotspots",
           "name": "Security Hotspots"
         },
         {
-          "id": "SonarLint.HelpAndFeedback",
+          "id": "CodeScan.HelpAndFeedback",
           "name": "Help and Feedback"
         }
       ]
     },
     "viewsWelcome": [
       {
-        "view": "SonarLint.IssueLocations",
-        "contents": "No locations to show.\nUse \"Show all locations\" code action from a SonarLint issue."
+        "view": "CodeScan.IssueLocations",
+        "contents": "No locations to show.\nUse \"Show all locations\" code action from a CodeScan issue."
       },
       {
-        "view": "SonarLint.ConnectedMode",
+        "view": "CodeScan.ConnectedMode",
         "contents": "No CodeScan connections found.\n[Add CodeScan Self-Hosted Connection](command:CodeScan.ConnectToCodeScanSH)\n[Add CodeScan Cloud Connection](command:CodeScan.ConnectToCodeScanCloud)"
       },
       {
-        "view": "SonarLint.SecurityHotspots",
+        "view": "CodeScan.SecurityHotspots",
         "contents": "Please ensure a connection to SonarQube 9.7+ or CodeScan Self-Hosted is set up. Detected Security Hotspots will be displayed here. [Learn More](https://github.com/codescan-io/codescan-vscode/wiki/security-hotspots).\n Using the In Whole Folder feature may consume excessive resources depending on the size of your project. Please check the [documentation](https://github.com/codescan-io/codescan-vscode/wiki/security-hotspots#reporting-security-hotspots-in-the-whole-folder) for recommendations to minimize the impact of a full project analysis."
-      }
-    ],
-    "walkthroughs": [
-      {
-        "id": "SonarLint.walkthrough",
-        "title": "Welcome to SonarLint!",
-        "description": "Your Clean Code journey starts here.",
-        "steps": [
-          {
-            "id": "SonarLint.inAction",
-            "title": "$(rocket) New to SonarLint? See it in action",
-            "description": "SonarLint for VSCode supports analysis of 15+ languages including JS/TS, Java, Python, CSS/HTML, C, C++, and [more](https://github.com/codescan-io/codescan-vscode/wiki/Languages-and-rules). SonarLint detects issues in all files **open** in the editor.\n\nThe best way to get started is to see it in action!\n[Open Sample File](command:SonarLint.OpenSample)",
-            "media": {
-              "markdown": "walkthrough/empty.md"
-            },
-            "completionEvents": [
-              "onView:workbench.panel.markers.view"
-            ]
-          },
-          {
-            "id": "SonarLint.learnMoreAboutIssues",
-            "title": "$(book) Learn more about issues",
-            "description": "Check the [Problems view](command:workbench.panel.markers.view.focus): SonarLint has found something $(warning).\nRight-click on the issue found by SonarLint.\nOpen the rule description: SonarLint clearly explains why this is an issue.\nFor certain rules and issues, SonarLint will suggest available Quick Fixes.",
-            "media": {
-              "markdown": "walkthrough/empty.md"
-            },
-            "completionEvents": [
-              "onCommand:CodeScan.OpenStandaloneRuleDesc"
-            ]
-          },
-          {
-            "id": "SonarLint.connectedModeIntro",
-            "title": "$(link) Connect with your team",
-            "description": "Use the same Clean Code standards as your team by using SonarLint in Connected Mode with [SonarQube](https://www.sonarsource.com/products/sonarqube/) or [SonarCloud](https://www.sonarsource.com/products/sonarcloud/).\n**Already using SonarQube or SonarCloud?** Check out the Connected Mode view to set up the connection.\n[Set up Connection](command:SonarLint.ConnectedMode.focus)",
-            "media": {
-              "markdown": "walkthrough/empty.md"
-            },
-            "completionEvents": [
-              "onView:SonarLint.ConnectedMode"
-            ]
-          },
-          {
-            "id": "SonarLint.reachOut",
-            "title": "$(comment-discussion) Share feedback or ask for help",
-            "description": "You suspect your code has issues but don't see any problems detected by SonarLint? [Enable verbose logging](command:SonarLint.EnableVerboseLogs) and check the output in the SonarLint Output window\n[Check Output](command:SonarLint.ShowSonarLintOutput)\n\nYou'd like to learn more about SonarLint, or give us feedback? Check out the [Help and Feedback view](command:SonarLint.HelpAndFeedback.focus)\n\n",
-            "media": {
-              "markdown": "walkthrough/empty.md"
-            },
-            "completionEvents": [
-              "onView:SonarLint.HelpAndFeedback"
-            ]
-          }
-        ]
       }
     ],
     "menus": {
       "view/title": [
         {
-          "command": "SonarLint.ShowAllRules",
-          "when": "view == SonarLint.AllRules",
+          "command": "CodeScan.ShowAllRules",
+          "when": "view == CodeScan.AllRules",
           "group": "navigation"
         },
         {
-          "command": "SonarLint.ShowActiveRules",
-          "when": "view == SonarLint.AllRules",
+          "command": "CodeScan.ShowActiveRules",
+          "when": "view == CodeScan.AllRules",
           "group": "navigation"
         },
         {
-          "command": "SonarLint.ShowInactiveRules",
-          "when": "view == SonarLint.AllRules",
+          "command": "CodeScan.ShowInactiveRules",
+          "when": "view == CodeScan.AllRules",
           "group": "navigation"
         },
         {
-          "command": "SonarLint.ScanForHotspotsInFolder",
-          "when": "view == SonarLint.SecurityHotspots",
+          "command": "CodeScan.ScanForHotspotsInFolder",
+          "when": "view == CodeScan.SecurityHotspots",
           "group": "navigation"
         },
         {
-          "command": "SonarLint.ShowHotspotsInOpenFiles",
-          "when": "view == SonarLint.SecurityHotspots",
+          "command": "CodeScan.ShowHotspotsInOpenFiles",
+          "when": "view == CodeScan.SecurityHotspots",
           "group": "navigation"
         },
         {
           "command": "CodeScan.FindRuleByKey",
-          "when": "view == SonarLint.AllRules"
+          "when": "view == CodeScan.AllRules"
         },
         {
           "command": "CodeScan.ClearLocations",
-          "when": "view == SonarLint.IssueLocations",
+          "when": "view == CodeScan.IssueLocations",
           "group": "navigation"
         },
         {
           "command": "CodeScan.ConnectToCodeScanSH",
-          "when": "view == SonarLint.ConnectedMode",
+          "when": "view == CodeScan.ConnectedMode",
           "group": "inline"
         },
         {
           "command": "CodeScan.ConnectToCodeScanCloud",
-          "when": "view == SonarLint.ConnectedMode",
+          "when": "view == CodeScan.ConnectedMode",
           "group": "inline"
         },
         {
           "command": "CodeScan.UpdateAllBindings",
-          "when": "view == SonarLint.ConnectedMode",
+          "when": "view == CodeScan.ConnectedMode",
           "group": "navigation"
         }
       ],
       "view/item/context": [
         {
           "command": "CodeScan.DeactivateRule",
-          "when": "view == SonarLint.AllRules && viewItem == rule-on",
+          "when": "view == CodeScan.AllRules && viewItem == rule-on",
           "group": "inline"
         },
         {
-          "command": "SonarLint.ActivateRule",
-          "when": "view == SonarLint.AllRules && viewItem == rule-off",
+          "command": "CodeScan.ActivateRule",
+          "when": "view == CodeScan.AllRules && viewItem == rule-off",
           "group": "inline"
         },
         {
           "command": "CodeScan.ConnectToCodeScanSH",
-          "when": "view == SonarLint.ConnectedMode && viewItem == sonarQubeGroup",
+          "when": "view == CodeScan.ConnectedMode && viewItem == sonarQubeGroup",
           "group": "inline"
         },
         {
           "command": "CodeScan.ConnectToCodeScanCloud",
-          "when": "view == SonarLint.ConnectedMode && viewItem == sonarCloudGroup",
+          "when": "view == CodeScan.ConnectedMode && viewItem == sonarCloudGroup",
           "group": "inline"
         },
         {
           "command": "CodeScan.EditCodeScanSHConnection",
           "title": "Edit",
-          "when": "view == SonarLint.ConnectedMode && viewItem == sonarqubeConnection",
+          "when": "view == CodeScan.ConnectedMode && viewItem == sonarqubeConnection",
           "group": "inline"
         },
         {
           "command": "CodeScan.EditCodeScanCloudConnection",
           "title": "Edit",
-          "when": "view == SonarLint.ConnectedMode && viewItem == sonarcloudConnection",
+          "when": "view == CodeScan.ConnectedMode && viewItem == sonarcloudConnection",
           "group": "inline"
         },
         {
-          "command": "SonarLint.AddProjectBinding",
+          "command": "CodeScan.AddProjectBinding",
           "title": "Add Project Binding",
-          "when": "view == SonarLint.ConnectedMode && viewItem == sonarcloudConnection || viewItem == sonarqubeConnection",
+          "when": "view == CodeScan.ConnectedMode && viewItem == sonarcloudConnection || viewItem == sonarqubeConnection",
           "group": "inline"
         },
         {
-          "command": "SonarLint.RemoveConnection",
+          "command": "CodeScan.RemoveConnection",
           "title": "Remove",
-          "when": "view == SonarLint.ConnectedMode && viewItem == sonarcloudConnection || viewItem == sonarqubeConnection",
+          "when": "view == CodeScan.ConnectedMode && viewItem == sonarcloudConnection || viewItem == sonarqubeConnection",
           "group": "inline"
         },
         {
-          "command": "SonarLint.EditProjectBinding",
+          "command": "CodeScan.EditProjectBinding",
           "title": "Edit",
-          "when": "view == SonarLint.ConnectedMode && viewItem == workspaceFolder",
+          "when": "view == CodeScan.ConnectedMode && viewItem == workspaceFolder",
           "group": "inline"
         },
         {
-          "command": "SonarLint.RemoveProjectBinding",
+          "command": "CodeScan.RemoveProjectBinding",
           "title": "Remove",
-          "when": "view == SonarLint.ConnectedMode && viewItem == workspaceFolder",
+          "when": "view == CodeScan.ConnectedMode && viewItem == workspaceFolder",
           "group": "inline"
         },
         {
-          "command": "SonarLint.ShowHotspotRuleDescription",
+          "command": "CodeScan.ShowHotspotRuleDescription",
           "title": "Show Rule Description",
-          "when": "view == SonarLint.SecurityHotspots && viewItem == newHotspotItem"
+          "when": "view == CodeScan.SecurityHotspots && viewItem == newHotspotItem"
         },
         {
-          "command": "SonarLint.ShowHotspotDetails",
+          "command": "CodeScan.ShowHotspotDetails",
           "title": "Show Hotspot Details",
-          "when": "view == SonarLint.SecurityHotspots && (viewItem == knownHotspotItem || viewItem == remoteHotspotItem)"
+          "when": "view == CodeScan.SecurityHotspots && (viewItem == knownHotspotItem || viewItem == remoteHotspotItem)"
         },
         {
-          "command": "SonarLint.ChangeHotspotStatus",
+          "command": "CodeScan.ChangeHotspotStatus",
           "title": "Change Status",
-          "when": "view == SonarLint.SecurityHotspots && viewItem == knownHotspotItem"
+          "when": "view == CodeScan.SecurityHotspots && viewItem == knownHotspotItem"
         },
         {
-          "command": "SonarLint.OpenHotspotOnServer",
+          "command": "CodeScan.OpenHotspotOnServer",
           "title": "Review on Server",
-          "when": "view == SonarLint.SecurityHotspots && viewItem == knownHotspotItem"
+          "when": "view == CodeScan.SecurityHotspots && viewItem == knownHotspotItem"
         },
         {
-          "command": "SonarLint.ClearHotspotLocations",
+          "command": "CodeScan.ClearHotspotLocations",
           "title": "Clear Highlighting",
-          "when": "view == SonarLint.SecurityHotspots && viewItem == newHotspotItem || viewItem == knownHotspotItem || viewItem == remoteHotspotItem"
+          "when": "view == CodeScan.SecurityHotspots && viewItem == newHotspotItem || viewItem == knownHotspotItem || viewItem == remoteHotspotItem"
         },
         {
-          "command": "SonarLint.HideHotspot",
+          "command": "CodeScan.HideHotspot",
           "title": "Hide Security Hotspot",
-          "category": "SonarLint",
-          "when": "view == SonarLint.SecurityHotspots && viewItem == remoteHotspotItem"
+          "category": "CodeScan",
+          "when": "view == CodeScan.SecurityHotspots && viewItem == remoteHotspotItem"
         }
       ]
     },
     "colors": [
       {
         "id": "sonarlint.locations.background",
-        "description": "Background color for highlighted secondary locations of SonarLint issues",
+        "description": "Background color for highlighted secondary locations of CodeScan issues",
         "defaults": {
           "light": "#f2dede",
           "dark": "#523e3e",
@@ -774,7 +721,7 @@
       },
       {
         "id": "sonarlint.locations.indexText",
-        "description": "Text color for secondary location index of SonarLint issues",
+        "description": "Text color for secondary location index of CodeScan issues",
         "defaults": {
           "light": "#fff",
           "dark": "#ccc",
@@ -783,7 +730,7 @@
       },
       {
         "id": "sonarlint.locations.indexBackground",
-        "description": "Background color for secondary location index of SonarLint issues",
+        "description": "Background color for secondary location index of CodeScan issues",
         "defaults": {
           "light": "#d18582",
           "dark": "#74232f",
@@ -792,7 +739,7 @@
       },
       {
         "id": "sonarlint.locations.indexSelectedText",
-        "description": "Text color for active secondary location index of SonarLint issues",
+        "description": "Text color for active secondary location index of CodeScan issues",
         "defaults": {
           "light": "#fff",
           "dark": "#fff",
@@ -801,7 +748,7 @@
       },
       {
         "id": "sonarlint.locations.indexSelectedBackground",
-        "description": "Background color for active secondary location index of SonarLint issues",
+        "description": "Background color for active secondary location index of CodeScan issues",
         "defaults": {
           "light": "#a4030f",
           "dark": "#b4131f",

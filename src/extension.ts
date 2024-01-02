@@ -260,13 +260,13 @@ export async function activate(context: VSCode.ExtensionContext) {
   VSCode.window.onDidChangeActiveTextEditor(e => scm.updateReferenceBranchStatusItem(e));
 
   allRulesTreeDataProvider = new AllRulesTreeDataProvider(() => languageClient.listAllRules());
-  allRulesView = VSCode.window.createTreeView('SonarLint.AllRules', {
+  allRulesView = VSCode.window.createTreeView('CodeScan.AllRules', {
     treeDataProvider: allRulesTreeDataProvider
   });
   context.subscriptions.push(allRulesView);
 
   secondaryLocationsTree = new SecondaryLocationsTree();
-  issueLocationsView = VSCode.window.createTreeView('SonarLint.IssueLocations', {
+  issueLocationsView = VSCode.window.createTreeView('CodeScan.IssueLocations', {
     treeDataProvider: secondaryLocationsTree
   });
   context.subscriptions.push(issueLocationsView);
@@ -284,7 +284,7 @@ export async function activate(context: VSCode.ExtensionContext) {
 
   allConnectionsTreeDataProvider = new AllConnectionsTreeDataProvider(languageClient);
 
-  const allConnectionsView = VSCode.window.createTreeView('SonarLint.ConnectedMode', {
+  const allConnectionsView = VSCode.window.createTreeView('CodeScan.ConnectedMode', {
     treeDataProvider: allConnectionsTreeDataProvider
   });
   context.subscriptions.push(allConnectionsView);
@@ -297,7 +297,7 @@ export async function activate(context: VSCode.ExtensionContext) {
   context.subscriptions.push(allHotspotsView);
 
   helpAndFeedbackTreeDataProvider = new HelpAndFeedbackTreeDataProvider();
-  helpAndFeedbackView = VSCode.window.createTreeView('SonarLint.HelpAndFeedback', {
+  helpAndFeedbackView = VSCode.window.createTreeView('CodeScan.HelpAndFeedback', {
     treeDataProvider: helpAndFeedbackTreeDataProvider
   });
   context.subscriptions.push(helpAndFeedbackView);
