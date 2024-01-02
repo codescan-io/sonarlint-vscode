@@ -182,7 +182,7 @@ export function computeHeading(tab, contextualDescription) {
 
 export function renderRuleParams(rule: ShowRuleDescriptionParams) {
   if (rule.parameters && rule.parameters.length > 0) {
-    const ruleParamsConfig = VSCode.workspace.getConfiguration(`sonarlint.rules.${rule.key}.parameters`);
+    const ruleParamsConfig = VSCode.workspace.getConfiguration(`codescan.rules.${rule.key}.parameters`);
     return `<table class="rule-params">
   <caption>Parameters</caption>
   <thead>

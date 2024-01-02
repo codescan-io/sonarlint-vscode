@@ -49,7 +49,7 @@ export class AllRulesTreeDataProvider implements VSCode.TreeDataProvider<AllRule
   constructor(private readonly allRulesProvider: () => Thenable<RulesResponse>) {}
 
   async getChildren(node: AllRulesNode) {
-    const localRuleConfig = VSCode.workspace.getConfiguration('sonarlint.rules');
+    const localRuleConfig = VSCode.workspace.getConfiguration('codescan.rules');
     return this.getAllRules()
       .then(response => {
         Object.keys(response).forEach(language => response[language].sort(byName));

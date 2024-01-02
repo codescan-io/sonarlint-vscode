@@ -272,7 +272,7 @@ export async function activate(context: VSCode.ExtensionContext) {
   context.subscriptions.push(issueLocationsView);
 
   VSCode.workspace.onDidChangeConfiguration(async event => {
-    if (event.affectsConfiguration('sonarlint.rules')) {
+    if (event.affectsConfiguration('codescan.rules')) {
       allRulesTreeDataProvider.refresh();
     }
     if (event.affectsConfiguration('sonarlint.connectedMode')) {

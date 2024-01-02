@@ -8,7 +8,7 @@
   "homepage": "https://www.sonarsource.com/products/sonarlint/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/SonarSource/sonarlint-vscode.git"
+    "url": "https://github.com/codescan-io/codescan-vscode.git"
   },
   "bugs": {
     "url": "https://jira.sonarsource.com/browse/SLVSCODE"
@@ -41,14 +41,14 @@
   "contributes": {
     "configuration": {
       "type": "object",
-      "title": "SonarLint",
+      "title": "CodeScan",
       "properties": {
-        "sonarlint.rules": {
+        "codescan.rules": {
           "order": 1,
           "type": "object",
           "scope": "application",
           "default": {},
-          "markdownDescription": "Customize applied rule set. This property contains a list of rules whose activation level or parameter values differ from the one provided by default. See _SonarLint Rules_ view for the full list of available rules. In connected mode, this configuration is overridden by the projects's quality profile, as configured on server side.\n\nExample:\n\n    \"sonarlint.rules\": {\n        \"javascript:1481\": {\n            \"level\": \"off\",\n        \"javascript:S103\": {\n            \"level\": \"on\",\n            \"parameters\": {\n                \"maximumLineLength\": \"120\"\n            }\n        }\n    }\n",
+          "markdownDescription": "Customize applied rule set. This property contains a list of rules whose activation level or parameter values differ from the one provided by default. See _SonarLint Rules_ view for the full list of available rules. In connected mode, this configuration is overridden by the projects's quality profile, as configured on server side.\n\nExample:\n\n    \"codescan.rules\": {\n        \"javascript:1481\": {\n            \"level\": \"off\",\n        \"javascript:S103\": {\n            \"level\": \"on\",\n            \"parameters\": {\n                \"maximumLineLength\": \"120\"\n            }\n        }\n    }\n",
           "patternProperties": {
             "^[^:]+:[^:]+$": {
               "type": "object",
@@ -105,7 +105,7 @@
           "type": "array",
           "scope": "application",
           "default": [],
-          "markdownDescription": "In connected mode, SonarLint applies the SonarQube quality profile to the local analysis and synchronizes the issue status and other analysis settings. Please find the documentation [here](https://github.com/SonarSource/sonarlint-vscode/wiki/Connected-Mode)",
+          "markdownDescription": "In connected mode, SonarLint applies the SonarQube quality profile to the local analysis and synchronizes the issue status and other analysis settings. Please find the documentation [here](https://github.com/codescan-io/codescan-vscode/wiki/Connected-Mode)",
           "items": {
             "type": "object",
             "properties": {
@@ -147,7 +147,7 @@
           "type": "array",
           "scope": "application",
           "default": [],
-          "markdownDescription": "In connected mode, SonarLint applies the SonarQube quality profile to the local analysis and synchronizes the issue status and other analysis settings. Please find the documentation [here](https://github.com/SonarSource/sonarlint-vscode/wiki/Connected-Mode)",
+          "markdownDescription": "In connected mode, SonarLint applies the SonarQube quality profile to the local analysis and synchronizes the issue status and other analysis settings. Please find the documentation [here](https://github.com/codescan-io/codescan-vscode/wiki/Connected-Mode)",
           "items": {
             "type": "object",
             "properties": {
@@ -339,14 +339,14 @@
           "order": 99,
           "type": "boolean",
           "default": false,
-          "markdownDescription": "Disable sending anonymous usage statistics to SonarSource. Click [here](https://github.com/SonarSource/sonarlint-vscode/blob/master/telemetry-sample.md) to see a sample of the data that are collected.",
+          "markdownDescription": "Disable sending anonymous usage statistics to SonarSource. Click [here](https://github.com/codescan-io/codescan-vscode/blob/master/telemetry-sample.md) to see a sample of the data that are collected.",
           "scope": "window"
         }
       }
     },
     "commands": [
       {
-        "command": "SonarLint.UpdateAllBindings",
+        "command": "CodeScan.UpdateAllBindings",
         "title": "Update all project bindings to SonarQube/SonarCloud",
         "icon": "$(refresh)",
         "category": "SonarLint"
@@ -367,7 +367,7 @@
         "category": "SonarLint"
       },
       {
-        "command": "SonarLint.DeactivateRule",
+        "command": "CodeScan.DeactivateRule",
         "title": "Deactivate",
         "icon": "$(x)",
         "enablement": "view == SonarLint.AllRules"
@@ -409,12 +409,12 @@
         "enablement": "view == SonarLint.SecurityHotspots && SonarLint.Hotspots.ShowMode == 'Folder'"
       },
       {
-        "command": "SonarLint.FindRuleByKey",
+        "command": "CodeScan.FindRuleByKey",
         "title": "Find Rule By Key",
         "enablement": "view == SonarLint.AllRules"
       },
       {
-        "command": "SonarLint.ClearLocations",
+        "command": "CodeScan.ClearLocations",
         "title": "Clear",
         "enablement": "view == SonarLint.IssueLocations || view == SonarLint.SecurityHotspots"
       },
@@ -424,27 +424,27 @@
         "enablement": "view == SonarLint.SecurityHotspots"
       },
       {
-        "command": "SonarLint.ConnectToSonarQube",
-        "title": "Connect to SonarQube",
+        "command": "CodeScan.ConnectToCodeScanSH",
+        "title": "Connect to CodeScan Self-Hosted",
         "category": "SonarLint",
         "icon": "$(plus)"
       },
       {
-        "command": "SonarLint.ConnectToSonarCloud",
-        "title": "Connect to SonarCloud",
+        "command": "CodeScan.ConnectToCodeScanCloud",
+        "title": "Connect to CodeScan Cloud",
         "category": "SonarLint",
         "icon": "$(plus)"
       },
       {
-        "command": "SonarLint.EditSonarQubeConnection",
-        "title": "Edit SonarQube Connection",
+        "command": "CodeScan.EditCodeScanSHConnection",
+        "title": "Edit CodeScan Self-Hosted Connection",
         "category": "SonarLint",
         "icon": "$(pencil)",
         "enablement": "view == SonarLint.ConnectedMode"
       },
       {
-        "command": "SonarLint.EditSonarCloudConnection",
-        "title": "Edit SonarCloud Connection",
+        "command": "CodeScan.EditCodeScanCloudConnection",
+        "title": "Edit CodeScan Cloud Connection",
         "category": "SonarLint",
         "icon": "$(pencil)",
         "enablement": "view == SonarLint.ConnectedMode"
@@ -560,11 +560,11 @@
       },
       {
         "view": "SonarLint.ConnectedMode",
-        "contents": "No SonarQube/SonarCloud connections found. [Learn more](https://marketplace.visualstudio.com/items?itemName=SonarSource.sonarlint-vscode#connected-mode).\n[Add SonarQube Connection](command:SonarLint.ConnectToSonarQube)\n[Add SonarCloud Connection](command:SonarLint.ConnectToSonarCloud)"
+        "contents": "No CodeScan connections found.\n[Add CodeScan Self-Hosted Connection](command:CodeScan.ConnectToCodeScanSH)\n[Add CodeScan Cloud Connection](command:CodeScan.ConnectToCodeScanCloud)"
       },
       {
         "view": "SonarLint.SecurityHotspots",
-        "contents": "Please ensure a connection to SonarQube 9.7+ or SonarCloud is set up. Detected Security Hotspots will be displayed here. [Learn More](https://github.com/SonarSource/sonarlint-vscode/wiki/security-hotspots).\n Using the In Whole Folder feature may consume excessive resources depending on the size of your project. Please check the [documentation](https://github.com/SonarSource/sonarlint-vscode/wiki/security-hotspots#reporting-security-hotspots-in-the-whole-folder) for recommendations to minimize the impact of a full project analysis."
+        "contents": "Please ensure a connection to SonarQube 9.7+ or CodeScan Self-Hosted is set up. Detected Security Hotspots will be displayed here. [Learn More](https://github.com/codescan-io/codescan-vscode/wiki/security-hotspots).\n Using the In Whole Folder feature may consume excessive resources depending on the size of your project. Please check the [documentation](https://github.com/codescan-io/codescan-vscode/wiki/security-hotspots#reporting-security-hotspots-in-the-whole-folder) for recommendations to minimize the impact of a full project analysis."
       }
     ],
     "walkthroughs": [
@@ -576,7 +576,7 @@
           {
             "id": "SonarLint.inAction",
             "title": "$(rocket) New to SonarLint? See it in action",
-            "description": "SonarLint for VSCode supports analysis of 15+ languages including JS/TS, Java, Python, CSS/HTML, C, C++, and [more](https://github.com/SonarSource/sonarlint-vscode/wiki/Languages-and-rules). SonarLint detects issues in all files **open** in the editor.\n\nThe best way to get started is to see it in action!\n[Open Sample File](command:SonarLint.OpenSample)",
+            "description": "SonarLint for VSCode supports analysis of 15+ languages including JS/TS, Java, Python, CSS/HTML, C, C++, and [more](https://github.com/codescan-io/codescan-vscode/wiki/Languages-and-rules). SonarLint detects issues in all files **open** in the editor.\n\nThe best way to get started is to see it in action!\n[Open Sample File](command:SonarLint.OpenSample)",
             "media": {
               "markdown": "walkthrough/empty.md"
             },
@@ -592,7 +592,7 @@
               "markdown": "walkthrough/empty.md"
             },
             "completionEvents": [
-              "onCommand:SonarLint.OpenStandaloneRuleDesc"
+              "onCommand:CodeScan.OpenStandaloneRuleDesc"
             ]
           },
           {
@@ -648,33 +648,33 @@
           "group": "navigation"
         },
         {
-          "command": "SonarLint.FindRuleByKey",
+          "command": "CodeScan.FindRuleByKey",
           "when": "view == SonarLint.AllRules"
         },
         {
-          "command": "SonarLint.ClearLocations",
+          "command": "CodeScan.ClearLocations",
           "when": "view == SonarLint.IssueLocations",
           "group": "navigation"
         },
         {
-          "command": "SonarLint.ConnectToSonarQube",
+          "command": "CodeScan.ConnectToCodeScanSH",
           "when": "view == SonarLint.ConnectedMode",
           "group": "inline"
         },
         {
-          "command": "SonarLint.ConnectToSonarCloud",
+          "command": "CodeScan.ConnectToCodeScanCloud",
           "when": "view == SonarLint.ConnectedMode",
           "group": "inline"
         },
         {
-          "command": "SonarLint.UpdateAllBindings",
+          "command": "CodeScan.UpdateAllBindings",
           "when": "view == SonarLint.ConnectedMode",
           "group": "navigation"
         }
       ],
       "view/item/context": [
         {
-          "command": "SonarLint.DeactivateRule",
+          "command": "CodeScan.DeactivateRule",
           "when": "view == SonarLint.AllRules && viewItem == rule-on",
           "group": "inline"
         },
@@ -684,23 +684,23 @@
           "group": "inline"
         },
         {
-          "command": "SonarLint.ConnectToSonarQube",
+          "command": "CodeScan.ConnectToCodeScanSH",
           "when": "view == SonarLint.ConnectedMode && viewItem == sonarQubeGroup",
           "group": "inline"
         },
         {
-          "command": "SonarLint.ConnectToSonarCloud",
+          "command": "CodeScan.ConnectToCodeScanCloud",
           "when": "view == SonarLint.ConnectedMode && viewItem == sonarCloudGroup",
           "group": "inline"
         },
         {
-          "command": "SonarLint.EditSonarQubeConnection",
+          "command": "CodeScan.EditCodeScanSHConnection",
           "title": "Edit",
           "when": "view == SonarLint.ConnectedMode && viewItem == sonarqubeConnection",
           "group": "inline"
         },
         {
-          "command": "SonarLint.EditSonarCloudConnection",
+          "command": "CodeScan.EditCodeScanCloudConnection",
           "title": "Edit",
           "when": "view == SonarLint.ConnectedMode && viewItem == sonarcloudConnection",
           "group": "inline"
@@ -825,13 +825,13 @@
     "analyzers"
   ],
   "scripts": {
-    "vscode:prepublish": "node scripts/prepare.mjs && webpack --mode production",
+    "vscode:prepublish": "node scripts/prepare.js && webpack --mode production",
     "compile": "tsc -p ./",
     "webpack": "webpack --mode development",
     "pretest": "webpack --mode development && tsc -p ./",
     "test": "node out/test/runTest.js",
     "test-cov": "node out/test/runTest.js --coverage",
-    "prepare": "node scripts/prepare.mjs",
+    "prepare": "node scripts/prepare.js",
     "cyclonedx-run": "cyclonedx-node",
     "cyclonedx": "gulp cycloneDx"
   },

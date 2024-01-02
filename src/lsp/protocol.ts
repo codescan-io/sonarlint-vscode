@@ -11,11 +11,11 @@ import * as lsp from 'vscode-languageserver-protocol';
 //#region Client side extensions to LSP
 
 export namespace ShowRuleDescriptionNotification {
-  export const type = new lsp.NotificationType<ShowRuleDescriptionParams>('sonarlint/showRuleDescription');
+  export const type = new lsp.NotificationType<ShowRuleDescriptionParams>('codescan/showRuleDescription');
 }
 
 export namespace SuggestBindingNotification {
-  export const type = new lsp.NotificationType<SuggestBindingParams>('sonarlint/suggestBinding');
+  export const type = new lsp.NotificationType<SuggestBindingParams>('codescan/suggestBinding');
 }
 
 export interface SuggestBindingParams {
@@ -32,7 +32,7 @@ export interface BindingSuggestion {
 
 export namespace FindFileByNamesInFolderRequest {
   export const type = new lsp.RequestType<FindFileByNamesInFolderParams, FindFileByNamesInFolderResponse, void>(
-    'sonarlint/findFileByNamesInFolder'
+    'codescan/findFileByNamesInFolder'
   );
 }
 
@@ -53,7 +53,7 @@ export interface FoundFileDto {
 
 export namespace ShowHotspotRuleDescriptionNotification {
   export const type = new lsp.NotificationType<ShowHotspotRuleDescriptionNotificationParams>(
-    'sonarlint/showHotspotRuleDescription'
+    'codescan/showHotspotRuleDescription'
   );
 }
 
@@ -92,19 +92,19 @@ export interface ShowRuleDescriptionParams {
 }
 
 export namespace GetJavaConfigRequest {
-  export const type = new lsp.RequestType<string, GetJavaConfigResponse, void>('sonarlint/getJavaConfig');
+  export const type = new lsp.RequestType<string, GetJavaConfigResponse, void>('codescan/getJavaConfig');
 }
 
 export namespace ScmCheckRequest {
-  export const type = new lsp.RequestType<string, boolean, void>('sonarlint/isIgnoredByScm');
+  export const type = new lsp.RequestType<string, boolean, void>('codescan/isIgnoredByScm');
 }
 
 export namespace ShowNotificationForFirstSecretsIssueNotification {
-  export const type = new lsp.NotificationType('sonarlint/showNotificationForFirstSecretsIssue');
+  export const type = new lsp.NotificationType('codescan/showNotificationForFirstSecretsIssue');
 }
 
 export namespace ShowNotificationForFirstCobolIssueNotification {
-  export const type = new lsp.NotificationType('sonarlint/showNotificationForFirstCobolIssue');
+  export const type = new lsp.NotificationType('codescan/showNotificationForFirstCobolIssue');
 }
 
 export interface GetJavaConfigResponse {
@@ -116,23 +116,23 @@ export interface GetJavaConfigResponse {
 }
 
 export namespace ShowSonarLintOutputNotification {
-  export const type = new lsp.NotificationType('sonarlint/showSonarLintOutput');
+  export const type = new lsp.NotificationType('codescan/showSonarLintOutput');
 }
 
 export namespace OpenJavaHomeSettingsNotification {
-  export const type = new lsp.NotificationType('sonarlint/openJavaHomeSettings');
+  export const type = new lsp.NotificationType('codescan/openJavaHomeSettings');
 }
 
 export namespace OpenPathToNodeSettingsNotification {
-  export const type = new lsp.NotificationType('sonarlint/openPathToNodeSettings');
+  export const type = new lsp.NotificationType('codescan/openPathToNodeSettings');
 }
 
 export namespace BrowseToNotification {
-  export const type = new lsp.NotificationType<string>('sonarlint/browseTo');
+  export const type = new lsp.NotificationType<string>('codescan/browseTo');
 }
 
 export namespace OpenConnectionSettingsNotification {
-  export const type = new lsp.NotificationType<boolean>('sonarlint/openConnectionSettings');
+  export const type = new lsp.NotificationType<boolean>('codescan/openConnectionSettings');
 }
 
 export enum HotspotResolution {
@@ -178,7 +178,7 @@ export interface RemoteHotspot {
 }
 
 export namespace ShowHotspotNotification {
-  export const type = new lsp.NotificationType<RemoteHotspot>('sonarlint/showHotspot');
+  export const type = new lsp.NotificationType<RemoteHotspot>('codescan/showHotspot');
 }
 
 export interface TextRange {
@@ -213,11 +213,11 @@ export interface Issue {
 }
 
 export namespace ShowIssueOrHotspotNotification {
-  export const type = new lsp.NotificationType<Issue>('sonarlint/showIssueOrHotspot');
+  export const type = new lsp.NotificationType<Issue>('codescan/showIssueOrHotspot');
 }
 
 export namespace GetBranchNameForFolderRequest {
-  export const type = new lsp.RequestType<string, string, void>('sonarlint/getBranchNameForFolder');
+  export const type = new lsp.RequestType<string, string, void>('codescan/getBranchNameForFolder');
 }
 
 export interface BranchNameForFolder {
@@ -226,15 +226,15 @@ export interface BranchNameForFolder {
 }
 
 export namespace SetReferenceBranchNameForFolderNotification {
-  export const type = new lsp.NotificationType<BranchNameForFolder>('sonarlint/setReferenceBranchNameForFolder');
+  export const type = new lsp.NotificationType<BranchNameForFolder>('codescan/setReferenceBranchNameForFolder');
 }
 
 export namespace NeedCompilationDatabaseRequest {
-  export const type = new lsp.NotificationType('sonarlint/needCompilationDatabase');
+  export const type = new lsp.NotificationType('codescan/needCompilationDatabase');
 }
 
 export namespace EditorOpenCheck {
-  export const type = new lsp.RequestType<string, boolean, void>('sonarlint/isOpenInEditor');
+  export const type = new lsp.RequestType<string, boolean, void>('codescan/isOpenInEditor');
 }
 
 export interface ConnectionCheckResult {
@@ -248,12 +248,12 @@ export interface ConnectionCheckParams {
 }
 
 export namespace ReportConnectionCheckResult {
-  export const type = new lsp.NotificationType<ConnectionCheckResult>('sonarlint/reportConnectionCheckResult');
+  export const type = new lsp.NotificationType<ConnectionCheckResult>('codescan/reportConnectionCheckResult');
 }
 
 export namespace CheckConnection {
   export const type = new lsp.RequestType<ConnectionCheckParams, ConnectionCheckResult, void>(
-    'sonarlint/checkConnection'
+    'codescan/checkConnection'
   );
 }
 
@@ -271,7 +271,7 @@ export interface CheckLocalDetectionSupportedResponse {
 
 export namespace CheckLocalDetectionSupported {
   export const type = new lsp.RequestType<FolderUriParams, CheckLocalDetectionSupportedResponse, null>(
-    'sonarlint/checkLocalDetectionSupported'
+    'codescan/checkLocalDetectionSupported'
   );
 }
 
@@ -280,7 +280,7 @@ export namespace GetHotspotDetails {
     ShowHotspotRuleDescriptionNotificationParams,
     ShowRuleDescriptionParams,
     null
-  >('sonarlint/getHotspotDetails');
+  >('codescan/getHotspotDetails');
 }
 
 //#endregion
@@ -292,7 +292,7 @@ export interface DidClasspathUpdateParams {
 }
 
 export namespace DidClasspathUpdateNotification {
-  export const type = new lsp.NotificationType<DidClasspathUpdateParams>('sonarlint/didClasspathUpdate');
+  export const type = new lsp.NotificationType<DidClasspathUpdateParams>('codescan/didClasspathUpdate');
 }
 
 export interface DidJavaServerModeChangeParams {
@@ -300,7 +300,7 @@ export interface DidJavaServerModeChangeParams {
 }
 
 export namespace DidJavaServerModeChangeNotification {
-  export const type = new lsp.NotificationType<DidJavaServerModeChangeParams>('sonarlint/didJavaServerModeChange');
+  export const type = new lsp.NotificationType<DidJavaServerModeChangeParams>('codescan/didJavaServerModeChange');
 }
 
 export interface DidLocalBranchNameChangeParams {
@@ -309,7 +309,7 @@ export interface DidLocalBranchNameChangeParams {
 }
 
 export namespace DidLocalBranchNameChangeNotification {
-  export const type = new lsp.NotificationType<DidLocalBranchNameChangeParams>('sonarlint/didLocalBranchNameChange');
+  export const type = new lsp.NotificationType<DidLocalBranchNameChangeParams>('codescan/didLocalBranchNameChange');
 }
 
 export type ConfigLevel = 'on' | 'off';
@@ -326,15 +326,15 @@ export interface RulesResponse {
 }
 
 export namespace ListAllRulesRequest {
-  export const type = new lsp.RequestType0<RulesResponse, void>('sonarlint/listAllRules');
+  export const type = new lsp.RequestType0<RulesResponse, void>('codescan/listAllRules');
 }
 
 export namespace GetTokenForServer {
-  export const type = new lsp.RequestType<string, string, void>('sonarlint/getTokenForServer');
+  export const type = new lsp.RequestType<string, string, void>('codescan/getTokenForServer');
 }
 
 export namespace OnTokenUpdate {
-  export const type = new lsp.NotificationType<void>('sonarlint/onTokenUpdate');
+  export const type = new lsp.NotificationType<void>('codescan/onTokenUpdate');
 }
 
 export interface GetRemoteProjectsForConnectionParams {
@@ -343,7 +343,7 @@ export interface GetRemoteProjectsForConnectionParams {
 
 export namespace GetRemoteProjectsForConnection {
   export const type = new lsp.RequestType<GetRemoteProjectsForConnectionParams, Map<string, string>, void>(
-    'sonarlint/getRemoteProjectsForConnection'
+    'codescan/getRemoteProjectsForConnection'
   );
 }
 
@@ -354,7 +354,7 @@ interface GetRemoteProjectNamesParams {
 
 export namespace GetRemoteProjectNames {
   export const type = new lsp.RequestType<GetRemoteProjectNamesParams, { [key: string]: string }, null>(
-    'sonarlint/getRemoteProjectNames'
+    'codescan/getRemoteProjectNames'
   );
 }
 
@@ -367,7 +367,7 @@ export interface GenerateTokenResponse {
 }
 
 export namespace GenerateToken {
-  export const type = new lsp.RequestType<GenerateTokenParams, GenerateTokenResponse, null>('sonarlint/generateToken');
+  export const type = new lsp.RequestType<GenerateTokenParams, GenerateTokenResponse, null>('codescan/generateToken');
 }
 
 export interface Range {
@@ -386,7 +386,7 @@ export interface PublishHotspotsForFileParams {
 }
 
 export namespace PublishHotspotsForFile {
-  export const type = new lsp.NotificationType<PublishHotspotsForFileParams>('sonarlint/publishSecurityHotspots');
+  export const type = new lsp.NotificationType<PublishHotspotsForFileParams>('codescan/publishSecurityHotspots');
 }
 
 export interface ShowHotspotLocationsParams {
@@ -395,7 +395,7 @@ export interface ShowHotspotLocationsParams {
 }
 
 export namespace ShowHotspotLocations {
-  export const type = new lsp.RequestType<ShowHotspotLocationsParams, null, null>('sonarlint/showHotspotLocations');
+  export const type = new lsp.RequestType<ShowHotspotLocationsParams, null, null>('codescan/showHotspotLocations');
 }
 
 export interface OpenHotspotParams {
@@ -404,7 +404,7 @@ export interface OpenHotspotParams {
 }
 
 export namespace OpenHotspotOnServer {
-  export const type = new lsp.NotificationType<OpenHotspotParams>('sonarlint/openHotspotInBrowser');
+  export const type = new lsp.NotificationType<OpenHotspotParams>('codescan/openHotspotInBrowser');
 }
 
 export interface HelpAndFeedbackLinkClickedNotificationParams {
@@ -413,7 +413,7 @@ export interface HelpAndFeedbackLinkClickedNotificationParams {
 
 export namespace HelpAndFeedbackLinkClicked {
   export const type = new lsp.NotificationType<HelpAndFeedbackLinkClickedNotificationParams>(
-    'sonarlint/helpAndFeedbackLinkClicked'
+    'codescan/helpAndFeedbackLinkClicked'
   );
 }
 
@@ -423,11 +423,11 @@ export interface ScanFolderForHotspotsParams {
 }
 
 export namespace ScanFolderForHotspots {
-  export const type = new lsp.NotificationType<ScanFolderForHotspotsParams>('sonarlint/scanFolderForHotspots');
+  export const type = new lsp.NotificationType<ScanFolderForHotspotsParams>('codescan/scanFolderForHotspots');
 }
 
 export namespace ForgetFolderHotspots {
-  export const type = new lsp.NotificationType('sonarlint/forgetFolderHotspots');
+  export const type = new lsp.NotificationType('codescan/forgetFolderHotspots');
 }
 
 export interface FolderUriParams {
@@ -440,7 +440,7 @@ export interface GetFilePatternsForAnalysisResponse {
 
 export namespace GetFilePatternsForAnalysis {
   export const type = new lsp.RequestType<FolderUriParams, GetFilePatternsForAnalysisResponse, null>(
-    'sonarlint/listSupportedFilePatterns'
+    'codescan/listSupportedFilePatterns'
   );
 }
 
@@ -457,12 +457,12 @@ export interface GetSuggestedBindingResponse {
 
 export namespace GetSuggestedBinding {
   export const type = new lsp.RequestType<GetSuggestedBindingParams, GetSuggestedBindingResponse, null>(
-    'sonarlint/getBindingSuggestion'
+    'codescan/getBindingSuggestion'
   );
 }
 
 export namespace AddIssueComment {
-  export const type = new lsp.NotificationType<AddIssueCommentParams>('sonarlint/addIssueComment');
+  export const type = new lsp.NotificationType<AddIssueCommentParams>('codescan/addIssueComment');
 }
 
 export interface AddIssueCommentParams {
@@ -472,7 +472,7 @@ export interface AddIssueCommentParams {
 }
 
 export namespace SetIssueStatus {
-  export const type = new lsp.NotificationType<SetIssueStatusParams>('sonarlint/changeIssueStatus');
+  export const type = new lsp.NotificationType<SetIssueStatusParams>('codescan/changeIssueStatus');
 }
 
 export interface SetIssueStatusParams {
@@ -489,7 +489,7 @@ export interface AssistCreatingConnectionParams {
 }
 
 export namespace AssistCreatingConnection {
-  export const type = new lsp.NotificationType<AssistCreatingConnectionParams>('sonarlint/assistCreatingConnection');
+  export const type = new lsp.NotificationType<AssistCreatingConnectionParams>('codescan/assistCreatingConnection');
 }
 
 export interface AssistBindingParams {
@@ -498,7 +498,7 @@ export interface AssistBindingParams {
 }
 
 export namespace AssistBinding {
-  export const type = new lsp.NotificationType<AssistBindingParams>('sonarlint/assistBinding');
+  export const type = new lsp.NotificationType<AssistBindingParams>('codescan/assistBinding');
 }
 
 interface ShowHotspotDetailsParams {
@@ -506,7 +506,7 @@ interface ShowHotspotDetailsParams {
 }
 
 export namespace ShowHotspotDetails {
-  export const type = new lsp.NotificationType<ShowHotspotDetailsParams>('sonarlint/showHotspotDetails');
+  export const type = new lsp.NotificationType<ShowHotspotDetailsParams>('codescan/showHotspotDetails');
 }
 
 export interface GetAllowedHotspotStatusesResponse {
@@ -523,7 +523,7 @@ export interface GetAllowedHotspotStatusesParams {
 
 export namespace GetAllowedHotspotStatuses {
   export const type = new lsp.RequestType<GetAllowedHotspotStatusesParams, GetAllowedHotspotStatusesResponse, null>(
-    'sonarlint/getAllowedHotspotStatuses'
+    'codescan/getAllowedHotspotStatuses'
   );
 }
 
@@ -534,7 +534,7 @@ export interface SetHotspotStatusParams {
 }
 
 export namespace SetHotspotStatus {
-  export const type = new lsp.NotificationType<SetHotspotStatusParams>('sonarlint/changeHotspotStatus');
+  export const type = new lsp.NotificationType<SetHotspotStatusParams>('codescan/changeHotspotStatus');
 }
 
 export interface SslCertificateConfirmationParams {
@@ -549,7 +549,7 @@ export interface SslCertificateConfirmationParams {
 
 export namespace SslCertificateConfirmation {
   export const type = new lsp.RequestType<SslCertificateConfirmationParams, boolean, void>(
-    'sonarlint/askSslCertificateConfirmation');
+    'codescan/askSslCertificateConfirmation');
 }
 
 //#endregion

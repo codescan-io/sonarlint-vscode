@@ -54,13 +54,6 @@
     "output": "analyzers/sonartext.jar"
   },
   {
-    "groupId": "com.sonarsource.cpp",
-    "artifactId": "sonar-cfamily-plugin",
-    "version": "6.47.0.62356",
-    "output": "analyzers/sonarcfamily.jar",
-    "requiresCredentials": true
-  },
-  {
     "groupId": "org.sonarsource.iac",
     "artifactId": "sonar-iac-plugin",
     "version": "1.18.0.4757",

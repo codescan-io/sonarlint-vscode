@@ -102,7 +102,7 @@ function onClickGenerateToken() {
    * @type {HTMLInputElement}
    */
   const serverUrlElement = byId('serverUrl');
-  const serverUrl = serverUrlElement ? serverUrlElement.value : 'https://sonarcloud.io';
+  const serverUrl = serverUrlElement ? serverUrlElement.value : 'https://app.codescan.io';
   byId('tokenGenerationProgress').classList.remove('hidden');
   vscode.postMessage({
     command: 'openTokenGenerationPage',
@@ -216,6 +216,7 @@ function hasChanged(elementId) {
 
 function handleMessage(event) {
   const message = event.data;
+  console.log("Command: " + message.command)
   switch (message.command) {
     case 'connectionCheckStart':
       connectionCheckStart();

@@ -22,9 +22,9 @@ suite('SonarLint Rules view', () => {
 
     await vscode.commands.executeCommand('SonarLint.OpenRuleByKey', secretsAwsRuleKey);
 
-    await vscode.commands.executeCommand('SonarLint.OpenStandaloneRuleDesc', secretsAwsRuleKey);
+    await vscode.commands.executeCommand('CodeScan.OpenStandaloneRuleDesc', secretsAwsRuleKey);
 
-    await vscode.commands.executeCommand('SonarLint.DeactivateRule', secretsAwsRuleKey);
+    await vscode.commands.executeCommand('CodeScan.DeactivateRule', secretsAwsRuleKey);
 
     const rulesAfterDeactivation = vscode.workspace.getConfiguration('sonarlint').get('rules');
     expect(rulesAfterDeactivation[secretsAwsRuleKey].level).to.equal('off');
