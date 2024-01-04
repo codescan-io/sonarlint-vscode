@@ -1,7 +1,7 @@
 'use strict';
 const fs = require('fs');
 
-const languageServerVersion = '2.21-CODESCAN';
+const languageServerVersion = '2.20.0-SNAPSHOT';
 
 if (!fs.existsSync('server')) {
   fs.mkdirSync('server');

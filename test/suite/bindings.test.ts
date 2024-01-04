@@ -9,9 +9,8 @@
 import { expect } from 'chai';
 import { BindingService, ProjectBinding } from '../../src/connected/binding';
 import {
-  ConnectionSettingsService,
-  SonarCloudConnection,
-  SonarQubeConnection
+  BaseConnection,
+  ConnectionSettingsService
 } from '../../src/settings/connectionsettings';
 
 import * as VSCode from 'vscode';
@@ -57,11 +56,11 @@ const mockClient = {
 } as SonarLintExtendedLanguageClient;
 
 const mockSettingsService = {
-  async loadSonarQubeConnection(connectionId: string): Promise<SonarQubeConnection> {
+  async loadSonarQubeConnection(connectionId: string): Promise<BaseConnection> {
     return { serverUrl: 'https://next.sonarqube.com/sonarqube', connectionId: connectionId };
   },
-  async loadSonarCloudConnection(connectionId: string): Promise<SonarCloudConnection> {
-    return { organizationKey: 'orgKey', connectionId: connectionId };
+  async loadSonarCloudConnection(connectionId: string): Promise<BaseConnection> {
+    return { organizationKey: 'orgKey', connectionId: connectionId, serverUrl: 'https://server1' };
   }
 } as ConnectionSettingsService;
 

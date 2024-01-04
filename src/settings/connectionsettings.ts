@@ -19,8 +19,8 @@ const SONARQUBE_CONNECTIONS_CATEGORY = `${SONARLINT_CATEGORY}.${CONNECTIONS_SECT
 const SONARCLOUD_CONNECTIONS_CATEGORY = `${SONARLINT_CATEGORY}.${CONNECTIONS_SECTION}.${SONARCLOUD}`;
 
 async function hasUnmigratedConnections(
-  sqConnections: SonarQubeConnection[],
-  scConnections: SonarCloudConnection[],
+  sqConnections: BaseConnection[],
+  scConnections: BaseConnection[],
   settingsService: ConnectionSettingsService
 ): Promise<boolean> {
   for (const connection of [...sqConnections, ...scConnections]) {
@@ -35,16 +35,16 @@ export async function migrateConnectedModeSettings(
   settings: VSCode.WorkspaceConfiguration,
   settingsService: ConnectionSettingsService
 ) {
-  const sqConnections = settings.get<SonarQubeConnection[]>(`${CONNECTIONS_SECTION}.${SONARQUBE}`, []);
-  const scConnections = settings.get<SonarCloudConnection[]>(`${CONNECTIONS_SECTION}.${SONARCLOUD}`, []);
+  const sqConnections = settings.get<BaseConnection[]>(`${CONNECTIONS_SECTION}.${SONARQUBE}`, []);
+  const scConnections = settings.get<BaseConnection[]>(`${CONNECTIONS_SECTION}.${SONARCLOUD}`, []);
   if (await hasUnmigratedConnections(sqConnections, scConnections, settingsService)) {
     suggestMigrationToSecureStorage(sqConnections, scConnections, settingsService);
   }
 }
 
 async function suggestMigrationToSecureStorage(
-  sqConnections: SonarQubeConnection[],
-  scConnections: SonarCloudConnection[],
+  sqConnections: BaseConnection[],
+  scConnections: BaseConnection[],
   settingsService: ConnectionSettingsService
 ) {
   const remindMeLaterAction = 'Ask me later';
@@ -73,7 +73,7 @@ export class ConnectionSettingsService {
     return ConnectionSettingsService._instance;
   }
 
-  async storeConnectionToken(connection: SonarQubeConnection | SonarCloudConnection, token: string) {
+  async storeConnectionToken(connection: BaseConnection, token: string) {
     await this.storeServerToken(getTokenStorageKey(connection), token);
   }
 
@@ -92,7 +92,7 @@ export class ConnectionSettingsService {
     return this.secretStorage.get(serverUrlOrOrganizationKey);
   }
 
-  async hasTokenForConnection(connection: SonarQubeConnection | SonarCloudConnection) {
+  async hasTokenForConnection(connection: BaseConnection) {
     return this.hasTokenForServer(getTokenStorageKey(connection));
   }
 
@@ -105,7 +105,7 @@ export class ConnectionSettingsService {
     }
   }
 
-  async deleteTokenForConnection(connection: SonarQubeConnection | SonarCloudConnection): Promise<void> {
+  async deleteTokenForConnection(connection: BaseConnection): Promise<void> {
     return this.deleteTokenForServer(getTokenStorageKey(connection));
   }
 
@@ -113,25 +113,25 @@ export class ConnectionSettingsService {
     return this.secretStorage.delete(serverUrlOrOrganizationKey);
   }
 
-  getSonarQubeConnections(): SonarQubeConnection[] {
+  getSonarQubeConnections(): BaseConnection[] {
     return VSCode.workspace
       .getConfiguration(SONARLINT_CATEGORY)
-      .get<SonarQubeConnection[]>(`${CONNECTIONS_SECTION}.${SONARQUBE}`);
+      .get<BaseConnection[]>(`${CONNECTIONS_SECTION}.${SONARQUBE}`);
   }
 
-  setSonarQubeConnections(sqConnections: SonarQubeConnection[]) {
+  setSonarQubeConnections(sqConnections: BaseConnection[]) {
     VSCode.workspace
       .getConfiguration()
       .update(SONARQUBE_CONNECTIONS_CATEGORY, sqConnections, VSCode.ConfigurationTarget.Global);
   }
 
-  getSonarQubeConnectionForUrl(serverUrl: string): SonarQubeConnection | undefined {
+  getSonarQubeConnectionForUrl(serverUrl: string): BaseConnection | undefined {
     return this.getSonarQubeConnections().find(c => c.serverUrl === serverUrl);
   }
 
-  async addSonarQubeConnection(connection: SonarQubeConnection) {
+  async addSonarQubeConnection(connection: BaseConnection) {
     const connections = this.getSonarQubeConnections();
-    const newConnection: SonarQubeConnection = { serverUrl: connection.serverUrl };
+    const newConnection: BaseConnection = { serverUrl: connection.serverUrl };
     if (connection.connectionId !== undefined) {
       newConnection.connectionId = connection.connectionId;
     }
@@ -145,7 +145,7 @@ export class ConnectionSettingsService {
       .update(SONARQUBE_CONNECTIONS_CATEGORY, connections, VSCode.ConfigurationTarget.Global);
   }
 
-  async updateSonarQubeConnection(connection: SonarQubeConnection) {
+  async updateSonarQubeConnection(connection: BaseConnection) {
     const connections = this.getSonarQubeConnections();
     const connectionToUpdate = connections.find(c => c.connectionId === connection.connectionId);
     if (!connectionToUpdate) {
@@ -165,25 +165,25 @@ export class ConnectionSettingsService {
       .update(SONARQUBE_CONNECTIONS_CATEGORY, connections, VSCode.ConfigurationTarget.Global);
   }
 
-  getSonarCloudConnections(): SonarCloudConnection[] {
+  getSonarCloudConnections(): BaseConnection[] {
     return VSCode.workspace
       .getConfiguration(SONARLINT_CATEGORY)
-      .get<SonarCloudConnection[]>(`${CONNECTIONS_SECTION}.${SONARCLOUD}`);
+      .get<BaseConnection[]>(`${CONNECTIONS_SECTION}.${SONARCLOUD}`);
   }
 
-  getSonarCloudConnectionForOrganization(organization: string): SonarCloudConnection | undefined {
+  getSonarCloudConnectionForOrganization(organization: string): BaseConnection | undefined {
     return this.getSonarCloudConnections().find(c => c.organizationKey === organization);
   }
 
-  setSonarCloudConnections(scConnections: SonarCloudConnection[]) {
+  setSonarCloudConnections(scConnections: BaseConnection[]) {
     VSCode.workspace
       .getConfiguration()
       .update(SONARCLOUD_CONNECTIONS_CATEGORY, scConnections, VSCode.ConfigurationTarget.Global);
   }
 
-  async addSonarCloudConnection(connection: SonarCloudConnection) {
+  async addSonarCloudConnection(connection: BaseConnection) {
     const connections = this.getSonarCloudConnections();
-    const newConnection: SonarCloudConnection = { organizationKey: connection.organizationKey };
+    const newConnection: BaseConnection = { organizationKey: connection.organizationKey, serverUrl: connection.serverUrl };
     if (connection.connectionId !== undefined) {
       newConnection.connectionId = connection.connectionId;
     }
@@ -197,7 +197,7 @@ export class ConnectionSettingsService {
       .update(SONARCLOUD_CONNECTIONS_CATEGORY, connections, VSCode.ConfigurationTarget.Global);
   }
 
-  async updateSonarCloudConnection(connection: SonarCloudConnection) {
+  async updateSonarCloudConnection(connection: BaseConnection) {
     const connections = this.getSonarCloudConnections();
     const connectionToUpdate = connections.find(c => c.connectionId === connection.connectionId);
     if (!connectionToUpdate) {
@@ -218,8 +218,8 @@ export class ConnectionSettingsService {
   }
 
   async addTokensFromSettingsToSecureStorage(
-    sqConnections: SonarQubeConnection[],
-    scConnections: SonarCloudConnection[]
+    sqConnections: BaseConnection[],
+    scConnections: BaseConnection[]
   ) {
     await Promise.all(
       [...sqConnections, ...scConnections].map(async c => {
@@ -314,22 +314,16 @@ export interface BaseConnection {
   token?: string;
   connectionId?: string;
   disableNotifications?: boolean;
+  serverUrl?: string;
+  organizationKey?: string;
 }
 
-export interface SonarQubeConnection extends BaseConnection {
-  serverUrl: string;
+export function isSonarQubeConnection(connection: BaseConnection) {
+  return connection.organizationKey === undefined;
 }
 
-export interface SonarCloudConnection extends BaseConnection {
-  organizationKey: string;
-}
-
-export function isSonarQubeConnection(connection: BaseConnection): connection is SonarQubeConnection {
-  return (connection as SonarQubeConnection).serverUrl !== undefined;
-}
-
-function getTokenStorageKey(connection: SonarQubeConnection | SonarCloudConnection) {
-  return isSonarQubeConnection(connection) ? connection.serverUrl : connection.organizationKey;
+function getTokenStorageKey(connection: BaseConnection) {
+  return !isSonarQubeConnection(connection) ? connection.organizationKey : connection.serverUrl;
 }
 
 async function updateConfigIfNotEmpty(connections, configCategory) {

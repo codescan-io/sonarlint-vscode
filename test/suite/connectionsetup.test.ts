@@ -184,12 +184,14 @@ suite('Connection Setup', () => {
     const organizationKey = 'another-organization';
     const token = 'XXX SUPER SECRET TOKEN XXX';
     const connectionId = 'My Little SonarQube';
+    const serverUrl = 'https://server';
 
     await ConnectionSettingsService.instance.addSonarCloudConnection(
       {
         connectionId,
         organizationKey,
-        token
+        token,
+        serverUrl
       }
     );
 

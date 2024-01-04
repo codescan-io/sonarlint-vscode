@@ -9,9 +9,7 @@
 import { BindingService, ServerProject } from '../../src/connected/binding';
 import {
   BaseConnection,
-  ConnectionSettingsService,
-  SonarCloudConnection,
-  SonarQubeConnection
+  ConnectionSettingsService
 } from '../../src/settings/connectionsettings';
 
 import * as path from 'path';
@@ -33,10 +31,10 @@ const TEST_SONARQUBE_CONNECTION = {
 };
 
 const mockSettingsService = {
-  async loadSonarQubeConnection(connectionId: string): Promise<SonarQubeConnection> {
+  async loadSonarQubeConnection(connectionId: string): Promise<BaseConnection> {
     return { serverUrl: 'https://next.sonarqube.com/sonarqube', connectionId };
   },
-  getSonarQubeConnections(): SonarQubeConnection[] {
+  getSonarQubeConnections(): BaseConnection[] {
     return [
       {
         connectionId: 'SQconnectionId',
@@ -45,12 +43,13 @@ const mockSettingsService = {
       }
     ];
   },
-  getSonarCloudConnections(): SonarCloudConnection[] {
+  getSonarCloudConnections(): BaseConnection[] {
     return [
       {
         connectionId: 'SCconnectionId',
         disableNotifications: true,
-        organizationKey: 'organizationKey'
+        organizationKey: 'organizationKey',
+        serverUrl: 'https://server1'
       }
     ];
   }

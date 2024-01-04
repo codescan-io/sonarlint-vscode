@@ -12,10 +12,9 @@ import { Commands } from '../util/commands';
 import { Connection } from './connections';
 import { ConnectionCheckResult } from '../lsp/protocol';
 import {
+  BaseConnection,
   ConnectionSettingsService,
-  isSonarQubeConnection,
-  SonarCloudConnection,
-  SonarQubeConnection
+  isSonarQubeConnection
 } from '../settings/connectionsettings';
 import * as util from '../util/util';
 import { escapeHtml, ResourceResolver } from '../util/webview';
@@ -59,7 +58,8 @@ export function connectToSonarCloud(context: vscode.ExtensionContext) {
     const initialState = {
       organizationKey: '',
       token: '',
-      connectionId: ''
+      connectionId: '',
+      serverUrl: 'https://app.codescan.io'
     };
     const serverProductName = 'SonarCloud';
     lazyCreateConnectionSetupPanel(context, serverProductName);
@@ -148,7 +148,7 @@ function lazyCreateConnectionSetupPanel(context: vscode.ExtensionContext, server
 
 interface RenderOptions {
   mode: 'create' | 'update';
-  initialState: SonarQubeConnection | SonarCloudConnection;
+  initialState: BaseConnection;
 }
 
 function renderConnectionSetupPanel(context: vscode.ExtensionContext, webview: vscode.Webview, options: RenderOptions) {
@@ -225,14 +225,14 @@ function renderConnectionSetupPanel(context: vscode.ExtensionContext, webview: v
 }
 
 function renderServerUrlField(connection) {
-  if (isSonarQubeConnection(connection)) {
+  // if (isSonarQubeConnection(connection)) {
     const serverUrl = escapeHtml(connection.serverUrl);
     return `<vscode-text-field id="serverUrl" type="url" placeholder="https://your.sonarqube.server/" required size="40"
     title="The base URL for your SonarQube server" autofocus value="${serverUrl}">
       Server URL
     </vscode-text-field>
     <input type="hidden" id="serverUrl-initial" value="${serverUrl}" />`;
-  }
+  // }
   return '';
 }
 
@@ -254,9 +254,9 @@ function renderGenerateTokenButton(connection, serverProductName) {
 }
 
 function renderOrganizationKeyField(connection) {
-  if (isSonarQubeConnection(connection)) {
-    return '';
-  }
+  // if (isSonarQubeConnection(connection)) {
+    // return '';
+  // }
   const organizationKey = escapeHtml(connection.organizationKey);
   return `<vscode-text-field id="organizationKey" type="text" placeholder="your-organization" required size="40"
     title="The key of your organization on SonarCloud" autofocus value="${organizationKey}">
@@ -318,7 +318,7 @@ async function openTokenGenerationPage(message) {
   await connectionSetupPanel.webview.postMessage({ command: 'tokenGenerationPageIsOpen' });
 }
 
-async function saveConnection(connection: SonarQubeConnection | SonarCloudConnection) {
+async function saveConnection(connection: BaseConnection) {
   if (isSonarQubeConnection(connection)) {
     const foundConnection = await ConnectionSettingsService.instance.loadSonarQubeConnection(connection.connectionId);
     await connectionSetupPanel.webview.postMessage({ command: 'connectionCheckStart' });
