@@ -1,3 +1,6 @@
+## 1.6.13
+* Fixed binding issue in case of empty projects
+
 ## 1.6.12
 * Fixed issue with SonarCSS 4.19
 
