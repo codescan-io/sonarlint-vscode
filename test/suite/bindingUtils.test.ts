@@ -16,6 +16,6 @@ suite('Binding Utils Test Suite', () => {
     const scBaseServerUrl = buildBaseServerUrl('SonarCloud', 'orgKey');
 
     expect(sqBaseServerUrl).to.be.equal('serverUrl/dashboard');
-    expect(scBaseServerUrl).to.be.equal('https://sonarcloud.io/project/overview');
+    expect(scBaseServerUrl).to.be.equal('https://app.codescan.io/project/overview');
   });
 });

@@ -43,8 +43,8 @@ export namespace Commands {
   export const SHOW_HOTSPOT_DESCRIPTION = 'SonarLint.ShowHotspotDescription';
   export const CONFIGURE_COMPILATION_DATABASE = 'CodeScan.ConfigureCompilationDatabase';
 
-  export const CONNECT_TO_SONARQUBE = 'CodeScan.ConnectToCodeScanSH';
-  export const CONNECT_TO_SONARCLOUD = 'CodeScan.ConnectToCodeScanCloud';
+  export const CONNECT_TO_CODESCAN = 'CodeScan.ConnectToCodeScan';
+  export const CONNECT_TO_CODESCAN_SELF_HOSTED = 'CodeScan.ConnectToCodeScanSelfHosted';
   export const EDIT_SONARQUBE_CONNECTION = 'CodeScan.EditCodeScanSHConnection';
   export const EDIT_SONARCLOUD_CONNECTION = 'CodeScan.EditCodeScanCloudConnection';
   export const REMOVE_CONNECTION = 'CodeScan.RemoveConnection';

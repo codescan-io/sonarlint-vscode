@@ -22,6 +22,7 @@ function init() {
   if (serverUrl) {
     serverUrl.addEventListener('change', onChangeServerUrl);
     serverUrl.addEventListener('keyup', onChangeServerUrl);
+    serverUrl.addEventListener('blur', onBlurServerUrl);
   }
   const organizationKey = byId('organizationKey');
   if (organizationKey) {
@@ -52,6 +53,12 @@ function onChangeServerUrl() {
   toggleSaveConnectionButton();
 }
 
+function onBlurServerUrl() {
+  if (hasValidServerUrl()) {
+    checkIfUrlIsCloud()();
+  }
+}
+
 function onChangeOrganizationKey() {
   saveState();
   if (byId('shouldGenerateConnectionId').value === 'true') {
@@ -64,12 +71,28 @@ function toggleGenerateTokenButton() {
   byId('generateToken').disabled = byId('serverUrl') && !hasValidRequiredField();
 }
 
+function toggleOrganizationKeyInputField(message) {
+  byId('organizationKey').disabled = !message.isCloud;
+}
+
 function hasValidRequiredField() {
   if (byId('serverUrl')) {
     return hasValidServerUrl();
   } else {
     return hasValidOrganizationKey();
   }
+}
+
+function checkIfUrlIsCloud() {
+  /**
+   * @type {HTMLInputElement}
+   */
+  const serverUrlElement = byId('serverUrl');
+  const serverUrl = serverUrlElement ? serverUrlElement.value : 'https://app.codescan.io';
+  vscode.postMessage({
+    command: 'checkIfCodeScanCloudUrl',
+    serverUrl
+  });
 }
 
 function hasValidServerUrl() {
@@ -109,7 +132,6 @@ function onClickGenerateToken() {
     serverUrl
   });
 }
-
 
 
 function onChangeToken() {
@@ -216,7 +238,6 @@ function hasChanged(elementId) {
 
 function handleMessage(event) {
   const message = event.data;
-  console.log("Command: " + message.command)
   switch (message.command) {
     case 'connectionCheckStart':
       connectionCheckStart();
@@ -232,6 +253,9 @@ function handleMessage(event) {
       break;
     case 'tokenGenerationPageIsOpen':
       tokenGenerationPageIsOpen(message.errorMessage);
+      break;
+    case 'isCodeScanCloudServer':
+      toggleOrganizationKeyInputField(message);
       break;
   }
 }

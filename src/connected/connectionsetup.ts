@@ -14,7 +14,7 @@ import { ConnectionCheckResult } from '../lsp/protocol';
 import {
   BaseConnection,
   ConnectionSettingsService,
-  isSonarQubeConnection
+  isCodeScanCloudConnection
 } from '../settings/connectionsettings';
 import * as util from '../util/util';
 import { escapeHtml, ResourceResolver } from '../util/webview';
@@ -27,16 +27,17 @@ const sonarCloudNotificationsDocUrl = 'https://docs.sonarcloud.io/advanced-setup
 const TOKEN_RECEIVED_COMMAND = 'tokenReceived';
 const OPEN_TOKEN_GENERATION_PAGE_COMMAND = 'openTokenGenerationPage';
 const SAVE_CONNECTION_COMMAND = 'saveConnection';
+const CHECK_CLOUD_COMMAND = 'checkIfCodeScanCloudUrl';
 
 export function assistCreatingConnection(context: vscode.ExtensionContext) {
   return assistCreatingConnectionParams => {
     assistCreatingConnectionParams.isSonarCloud
-      ? connectToSonarCloud(context)
-      : connectToSonarQube(context)(assistCreatingConnectionParams.serverUrl);
+      ? connectToCodeScanCloud(context)
+      : connectToCodeScanSelfHosted(context)(assistCreatingConnectionParams.serverUrl);
   };
 }
 
-export function connectToSonarQube(context: vscode.ExtensionContext) {
+export function connectToCodeScanSelfHosted(context: vscode.ExtensionContext) {
   return serverUrl => {
     const initialState = {
       serverUrl: serverUrl && typeof serverUrl === 'string' ? serverUrl : '',
@@ -53,7 +54,7 @@ export function connectToSonarQube(context: vscode.ExtensionContext) {
   };
 }
 
-export function connectToSonarCloud(context: vscode.ExtensionContext) {
+export function connectToCodeScanCloud(context: vscode.ExtensionContext) {
   return () => {
     const initialState = {
       organizationKey: '',
@@ -61,7 +62,7 @@ export function connectToSonarCloud(context: vscode.ExtensionContext) {
       connectionId: '',
       serverUrl: 'https://app.codescan.io'
     };
-    const serverProductName = 'SonarCloud';
+    const serverProductName = 'CodeScan';
     lazyCreateConnectionSetupPanel(context, serverProductName);
     connectionSetupPanel.webview.html = renderConnectionSetupPanel(context, connectionSetupPanel.webview, {
       mode: 'create',
@@ -158,7 +159,8 @@ function renderConnectionSetupPanel(context: vscode.ExtensionContext, webview: v
   const webviewMainUri = resolver.resolve('webview-ui', 'connectionsetup.js');
 
   const { mode, initialState } = options;
-  const isSonarQube = isSonarQubeConnection(initialState);
+  // const isSonarQube = !isCodeScanCloudConnection(initialState);
+  const isSonarQube = false;
 
   const serverProductName = isSonarQube ? 'SonarQube' : 'SonarCloud';
   const serverDocUrl = isSonarQube ? sonarQubeNotificationsDocUrl : sonarCloudNotificationsDocUrl;
@@ -181,6 +183,7 @@ function renderConnectionSetupPanel(context: vscode.ExtensionContext, webview: v
       <h1>${mode === 'create' ? 'New' : 'Edit'} ${serverProductName} Connection</h1>
       <form id="connectionForm">
         ${renderServerUrlField(initialState)}
+
         ${renderGenerateTokenButton(initialState, serverProductName)}
         <div class="formRowWithStatus">
           <vscode-text-field id="token" type="password" placeholder="········" required size="40"
@@ -225,19 +228,17 @@ function renderConnectionSetupPanel(context: vscode.ExtensionContext, webview: v
 }
 
 function renderServerUrlField(connection) {
-  // if (isSonarQubeConnection(connection)) {
-    const serverUrl = escapeHtml(connection.serverUrl);
-    return `<vscode-text-field id="serverUrl" type="url" placeholder="https://your.sonarqube.server/" required size="40"
-    title="The base URL for your SonarQube server" autofocus value="${serverUrl}">
-      Server URL
-    </vscode-text-field>
-    <input type="hidden" id="serverUrl-initial" value="${serverUrl}" />`;
-  // }
+  const serverUrl = escapeHtml(connection.serverUrl);
+  return `<vscode-text-field id="serverUrl" type="url" placeholder="https://app.codescan.io/" required size="40"
+  title="The base URL for your CodeScan server" autofocus value="${serverUrl}">
+    Server URL
+  </vscode-text-field>
+  <input type="hidden" id="serverUrl-initial" value="${serverUrl}" />`;
   return '';
 }
 
 function renderGenerateTokenButton(connection, serverProductName) {
-  const buttonDisabled = isSonarQubeConnection(connection) && connection.serverUrl === '' ? 'disabled' : '';
+  const buttonDisabled = connection.serverUrl === '' ? 'disabled' : '';
   return `<div id="tokenGeneration" class="formRowWithStatus">
       <vscode-button id="generateToken" ${buttonDisabled}>
         Generate Token
@@ -254,12 +255,9 @@ function renderGenerateTokenButton(connection, serverProductName) {
 }
 
 function renderOrganizationKeyField(connection) {
-  // if (isSonarQubeConnection(connection)) {
-    // return '';
-  // }
   const organizationKey = escapeHtml(connection.organizationKey);
   return `<vscode-text-field id="organizationKey" type="text" placeholder="your-organization" required size="40"
-    title="The key of your organization on SonarCloud" autofocus value="${organizationKey}">
+    title="The key of your organization on CodeScan" autofocus value="${organizationKey}" >
       Organization Key
     </vscode-text-field>
     <input type="hidden" id="organizationKey-initial" value="${organizationKey}" />`;
@@ -285,6 +283,9 @@ export async function handleMessage(message) {
         message.serverUrl = cleanServerUrl(message.serverUrl);
       }
       await saveConnection(message);
+      break;
+    case CHECK_CLOUD_COMMAND:
+      await isCodeScanCloudServer(message);
       break;
   }
 }
@@ -319,7 +320,8 @@ async function openTokenGenerationPage(message) {
 }
 
 async function saveConnection(connection: BaseConnection) {
-  if (isSonarQubeConnection(connection)) {
+  const isCloud = await isCodeScanCloudConnection(connection);
+  if (!isCloud) {
     const foundConnection = await ConnectionSettingsService.instance.loadSonarQubeConnection(connection.connectionId);
     await connectionSetupPanel.webview.postMessage({ command: 'connectionCheckStart' });
     if (foundConnection) {
@@ -338,11 +340,17 @@ async function saveConnection(connection: BaseConnection) {
   }
 }
 
+async function isCodeScanCloudServer(message) {
+  const { serverUrl } = message;
+  const isCloud = await isCodeScanCloudConnection({serverUrl})  
+  await connectionSetupPanel.webview.postMessage({ command: 'isCodeScanCloudServer', isCloud });
+}
+
 function cleanServerUrl(serverUrl: string) {
   return removeTrailingSlashes(serverUrl.trim());
 }
 
-function removeTrailingSlashes(url: string) {
+export function removeTrailingSlashes(url: string) {
   let cleanedUrl = url;
   while (cleanedUrl.endsWith('/')) {
     cleanedUrl = cleanedUrl.substring(0, cleanedUrl.length - 1);
@@ -355,3 +363,4 @@ export async function handleTokenReceivedNotification(token: string) {
     await connectionSetupPanel.webview.postMessage({ command: TOKEN_RECEIVED_COMMAND, token });
   }
 }
+

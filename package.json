@@ -424,14 +424,8 @@
         "enablement": "view == CodeScan.SecurityHotspots"
       },
       {
-        "command": "CodeScan.ConnectToCodeScanSH",
-        "title": "Connect to CodeScan Self-Hosted",
-        "category": "CodeScan",
-        "icon": "$(plus)"
-      },
-      {
-        "command": "CodeScan.ConnectToCodeScanCloud",
-        "title": "Connect to CodeScan Cloud",
+        "command": "CodeScan.ConnectToCodeScan",
+        "title": "Connect to CodeScan",
         "category": "CodeScan",
         "icon": "$(plus)"
       },
@@ -560,11 +554,11 @@
       },
       {
         "view": "CodeScan.ConnectedMode",
-        "contents": "No CodeScan connections found.\n[Add CodeScan Self-Hosted Connection](command:CodeScan.ConnectToCodeScanSH)\n[Add CodeScan Cloud Connection](command:CodeScan.ConnectToCodeScanCloud)"
+        "contents": "No CodeScan connections found.\n[Add CodeScan Connection](command:CodeScan.ConnectToCodeScan)"
       },
       {
         "view": "CodeScan.SecurityHotspots",
-        "contents": "Please ensure a connection to SonarQube 9.7+ or CodeScan Self-Hosted is set up. Detected Security Hotspots will be displayed here. [Learn More](https://github.com/codescan-io/codescan-vscode/wiki/security-hotspots).\n Using the In Whole Folder feature may consume excessive resources depending on the size of your project. Please check the [documentation](https://github.com/codescan-io/codescan-vscode/wiki/security-hotspots#reporting-security-hotspots-in-the-whole-folder) for recommendations to minimize the impact of a full project analysis."
+        "contents": "Please ensure a connection to CodeScan is set up. Detected Security Hotspots will be displayed here. [Learn More](https://github.com/codescan-io/codescan-vscode/wiki/security-hotspots).\n Using the In Whole Folder feature may consume excessive resources depending on the size of your project. Please check the [documentation](https://github.com/codescan-io/codescan-vscode/wiki/security-hotspots#reporting-security-hotspots-in-the-whole-folder) for recommendations to minimize the impact of a full project analysis."
       }
     ],
     "menus": {
@@ -604,12 +598,7 @@
           "group": "navigation"
         },
         {
-          "command": "CodeScan.ConnectToCodeScanSH",
-          "when": "view == CodeScan.ConnectedMode",
-          "group": "inline"
-        },
-        {
-          "command": "CodeScan.ConnectToCodeScanCloud",
+          "command": "CodeScan.ConnectToCodeScan",
           "when": "view == CodeScan.ConnectedMode",
           "group": "inline"
         },
@@ -631,13 +620,8 @@
           "group": "inline"
         },
         {
-          "command": "CodeScan.ConnectToCodeScanSH",
+          "command": "CodeScan.ConnectToCodeScan",
           "when": "view == CodeScan.ConnectedMode && viewItem == sonarQubeGroup",
-          "group": "inline"
-        },
-        {
-          "command": "CodeScan.ConnectToCodeScanCloud",
-          "when": "view == CodeScan.ConnectedMode && viewItem == sonarCloudGroup",
           "group": "inline"
         },
         {
@@ -841,7 +825,7 @@
     "ts-loader": "9.4.1",
     "typescript": "^4.9.5",
     "vinyl": "^2.2.1",
-    "vsce": "2.15.0",
+    "vsce": "^2.15.0",
     "webpack": "5.76.0",
     "webpack-cli": "4.10.0"
   },

@@ -10,6 +10,7 @@ import * as VSCode from 'vscode';
 import { Connection } from '../connected/connections';
 import { SonarLintExtendedLanguageClient } from '../lsp/client';
 import { logToSonarLintOutput } from '../util/logging';
+import { removeTrailingSlashes } from '../connected/connectionsetup';
 
 const SONARLINT_CATEGORY = 'sonarlint';
 const CONNECTIONS_SECTION = 'connectedMode.connections';
@@ -74,7 +75,7 @@ export class ConnectionSettingsService {
   }
 
   async storeConnectionToken(connection: BaseConnection, token: string) {
-    await this.storeServerToken(getTokenStorageKey(connection), token);
+    await this.storeServerToken(await getTokenStorageKey(connection), token);
   }
 
   /**
@@ -93,7 +94,7 @@ export class ConnectionSettingsService {
   }
 
   async hasTokenForConnection(connection: BaseConnection) {
-    return this.hasTokenForServer(getTokenStorageKey(connection));
+    return this.hasTokenForServer(await getTokenStorageKey(connection));
   }
 
   async hasTokenForServer(serverUrlOrOrganizationKey: string): Promise<boolean> {
@@ -106,7 +107,7 @@ export class ConnectionSettingsService {
   }
 
   async deleteTokenForConnection(connection: BaseConnection): Promise<void> {
-    return this.deleteTokenForServer(getTokenStorageKey(connection));
+    return this.deleteTokenForServer(await getTokenStorageKey(connection));
   }
 
   async deleteTokenForServer(serverUrlOrOrganizationKey: string): Promise<void> {
@@ -318,12 +319,43 @@ export interface BaseConnection {
   organizationKey?: string;
 }
 
-export function isSonarQubeConnection(connection: BaseConnection) {
-  return connection.organizationKey === undefined;
+export async function isCodeScanCloudConnection(connection : BaseConnection) {
+  const serverUrl = connection.serverUrl;
+  if (!serverUrl) return false;
+  if (serverUrl.includes("codescan.io")) return true;
+
+  const isCloud = await checkIfCloudApiExistForServer(serverUrl);
+  return isCloud;
 }
 
-function getTokenStorageKey(connection: BaseConnection) {
-  return !isSonarQubeConnection(connection) ? connection.organizationKey : connection.serverUrl;
+async function checkIfCloudApiExistForServer(serverUrl) {
+  const CODESCAN_HEALTH_ENDPOINT = removeTrailingSlashes(serverUrl) + "/_codescan/actuator/health";
+  try {
+    const response = await fetch(CODESCAN_HEALTH_ENDPOINT);
+
+    if (!response.ok) {
+      console.debug(`isCodeScanCloudAlias health check request for host: ${serverUrl} failed with status code: ${response.status}.`);
+      return false;
+    }
+
+    try {
+      const responseBody = await response.json();
+      if (responseBody.status === "UP") {
+        return true;
+      } else {
+        console.debug(`isCodeScanCloudAlias health check request for host: ${serverUrl} returned JSON with unexpected status: ${responseBody.status}.`);
+      }
+    } catch (jsonError) {
+      console.debug(`isCodeScanCloudAlias health check request for host: ${serverUrl} returned invalid JSON.`);
+    }
+    return false;
+  } catch (error) {
+    return false;
+  }
+}
+
+async function getTokenStorageKey(connection: BaseConnection) {
+  return await isCodeScanCloudConnection(connection) ? connection.organizationKey : connection.serverUrl;
 }
 
 async function updateConfigIfNotEmpty(connections, configCategory) {

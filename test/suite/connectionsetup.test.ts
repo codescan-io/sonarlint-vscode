@@ -33,15 +33,15 @@ suite('Connection Setup', () => {
     await vscode.commands.executeCommand('workbench.action.closeAllEditors');
   });
 
-  test('should show SonarQube creation webview when command is called', async () => {
+  test('should show CodeScan creation webview when command is called', async () => {
     const sleepTime = 1000;
     const connectionsBefore = getSonarQubeConnections();
     assert.deepStrictEqual(connectionsBefore, []);
 
-    await vscode.commands.executeCommand(Commands.CONNECT_TO_SONARQUBE);
+    await vscode.commands.executeCommand(Commands.CONNECT_TO_CODESCAN_SELF_HOSTED);
     await sleep(sleepTime);
 
-    const serverUrl = 'https://sonarqube.example';
+    const serverUrl = 'https://codescan.example';
     const token = 'definitely not a valid token';
     const disableNotifications = false;
 
@@ -62,10 +62,10 @@ suite('Connection Setup', () => {
     const connectionsBefore = getSonarQubeConnections();
     assert.deepStrictEqual(connectionsBefore, []);
 
-    await vscode.commands.executeCommand(Commands.CONNECT_TO_SONARQUBE);
+    await vscode.commands.executeCommand(Commands.CONNECT_TO_CODESCAN_SELF_HOSTED);
     await sleep(sleepTime);
 
-    const serverUrl = 'https://sonarqube.example';
+    const serverUrl = 'https://codescan.example';
     const message = {
       command: 'saveConnection',
       serverUrl: serverUrl,
@@ -81,12 +81,12 @@ suite('Connection Setup', () => {
 
   }).timeout(FIVE_SECONDS);
 
-  test('should show SonarCloud creation webview when command is called', async () => {
+  test('should show CodeScan creation webview when command is called', async () => {
     const sleepTime = 1000;
     const connectionsBefore = getSonarCloudConnections();
     assert.deepStrictEqual(connectionsBefore, []);
 
-    await vscode.commands.executeCommand(Commands.CONNECT_TO_SONARCLOUD);
+    await vscode.commands.executeCommand(Commands.CONNECT_TO_CODESCAN_SELF_HOSTED);
     await sleep(sleepTime);
 
     const token = 'definitely not a valid token';

@@ -16,8 +16,8 @@ import { BindingService } from './connected/binding';
 import { AllConnectionsTreeDataProvider } from './connected/connections';
 import {
   assistCreatingConnection,
-  connectToSonarCloud,
-  connectToSonarQube,
+  connectToCodeScanCloud,
+  connectToCodeScanSelfHosted,
   editSonarCloudConnection,
   editSonarQubeConnection,
   reportConnectionCheckResult
@@ -436,11 +436,11 @@ function registerCommands(context: VSCode.ExtensionContext) {
   );
 
   context.subscriptions.push(
-    VSCode.commands.registerCommand(Commands.CONNECT_TO_SONARQUBE, connectToSonarQube(context))
+    VSCode.commands.registerCommand(Commands.CONNECT_TO_CODESCAN, connectToCodeScanCloud(context))
   );
-  context.subscriptions.push(
-    VSCode.commands.registerCommand(Commands.CONNECT_TO_SONARCLOUD, connectToSonarCloud(context))
-  );
+  // context.subscriptions.push(
+    // VSCode.commands.registerCommand(Commands.CONNECT_TO_CODESCAN_SELF_HOSTED, connectToCodeScanSelfHosted(context))
+  // );
   context.subscriptions.push(
     VSCode.commands.registerCommand(Commands.EDIT_SONARQUBE_CONNECTION, editSonarQubeConnection(context))
   );
