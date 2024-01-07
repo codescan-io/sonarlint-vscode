@@ -39,7 +39,7 @@ suite('Java Test Suite', () => {
   });
 
   test('should report issue on java file', async function () {
-    await vscode.commands.executeCommand('SonarLint.ShowCodeScanOutput');
+    await vscode.commands.executeCommand('CodeScan.ShowCodeScanOutput');
 
     const fileUri = vscode.Uri.file(
       path.join(

@@ -30,7 +30,7 @@ export namespace Commands {
   export const SHOW_ALL_RULES = 'CodeScan.ShowAllRules';
   export const SHOW_ACTIVE_RULES = 'CodeScan.ShowActiveRules';
   export const SHOW_INACTIVE_RULES = 'CodeScan.ShowInactiveRules';
-  export const SHOW_SONARLINT_OUTPUT = 'SonarLint.ShowCodeScanOutput';
+  export const SHOW_SONARLINT_OUTPUT = 'CodeScan.ShowCodeScanOutput';
   export const OPEN_RULE_BY_KEY = 'SonarLint.OpenRuleByKey';
   export const FIND_RULE_BY_KEY = 'CodeScan.FindRuleByKey';
   export const SHOW_ALL_LOCATIONS = 'SonarLint.ShowAllLocations';
