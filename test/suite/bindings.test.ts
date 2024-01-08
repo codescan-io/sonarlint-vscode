@@ -291,10 +291,10 @@ suite('Bindings Test Suite', () => {
     });
 
     test('should get base server url', async () => {
-      expect(await underTest.getBaseServerUrl('connectionId', 'SonarQube')).to.be.equal(
+      expect(await underTest.getBaseServerUrl('connectionId', 'CodeScan Self-hosted')).to.be.equal(
         'https://next.sonarqube.com/sonarqube/dashboard'
       );
-      expect(await underTest.getBaseServerUrl('connectionId', 'SonarCloud')).to.be.equal(
+      expect(await underTest.getBaseServerUrl('connectionId', 'CodeScan')).to.be.equal(
         'https://sonarcloud.io/project/overview'
       );
     });

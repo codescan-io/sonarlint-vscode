@@ -50,7 +50,7 @@ async function suggestMigrationToSecureStorage(
 ) {
   const remindMeLaterAction = 'Ask me later';
   const migrateToSecureStorageAction = 'Migrate';
-  const message = `SonarLint found SonarQube/SonarCloud token in settings file.
+  const message = `CodeScan found token in settings file.
    Do you want to migrate them to secure storage?`;
   const selection = await VSCode.window.showWarningMessage(message, migrateToSecureStorageAction, remindMeLaterAction);
   if (selection === migrateToSecureStorageAction) {
@@ -80,7 +80,7 @@ export class ConnectionSettingsService {
 
   /**
    *
-   * @param serverUrlOrOrganizationKey SonarQube URL or SonarCloud organization ID
+   * @param serverUrlOrOrganizationKey CodeScan Self-hosted URL or CodeScan organization ID
    * @param token auth token
    */
   async storeServerToken(serverUrlOrOrganizationKey: string, token: string): Promise<void> {
@@ -259,7 +259,7 @@ export class ConnectionSettingsService {
 
     const deleteAction = 'Delete';
     const confirm = await VSCode.window.showWarningMessage(
-      `Are you sure you want to delete ${isSonarQube ? 'SonarQube' : 'SonarCloud'} connection '${
+      `Are you sure you want to delete ${isSonarQube ? 'CodeScan Self-hosted' : 'CodeScan'} connection '${
         connection.id
       }' and project bindings related to it?`,
       { modal: true },

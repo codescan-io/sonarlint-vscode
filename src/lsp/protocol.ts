@@ -92,7 +92,7 @@ export interface ShowRuleDescriptionParams {
 }
 
 export namespace GetJavaConfigRequest {
-  export const type = new lsp.RequestType<string, GetJavaConfigResponse, void>('sonarlint/getJavaConfig');
+  export const type = new lsp.RequestType<string, GetJavaConfigResponse, void>('codescan/getJavaConfig');
 }
 
 export namespace ScmCheckRequest {

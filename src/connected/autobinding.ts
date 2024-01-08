@@ -20,7 +20,7 @@ const DONT_ASK_AGAIN_ACTION = "Don't Ask Again";
 export const DO_NOT_ASK_ABOUT_AUTO_BINDING_FOR_WS_FLAG = 'doNotAskAboutAutoBindingForWorkspace';
 export const DO_NOT_ASK_ABOUT_AUTO_BINDING_FOR_FOLDER_FLAG = 'doNotAskAboutAutoBindingForFolder';
 const LEARN_MORE_DOCS_LINK = 'https://github.com/SonarSource/sonarlint-vscode/wiki/Connected-Mode';
-const CONFIGURE_BINDING_PROMPT_MESSAGE = `There are folders in your workspace that are not bound to any SonarQube/SonarCloud projects.
+const CONFIGURE_BINDING_PROMPT_MESSAGE = `There are folders in your workspace that are not bound to any CodeScan projects.
       Do you want to configure binding?
       [Learn More](${LEARN_MORE_DOCS_LINK})`;
 
@@ -112,14 +112,14 @@ export class AutoBindingService {
     let targetConnection;
     if (sonarCloudConnections.length === 0 && sonarQubeConnections.length === 1) {
       targetConnection = {
-        label: this.computeItemLabel('SonarQube', sonarQubeConnections[0]),
+        label: this.computeItemLabel('CodeScan Self-hosted', sonarQubeConnections[0]),
         description: 'SonarQube',
         connectionId: this.computeConnectionId(sonarQubeConnections[0]),
         contextValue: 'sonarqubeConnection'
       };
     } else if (sonarQubeConnections.length === 0 && sonarCloudConnections.length === 1) {
       targetConnection = {
-        label: this.computeItemLabel('SonarCloud', sonarCloudConnections[0]),
+        label: this.computeItemLabel('CodeScan', sonarCloudConnections[0]),
         description: 'SonarCloud',
         connectionId: this.computeConnectionId(sonarCloudConnections[0]),
         contextValue: 'sonarcloudConnection'
@@ -128,16 +128,16 @@ export class AutoBindingService {
       const connectionNames = [];
       sonarQubeConnections.forEach(c => {
         connectionNames.push({
-          label: this.computeItemLabel('SonarQube', c),
-          description: 'SonarQube',
+          label: this.computeItemLabel('CodeScan Self-hosted', c),
+          description: 'CodeScan Self-hosted',
           connectionId: this.computeConnectionId(c),
           contextValue: 'sonarqubeConnection'
         });
       });
       sonarCloudConnections.forEach(c => {
         connectionNames.push({
-          label: this.computeItemLabel('SonarCloud', c),
-          description: 'SonarCloud',
+          label: this.computeItemLabel('CodeScan', c),
+          description: 'CodeScan',
           connectionId: this.computeConnectionId(c),
           contextValue: 'sonarcloudConnection'
         });
@@ -150,8 +150,8 @@ export class AutoBindingService {
     return targetConnection;
   }
 
-  private computeItemLabel(serverType: 'SonarQube' | 'SonarCloud', connection) {
-    if (serverType === 'SonarQube') {
+  private computeItemLabel(serverType: 'CodeScan Self-hosted' | 'CodeScan', connection) {
+    if (serverType === 'CodeScan Self-hosted') {
       return connection.connectionId ? connection.connectionId : connection.serverUrl;
     }
     return connection.connectionId ? connection.connectionId : connection.organizationKey;
@@ -223,8 +223,8 @@ export class AutoBindingService {
       `Do you want to bind folder '${unboundFolder.name}' to project '${bindingSuggestion.sonarProjectKey}'`;
     const message =
       this.isBindingSuggestionForSonarCloud(bindingSuggestion)
-        ? `${commonMessage} of SonarCloud organization '${bindingSuggestion.connectionId}'?`
-        : `${commonMessage} of SonarQube server '${bindingSuggestion.connectionId}'?`;
+        ? `${commonMessage} of CodeScan organization '${bindingSuggestion.connectionId}'?`
+        : `${commonMessage} of CodeScan Self-hosted server '${bindingSuggestion.connectionId}'?`;
 
     const result = await VSCode.window.showInformationMessage(
       `${message}

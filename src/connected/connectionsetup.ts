@@ -76,7 +76,7 @@ export function editSonarQubeConnection(context: vscode.ExtensionContext) {
   return async (connection: string | Promise<Connection>) => {
     const connectionId = typeof connection === 'string' ? connection : (await connection).id;
     const initialState = await ConnectionSettingsService.instance.loadSonarQubeConnection(connectionId);
-    const serverProductName = 'SonarQube';
+    const serverProductName = 'CodeScan Self-hosted';
     lazyCreateConnectionSetupPanel(context, serverProductName);
     connectionSetupPanel.webview.html = renderConnectionSetupPanel(context, connectionSetupPanel.webview, {
       mode: 'update',
@@ -90,7 +90,7 @@ export function editSonarCloudConnection(context: vscode.ExtensionContext) {
   return async (connection: string | Promise<Connection>) => {
     const connectionId = typeof connection === 'string' ? connection : (await connection).id;
     const initialState = await ConnectionSettingsService.instance.loadSonarCloudConnection(connectionId);
-    const serverProductName = 'SonarCloud';
+    const serverProductName = 'CodeScan';
     lazyCreateConnectionSetupPanel(context, serverProductName);
     connectionSetupPanel.webview.html = renderConnectionSetupPanel(context, connectionSetupPanel.webview, {
       mode: 'update',
@@ -159,11 +159,11 @@ function renderConnectionSetupPanel(context: vscode.ExtensionContext, webview: v
   const webviewMainUri = resolver.resolve('webview-ui', 'connectionsetup.js');
 
   const { mode, initialState } = options;
-  // const isSonarQube = !isCodeScanCloudConnection(initialState);
-  const isSonarQube = false;
+  // const isCodeScanSelfHosted = !isCodeScanCloudConnection(initialState);
+  const isCodeScanSelfHosted = false;
 
-  const serverProductName = isSonarQube ? 'SonarQube' : 'SonarCloud';
-  const serverDocUrl = isSonarQube ? sonarQubeNotificationsDocUrl : sonarCloudNotificationsDocUrl;
+  const serverProductName = isCodeScanSelfHosted ? 'CodeScan Self-hosted' : 'CodeScan';
+  const serverDocUrl = isCodeScanSelfHosted ? sonarQubeNotificationsDocUrl : sonarCloudNotificationsDocUrl;
 
   const initialConnectionId = escapeHtml(initialState.connectionId) || '';
   const initialToken = escapeHtml(initialState.token);

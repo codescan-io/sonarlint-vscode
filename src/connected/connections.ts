@@ -73,7 +73,7 @@ export class Connection extends VSCode.TreeItem {
 export class ConnectionGroup extends VSCode.TreeItem {
   constructor(
     public readonly id: 'sonarqube' | 'sonarcloud',
-    public readonly label: 'SonarQube' | 'SonarCloud',
+    public readonly label: 'CodeScan Self-hosted' | 'CodeScan',
     public readonly contextValue: 'sonarQubeGroup' | 'sonarCloudGroup'
   ) {
     super(label, VSCode.TreeItemCollapsibleState.Collapsed);
@@ -181,8 +181,8 @@ export class AllConnectionsTreeDataProvider implements VSCode.TreeDataProvider<C
     const sqConnections = ConnectionSettingsService.instance.getSonarQubeConnections();
     const scConnections = ConnectionSettingsService.instance.getSonarCloudConnections();
     return [
-      sqConnections.length > 0 ? new ConnectionGroup('sonarqube', 'SonarQube', 'sonarQubeGroup') : null,
-      scConnections.length > 0 ? new ConnectionGroup('sonarcloud', 'SonarCloud', 'sonarCloudGroup') : null
+      sqConnections.length > 0 ? new ConnectionGroup('sonarqube', 'CodeScan Self-hosted', 'sonarQubeGroup') : null,
+      scConnections.length > 0 ? new ConnectionGroup('sonarcloud', 'CodeScan', 'sonarCloudGroup') : null
     ];
   }
 
