@@ -86,7 +86,7 @@ export function editSonarQubeConnection(context: vscode.ExtensionContext) {
   };
 }
 
-export function editSonarCloudConnection(context: vscode.ExtensionContext) {
+export function editCodeScanConnection(context: vscode.ExtensionContext) {
   return async (connection: string | Promise<Connection>) => {
     const connectionId = typeof connection === 'string' ? connection : (await connection).id;
     const initialState = await ConnectionSettingsService.instance.loadSonarCloudConnection(connectionId);
@@ -130,7 +130,7 @@ export async function reportConnectionCheckResult(result: ConnectionCheckResult)
 function lazyCreateConnectionSetupPanel(context: vscode.ExtensionContext, serverProductName) {
   if (!connectionSetupPanel) {
     connectionSetupPanel = vscode.window.createWebviewPanel(
-      'sonarlint.ConnectionSetup',
+      'codescan.ConnectionSetup',
       `${serverProductName} Connection`,
       vscode.ViewColumn.Active,
       {
@@ -183,7 +183,6 @@ function renderConnectionSetupPanel(context: vscode.ExtensionContext, webview: v
       <h1>${mode === 'create' ? 'New' : 'Edit'} ${serverProductName} Connection</h1>
       <form id="connectionForm">
         ${renderServerUrlField(initialState)}
-
         ${renderGenerateTokenButton(initialState, serverProductName)}
         <div class="formRowWithStatus">
           <vscode-text-field id="token" type="password" placeholder="········" required size="40"
@@ -255,7 +254,8 @@ function renderGenerateTokenButton(connection, serverProductName) {
 }
 
 function renderOrganizationKeyField(connection) {
-  const organizationKey = escapeHtml(connection.organizationKey);
+  let organizationKey = escapeHtml(connection.organizationKey);
+  if (organizationKey === undefined) organizationKey = '';
   return `<vscode-text-field id="organizationKey" type="text" placeholder="your-organization" required size="40"
     title="The key of your organization on CodeScan" autofocus value="${organizationKey}" >
       Organization Key
@@ -320,23 +320,12 @@ async function openTokenGenerationPage(message) {
 }
 
 async function saveConnection(connection: BaseConnection) {
-  const isCloud = await isCodeScanCloudConnection(connection);
-  if (!isCloud) {
-    const foundConnection = await ConnectionSettingsService.instance.loadSonarQubeConnection(connection.connectionId);
-    await connectionSetupPanel.webview.postMessage({ command: 'connectionCheckStart' });
-    if (foundConnection) {
-      await ConnectionSettingsService.instance.updateSonarQubeConnection(connection);
-    } else {
-      await ConnectionSettingsService.instance.addSonarQubeConnection(connection);
-    }
+  const foundConnection = await ConnectionSettingsService.instance.loadSonarCloudConnection(connection.connectionId);
+  await connectionSetupPanel.webview.postMessage({ command: 'connectionCheckStart' });
+  if (foundConnection) {
+    await ConnectionSettingsService.instance.updateCodeScanConnection(connection);
   } else {
-    const foundConnection = await ConnectionSettingsService.instance.loadSonarCloudConnection(connection.connectionId);
-    await connectionSetupPanel.webview.postMessage({ command: 'connectionCheckStart' });
-    if (foundConnection) {
-      await ConnectionSettingsService.instance.updateSonarCloudConnection(connection);
-    } else {
-      await ConnectionSettingsService.instance.addSonarCloudConnection(connection);
-    }
+    await ConnectionSettingsService.instance.addCodeScanConnection(connection);
   }
 }
 

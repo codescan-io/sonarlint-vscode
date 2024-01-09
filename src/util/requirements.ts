@@ -20,12 +20,13 @@ import * as jre from '../java/jre';
 import { logToSonarLintOutput } from './logging';
 import { PlatformInformation } from './platform';
 import * as util from './util';
+import { SONARLINT_CATEGORY } from '../settings/settings';
 
 const REQUIRED_JAVA_VERSION = 11;
 
 const isWindows = process.platform.indexOf('win') === 0;
 const JAVA_FILENAME = `java${isWindows ? '.exe' : ''}`;
-export const JAVA_HOME_CONFIG = 'sonarlint.ls.javaHome';
+export const JAVA_HOME_CONFIG = SONARLINT_CATEGORY + '.ls.javaHome';
 
 export interface RequirementsData {
   javaHome: string;
@@ -214,7 +215,7 @@ async function findEmbeddedJRE(context: vscode.ExtensionContext): Promise<string
 
 export function installManagedJre() {
   return vscode.window.withProgress(
-    { location: vscode.ProgressLocation.Notification, title: 'SonarLint JRE Install' },
+    { location: vscode.ProgressLocation.Notification, title: 'CodeScan JRE Install' },
     (progress, cancelToken) => {
       return PlatformInformation.GetPlatformInformation()
         .then(platformInfo => {
@@ -233,7 +234,7 @@ export function installManagedJre() {
         .then(jreInstallDir => {
           progress.report({ message: 'Done' });
           vscode.workspace
-            .getConfiguration('sonarlint.ls')
+            .getConfiguration('codescan.ls')
             .update('javaHome', jreInstallDir, vscode.ConfigurationTarget.Global);
         })
         .catch(err => {

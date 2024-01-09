@@ -269,6 +269,7 @@ function connectionCheckSuccess() {
   byId('tokenStatus').classList.add('hidden');
   byId('connectionProgress').classList.add('hidden');
   byId('connectionStatus').innerText = 'Success!';
+  byId('saveConnection').disabled = true;
 }
 
 function connectionCheckFailure(reason) {

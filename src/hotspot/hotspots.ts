@@ -171,7 +171,7 @@ function formatRemoteHotspotStatus(status: HotspotStatus) {
 export const showHotspotDescription = () => {
   if (!hotspotDescriptionPanel) {
     hotspotDescriptionPanel = vscode.window.createWebviewPanel(
-      'sonarlint.DiagContext',
+      'codescan.DiagContext',
       'SonarQube Security Hotspot',
       vscode.ViewColumn.Two,
       {
@@ -340,7 +340,7 @@ export function formatDetectedHotspotStatus(statusIndex: number) {
 export function showHotspotDetails(hotspotDetails: ShowRuleDescriptionParams, hotspot: HotspotNode) {
   if (!hotspotDetailsPanel) {
     hotspotDetailsPanel = vscode.window.createWebviewPanel(
-      'sonarlint.DiagContext',
+      'codescan.DiagContext',
       'Security Hotspot Details',
       vscode.ViewColumn.Two,
       {

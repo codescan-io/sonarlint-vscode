@@ -151,10 +151,10 @@ export class AutoBindingService {
   }
 
   private computeItemLabel(serverType: 'CodeScan Self-hosted' | 'CodeScan', connection) {
-    if (serverType === 'CodeScan Self-hosted') {
-      return connection.connectionId ? connection.connectionId : connection.serverUrl;
+    if (connection.isCloudConnection) {
+      return connection.connectionId ? connection.connectionId : connection.organizationKey;
     }
-    return connection.connectionId ? connection.connectionId : connection.organizationKey;
+    return connection.connectionId ? connection.connectionId : connection.serverUrl;
   }
 
   private computeConnectionId(connection) {

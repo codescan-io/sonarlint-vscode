@@ -186,7 +186,7 @@ suite('Connection Setup', () => {
     const connectionId = 'My Little SonarQube';
     const serverUrl = 'https://server';
 
-    await ConnectionSettingsService.instance.addSonarCloudConnection(
+    await ConnectionSettingsService.instance.addCodeScanConnection(
       {
         connectionId,
         organizationKey,

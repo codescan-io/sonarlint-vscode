@@ -42,7 +42,7 @@ export function dumpLogOutput() {
 }
 
 function getSonarLintDiagnostics(fileUri: vscode.Uri) {
-  return vscode.languages.getDiagnostics(fileUri).filter(d => d.source === 'sonarlint');
+  return vscode.languages.getDiagnostics(fileUri).filter(d => d.source === 'codescan');
 }
 
 function sleep(ms: number): Promise<void> {

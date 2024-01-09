@@ -17,7 +17,7 @@ import { code2ProtocolConverter } from '../util/uri';
 import { DEFAULT_CONNECTION_ID } from '../commons';
 import { AssistBindingParams } from '../lsp/protocol';
 
-const SONARLINT_CATEGORY = 'sonarlint';
+const SONARLINT_CATEGORY = 'codescan';
 const BINDING_SETTINGS = 'connectedMode.project';
 const OPEN_FOLDER_ACTION = 'Open Folder';
 const BIND_MANUALLY_ACTION = 'Bind Manually';
@@ -158,10 +158,8 @@ export class BindingService {
   }
 
   async getBaseServerUrl(connectionId: string, serverType: ServerType): Promise<string> {
-    const serverUrlOrOrganizationKey =
-      serverType === 'SonarQube'
-        ? (await this.settingsService.loadSonarQubeConnection(connectionId)).serverUrl
-        : (await this.settingsService.loadSonarCloudConnection(connectionId)).organizationKey;
+    const connection = await this.settingsService.loadSonarCloudConnection(connectionId);
+    const serverUrlOrOrganizationKey = connection.isCloudConnection ? connection.organizationKey : connection.serverUrl;
     return buildBaseServerUrl(serverType, serverUrlOrOrganizationKey);
   }
 

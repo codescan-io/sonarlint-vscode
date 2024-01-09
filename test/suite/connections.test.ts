@@ -12,6 +12,7 @@ import { AllConnectionsTreeDataProvider, ConnectionGroup } from '../../src/conne
 import { SonarLintExtendedLanguageClient } from '../../src/lsp/client';
 import * as path from 'path';
 import { sampleFolderLocation } from './commons';
+import { SONARLINT_CATEGORY } from '../../src/settings/settings';
 
 const CONNECTED_MODE_SETTINGS = 'connectedMode.connections';
 const CONNECTED_MODE_SETTINGS_SONARQUBE = 'connectedMode.connections.sonarqube';
@@ -61,7 +62,7 @@ suite('Connected Mode Test Suite', () => {
     });
 
     test('should return same number of sonarqube settings as in config file', async () => {
-      const connectionConfig = vscode.workspace.getConfiguration('sonarlint.connectedMode.connections');
+      const connectionConfig = vscode.workspace.getConfiguration(SONARLINT_CATEGORY + '.connectedMode.connections');
       expect(connectionConfig.sonarqube.length).to.equal((await underTest.getConnections('sonarqube')).length);
     });
 
@@ -71,7 +72,7 @@ suite('Connected Mode Test Suite', () => {
     });
 
     test('should return same number of sonarcloud settings as in config file', async () => {
-      const connectionConfig = vscode.workspace.getConfiguration('sonarlint.connectedMode.connections');
+      const connectionConfig = vscode.workspace.getConfiguration(SONARLINT_CATEGORY + '.connectedMode.connections');
       expect(connectionConfig.sonarcloud.length).to.equal((await underTest.getConnections('sonarcloud')).length);
     });
   });

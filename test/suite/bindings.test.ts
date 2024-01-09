@@ -18,9 +18,9 @@ import { SonarLintExtendedLanguageClient } from '../../src/lsp/client';
 import { Connection, WorkspaceFolderItem } from '../../src/connected/connections';
 import * as protocol from '../../src/lsp/protocol';
 import { DEFAULT_CONNECTION_ID } from '../../src/commons';
+import { SONARLINT_CATEGORY } from '../../src/settings/settings';
 
 const CONNECTED_MODE_SETTINGS_SONARQUBE = 'connectedMode.connections.sonarqube';
-const SONARLINT_CATEGORY = 'sonarlint';
 const BINDING_SETTINGS = 'connectedMode.project';
 
 const TEST_SONARQUBE_CONNECTION = {

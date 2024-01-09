@@ -72,7 +72,7 @@
           },
           "additionalProperties": false
         },
-        "sonarlint.connectedMode.servers": {
+        "codescan.connectedMode.servers": {
           "deprecationMessage": "The setting is deprecated. Use `sonarlint.connectedMode.connections.sonarqube` or `sonarlint.connectedMode.connections.sonarcloud` instead.",
           "type": "array",
           "scope": "application",
@@ -100,7 +100,7 @@
             "additionalProperties": false
           }
         },
-        "sonarlint.connectedMode.connections.sonarqube": {
+        "codescan.connectedMode.connections.sonarqube": {
           "order": 2,
           "type": "array",
           "scope": "application",
@@ -142,7 +142,7 @@
             ]
           }
         },
-        "sonarlint.connectedMode.connections.sonarcloud": {
+        "codescan.connectedMode.connections.servers": {
           "order": 3,
           "type": "array",
           "scope": "application",
@@ -159,9 +159,17 @@
                 "type": "string",
                 "description": "A SonarCloud organization key. If you want to bind different projects that are in different organizations, simply declare multiple connections."
               },
+              "serverUrl": {
+                "type": "string",
+                "description": "URL of the CodeScan Self-Hosted server."
+              },
               "token": {
                 "type": "string",
                 "description": "Token generated from 'My Account>Security' in SonarCloud"
+              },
+              "isCloudConnection": {
+                "type": "boolean",
+                "description": "Flag that determines if the Codescan server plugin connects to is self-hosted or in the cloud."
               },
               "disableNotifications": {
                 "type": "boolean",
@@ -170,7 +178,8 @@
             },
             "additionalProperties": false,
             "required": [
-              "organizationKey"
+              "organizationKey",
+              "serverUrl"
             ],
             "examples": [
               {
@@ -184,7 +193,7 @@
             ]
           }
         },
-        "sonarlint.connectedMode.project": {
+        "codescan.connectedMode.project": {
           "order": 4,
           "markdownDescription": "Bind the current workspace folder to [CodeScan](https://codescan.io)t. Requires connection details to be defined in the setting `#sonarlint.connectedMode.connections.sonarqube#` or `#sonarlint.connectedMode.connections.sonarcloud#`.\n\nBinding a workspace folder to a project allows to use the same rules and configuration that are defined in the server, as well as issue suppressions.\n\nExample:\n\n    \"sonarlint.connectedMode.project\": {\n      \"projectKey\": \"my_project\"\n    }\n\nSpecify the `connectionId` only if you have defined multiple connections.",
           "examples": [
@@ -237,52 +246,52 @@
           ],
           "scope": "resource"
         },
-        "sonarlint.pathToNodeExecutable": {
+        "codescan.pathToNodeExecutable": {
           "order": 10,
           "type": "string",
           "markdownDescription": "Path to a Node.js executable (14.17.0 or more recent) used to analyze JavaScript and TypeScript code. \nOn Windows, backslashes must be escaped, e.g. `C:\\\\Program Files\\\\NodeJS\\\\14-lts\\\\bin\\\\node.exe`",
           "scope": "machine"
         },
-        "sonarlint.pathToCompileCommands": {
+        "codescan.pathToCompileCommands": {
           "order": 11,
           "type": "string",
           "markdownDescription": "Path to the active compilation database, e.g. `C:\\\\Repos\\\\MyProject\\\\compile_commands.json`",
           "scope": "resource"
         },
-        "sonarlint.testFilePattern": {
+        "codescan.testFilePattern": {
           "order": 12,
           "type": "string",
           "default": "",
           "markdownDescription": "Files whose name match this [glob pattern](https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob) are considered as test files by analyzers. Most rules are *not* evaluated on test files. Example: `{**/test/**,**/*test*,**/*Test*}`",
           "scope": "resource"
         },
-        "sonarlint.ls.javaHome": {
+        "codescan.ls.javaHome": {
           "order": 20,
           "type": "string",
           "markdownDescription": "Path to a Java Runtime Environment (11 or more recent) used to launch the CodeScan Language Server.\n* On Windows, backslashes must be escaped, e.g. `C:\\\\Program Files\\\\Java\\\\jdk-11.0.12+7` \n* On macOS, this path should include the `/Contents/Home` directory, e.g `/Library/Java/JavaVirtualMachines/jdk-11.0.12+7.jdk/Contents/Home`",
           "scope": "machine"
         },
-        "sonarlint.ls.vmargs": {
+        "codescan.ls.vmargs": {
           "order": 21,
           "type": "string",
           "markdownDescription": "Extra JVM arguments used to launch the CodeScan Language Server. e.g. `-Xmx1024m`",
           "scope": "machine"
         },
-        "sonarlint.output.showVerboseLogs": {
+        "codescan.output.showVerboseLogs": {
           "order": 90,
           "type": "boolean",
           "default": false,
           "description": "Enable verbose log level in the CodeScan output.",
           "scope": "window"
         },
-        "sonarlint.output.showAnalyzerLogs": {
+        "codescan.output.showAnalyzerLogs": {
           "order": 91,
           "type": "boolean",
           "default": false,
           "description": "Show analyzer's logs in the CodeScan output.",
           "scope": "window"
         },
-        "sonarlint.analyzerProperties": {
+        "codescan.analyzerProperties": {
           "order": 92,
           "type": "object",
           "patternProperties": {
@@ -295,7 +304,7 @@
           "markdownDescription": "Extra properties that could be passed to the code analyzers. Only for advanced use cases.",
           "scope": "resource"
         },
-        "sonarlint.trace.server": {
+        "codescan.trace.server": {
           "order": 98,
           "default": "off",
           "description": "Traces the communication between VS Code and the CodeScan language server.",
@@ -335,7 +344,7 @@
             }
           ]
         },
-        "sonarlint.disableTelemetry": {
+        "codescan.disableTelemetry": {
           "order": 99,
           "type": "boolean",
           "default": false,

@@ -12,12 +12,14 @@ import { SonarLintExtendedLanguageClient } from '../lsp/client';
 import { logToSonarLintOutput } from '../util/logging';
 import { removeTrailingSlashes } from '../connected/connectionsetup';
 
-const SONARLINT_CATEGORY = 'sonarlint';
+const SONARLINT_CATEGORY = 'codescan';
 const CONNECTIONS_SECTION = 'connectedMode.connections';
+const SERVERS = 'servers';
+// Todo: Delete these 2
 const SONARQUBE = 'sonarqube';
 const SONARCLOUD = 'sonarcloud';
 const SONARQUBE_CONNECTIONS_CATEGORY = `${SONARLINT_CATEGORY}.${CONNECTIONS_SECTION}.${SONARQUBE}`;
-const SONARCLOUD_CONNECTIONS_CATEGORY = `${SONARLINT_CATEGORY}.${CONNECTIONS_SECTION}.${SONARCLOUD}`;
+const SONARCLOUD_CONNECTIONS_CATEGORY = `${SONARLINT_CATEGORY}.${CONNECTIONS_SECTION}.${SERVERS}`;
 
 async function hasUnmigratedConnections(
   sqConnections: BaseConnection[],
@@ -139,7 +141,7 @@ export class ConnectionSettingsService {
     if (connection.disableNotifications) {
       newConnection.disableNotifications = true;
     }
-    await this.storeConnectionToken(connection, connection.token);
+    // await this.storeConnectionToken(connection, connection.token);
     connections.push(newConnection);
     VSCode.workspace
       .getConfiguration()
@@ -158,7 +160,7 @@ export class ConnectionSettingsService {
     } else {
       delete connectionToUpdate.disableNotifications;
     }
-    await this.storeConnectionToken(connection, connection.token);
+    // await this.storeConnectionToken(connection, connection.token);
     await this.client.onTokenUpdate();
     delete connectionToUpdate.token;
     VSCode.workspace
@@ -169,7 +171,7 @@ export class ConnectionSettingsService {
   getSonarCloudConnections(): BaseConnection[] {
     return VSCode.workspace
       .getConfiguration(SONARLINT_CATEGORY)
-      .get<BaseConnection[]>(`${CONNECTIONS_SECTION}.${SONARCLOUD}`);
+      .get<BaseConnection[]>(`${CONNECTIONS_SECTION}.${SERVERS}`);
   }
 
   getSonarCloudConnectionForOrganization(organization: string): BaseConnection | undefined {
@@ -182,35 +184,46 @@ export class ConnectionSettingsService {
       .update(SONARCLOUD_CONNECTIONS_CATEGORY, scConnections, VSCode.ConfigurationTarget.Global);
   }
 
-  async addSonarCloudConnection(connection: BaseConnection) {
+  async addCodeScanConnection(connection: BaseConnection) {
+    const isCloud = await isCodeScanCloudConnection(connection);
     const connections = this.getSonarCloudConnections();
-    const newConnection: BaseConnection = { organizationKey: connection.organizationKey, serverUrl: connection.serverUrl };
+    const newConnection: BaseConnection = { serverUrl: connection.serverUrl, isCloudConnection: isCloud };
+    if (isCloud) {
+      newConnection.organizationKey = connection.organizationKey;
+    }
     if (connection.connectionId !== undefined) {
       newConnection.connectionId = connection.connectionId;
     }
     if (connection.disableNotifications) {
       newConnection.disableNotifications = true;
     }
-    await this.storeConnectionToken(connection, connection.token);
+    await this.storeConnectionToken(newConnection, connection.token);
     connections.push(newConnection);
     VSCode.workspace
       .getConfiguration()
       .update(SONARCLOUD_CONNECTIONS_CATEGORY, connections, VSCode.ConfigurationTarget.Global);
   }
 
-  async updateSonarCloudConnection(connection: BaseConnection) {
+  async updateCodeScanConnection(connection: BaseConnection) {
+    const isCloud = await isCodeScanCloudConnection(connection);
     const connections = this.getSonarCloudConnections();
     const connectionToUpdate = connections.find(c => c.connectionId === connection.connectionId);
     if (!connectionToUpdate) {
       throw new Error(`Could not find connection '${connection.connectionId}' to update`);
     }
-    connectionToUpdate.organizationKey = connection.organizationKey;
+
+    connectionToUpdate.serverUrl = connection.serverUrl;
+    connectionToUpdate.isCloudConnection = isCloud;
+    if (isCloud) {
+      connectionToUpdate.organizationKey = connection.organizationKey;
+    }
+    
     if (connection.disableNotifications) {
       connectionToUpdate.disableNotifications = true;
     } else {
       delete connectionToUpdate.disableNotifications;
     }
-    await this.storeConnectionToken(connection, connection.token);
+    await this.storeConnectionToken(connectionToUpdate, connection.token);
     await this.client.onTokenUpdate();
     delete connectionToUpdate.token;
     VSCode.workspace
@@ -225,6 +238,7 @@ export class ConnectionSettingsService {
     await Promise.all(
       [...sqConnections, ...scConnections].map(async c => {
         if (c.token !== undefined && !(await this.hasTokenForConnection(c))) {
+          const isCloud = await isCodeScanCloudConnection(c);
           await this.storeConnectionToken(c, c.token);
           c.token = undefined;
         }
@@ -247,7 +261,7 @@ export class ConnectionSettingsService {
     const allSonarCloudConnections = this.getSonarCloudConnections();
     const loadedConnection = allSonarCloudConnections.find(c => c.connectionId === connectionId);
     if (loadedConnection) {
-      loadedConnection.token = await this.getServerToken(loadedConnection.organizationKey);
+      loadedConnection.token = await this.getServerToken(loadedConnection.isCloudConnection ? loadedConnection.organizationKey : loadedConnection.serverUrl);
     }
     return loadedConnection;
   }
@@ -317,6 +331,7 @@ export interface BaseConnection {
   disableNotifications?: boolean;
   serverUrl?: string;
   organizationKey?: string;
+  isCloudConnection?: boolean;
 }
 
 export async function isCodeScanCloudConnection(connection : BaseConnection) {
@@ -355,7 +370,7 @@ async function checkIfCloudApiExistForServer(serverUrl) {
 }
 
 async function getTokenStorageKey(connection: BaseConnection) {
-  return await isCodeScanCloudConnection(connection) ? connection.organizationKey : connection.serverUrl;
+  return connection.isCloudConnection ? connection.organizationKey : connection.serverUrl;
 }
 
 async function updateConfigIfNotEmpty(connections, configCategory) {

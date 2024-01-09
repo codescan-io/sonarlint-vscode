@@ -192,9 +192,8 @@ export class AllHotspotsTreeDataProvider implements VSCode.TreeDataProvider<Hots
   }
 
   isAnyConnectionConfigured(): boolean {
-    const sonarQubeConnections = this.connectionSettingsService.getSonarQubeConnections();
     const sonarCloudConnections = this.connectionSettingsService.getSonarCloudConnections();
-    return sonarCloudConnections.length > 0 || sonarQubeConnections.length > 0;
+    return sonarCloudConnections.length > 0;
   }
 
   getHotspotsForFile(fileUri: string, contextValue: string): HotspotNode[] {
