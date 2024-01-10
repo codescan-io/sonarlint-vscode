@@ -1,10 +1,10 @@
 {
-  "name": "sonarlint-vscode",
+  "name": "codescan-vscode",
   "displayName": "CodeScan",
   "description": "Linter to detect & fix coding issues locally in JS/TS, Python, PHP, Java, C, C++, Go, IaC. Use with CodeScan for optimal team performance.",
   "version": "3.20.2",
-  "icon": "images/sonarlint_wave_128px.png",
-  "publisher": "SonarSource",
+  "icon": "images/codescan_128px.png",
+  "publisher": "codescansf",
   "homepage": "https://www.sonarsource.com/products/sonarlint/",
   "repository": {
     "type": "git",
@@ -568,6 +568,59 @@
       {
         "view": "CodeScan.SecurityHotspots",
         "contents": "Please ensure a connection to CodeScan is set up. Detected Security Hotspots will be displayed here. [Learn More](https://github.com/codescan-io/codescan-vscode/wiki/security-hotspots).\n Using the In Whole Folder feature may consume excessive resources depending on the size of your project. Please check the [documentation](https://github.com/codescan-io/codescan-vscode/wiki/security-hotspots#reporting-security-hotspots-in-the-whole-folder) for recommendations to minimize the impact of a full project analysis."
+      }
+    ],
+    "walkthroughs": [
+      {
+        "id": "CodeScan.walkthrough",
+        "title": "Welcome to CodeScan!",
+        "description": "Your Clean Code journey starts here.",
+        "steps": [
+          {
+            "id": "CodeScan.inAction",
+            "title": "$(rocket) New to CodeScan? See it in action",
+            "description": "CodeScan for VSCode supports analysis of 15+ languages including JS/TS, Apex, Java, CSS/HTML, C, C++, and [more](https://github.com/codescan-io/sonarlint-vscode/wiki/Languages-and-rules). CodeScan detects issues in all files **open** in the editor.\n\nThe best way to get started is to see it in action!\n[Open Sample File](command:SonarLint.OpenSample)",
+            "media": {
+              "markdown": "walkthrough/empty.md"
+            },
+            "completionEvents": [
+              "onView:workbench.panel.markers.view"
+            ]
+          },
+          {
+            "id": "CodeScan.learnMoreAboutIssues",
+            "title": "$(book) Learn more about issues",
+            "description": "Check the [Problems view](command:workbench.panel.markers.view.focus): CodeScan has found something $(warning).\nRight-click on the issue found by CodeScan.\nOpen the rule description: CodeScan clearly explains why this is an issue.\nFor certain rules and issues, CodeScan will suggest available Quick Fixes.",
+            "media": {
+              "markdown": "walkthrough/empty.md"
+            },
+            "completionEvents": [
+              "onCommand:CodeScan.OpenStandaloneRuleDesc"
+            ]
+          },
+          {
+            "id": "CodeScan.connectedModeIntro",
+            "title": "$(link) Connect with your team",
+            "description": "Use the same code standards as your team by using CodeScan in Connected Mode with [CodeScan](https://www.codescan.io/) or CodeScan Self-hosted..\n**Already using CodeScan?** Check out the Connected Mode view to set up the connection.\n[Set up Connection](command:CodeScan.ConnectedMode.focus)",
+            "media": {
+              "markdown": "walkthrough/empty.md"
+            },
+            "completionEvents": [
+              "onView:CodeScan.ConnectedMode"
+            ]
+          },
+          {
+            "id": "CodeScan.reachOut",
+            "title": "$(comment-discussion) Share feedback or ask for help",
+            "description": "You suspect your code has issues but don't see any problems detected by CodeScan? [Enable verbose logging](command:CodeScan.EnableVerboseLogs) and check the output in the CodeScan Output window\n[Check Output](command:CodeScan.ShowCodeScanOutput)\n\nYou'd like to learn more about CodeScan, or give us feedback? Check out the [Help and Feedback view](command:CodeScan.HelpAndFeedback.focus)\n\n",
+            "media": {
+              "markdown": "walkthrough/empty.md"
+            },
+            "completionEvents": [
+              "onView:CodeScan.HelpAndFeedback"
+            ]
+          }
+        ]
       }
     ],
     "menus": {

@@ -11,7 +11,7 @@ Simply open any source file, start coding, and you will start seeing issues repo
 
 You can access the detailed rule description directly from your editor, using the provided contextual menu.
 
-![rule description](images/sonarlint-rule-description.gif)
+![rule description](images/codescan-rule-description.gif)
 
 ## Static Analysis Rules
 

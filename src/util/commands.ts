@@ -1,7 +1,7 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
+ * CodeScan for VisualStudio Code
  * Copyright (C) 2017-2023 SonarSource SA
- * sonarlint@sonarsource.com
+ * support@codescan.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 'use strict';
@@ -31,13 +31,13 @@ export namespace Commands {
   export const SHOW_ACTIVE_RULES = 'CodeScan.ShowActiveRules';
   export const SHOW_INACTIVE_RULES = 'CodeScan.ShowInactiveRules';
   export const SHOW_SONARLINT_OUTPUT = 'CodeScan.ShowCodeScanOutput';
-  export const OPEN_RULE_BY_KEY = 'SonarLint.OpenRuleByKey';
+  export const OPEN_RULE_BY_KEY = 'CodeScan.OpenRuleByKey';
   export const FIND_RULE_BY_KEY = 'CodeScan.FindRuleByKey';
-  export const SHOW_ALL_LOCATIONS = 'SonarLint.ShowAllLocations';
+  export const SHOW_ALL_LOCATIONS = 'CodeScan.ShowAllLocations';
   export const CLEAR_LOCATIONS = 'CodeScan.ClearLocations';
-  export const NAVIGATE_TO_LOCATION = 'SonarLint.NavigateToLocation';
+  export const NAVIGATE_TO_LOCATION = 'CodeScan.NavigateToLocation';
 
-  export const INSTALL_MANAGED_JRE = 'SonarLint.InstallManagedJre';
+  export const INSTALL_MANAGED_JRE = 'CodeScan.InstallManagedJre';
 
   export const HIDE_HOTSPOT = 'CodeScan.HideHotspot';
   export const SHOW_HOTSPOT_DESCRIPTION = 'SonarLint.ShowHotspotDescription';
@@ -53,15 +53,15 @@ export namespace Commands {
   export const EDIT_PROJECT_BINDING = 'CodeScan.EditProjectBinding';
   export const REMOVE_PROJECT_BINDING = 'CodeScan.RemoveProjectBinding';
 
-  export const SHOW_HOTSPOT_LOCATION = 'SonarLint.ShowHotspotLocation';
+  export const SHOW_HOTSPOT_LOCATION = 'CodeScan.ShowHotspotLocation';
   export const SHOW_HOTSPOT_RULE_DESCRIPTION = 'CodeScan.ShowHotspotRuleDescription';
   export const SHOW_HOTSPOT_DETAILS = 'CodeScan.ShowHotspotDetails';
   export const OPEN_HOTSPOT_ON_SERVER = 'CodeScan.OpenHotspotOnServer';
-  export const HIGHLIGHT_REMOTE_HOTSPOT_LOCATION = 'SonarLint.HighlightRemoteHotspotLocation';
+  export const HIGHLIGHT_REMOTE_HOTSPOT_LOCATION = 'CodeScan.HighlightRemoteHotspotLocation';
   export const CLEAR_HOTSPOT_HIGHLIGHTING = 'CodeScan.ClearHotspotLocations';
   export const SHOW_HOTSPOTS_IN_OPEN_FILES = 'CodeScan.ShowHotspotsInOpenFiles';
   export const SCAN_FOR_HOTSPOTS_IN_FOLDER = 'CodeScan.ScanForHotspotsInFolder';
-  export const FORGET_FOLDER_HOTSPOTS = 'SonarLint.ForgetFolderHotspots';
+  export const FORGET_FOLDER_HOTSPOTS = 'CodeScan.ForgetFolderHotspots';
 
   export const RESOLVE_ISSUE = 'CodeScan.ResolveIssue';
   export const TRIGGER_HELP_AND_FEEDBACK_LINK = 'CodeScan.HelpAndFeedbackLinkClicked';

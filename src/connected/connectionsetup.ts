@@ -1,7 +1,7 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
+ * CodeScan for VisualStudio Code
  * Copyright (C) 2017-2023 SonarSource SA
- * sonarlint@sonarsource.com
+ * support@codescan.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 'use strict';
@@ -163,7 +163,7 @@ function renderConnectionSetupPanel(context: vscode.ExtensionContext, webview: v
   const isCodeScanSelfHosted = false;
 
   const serverProductName = isCodeScanSelfHosted ? 'CodeScan Self-hosted' : 'CodeScan';
-  const serverDocUrl = isCodeScanSelfHosted ? sonarQubeNotificationsDocUrl : sonarCloudNotificationsDocUrl;
+  // const serverDocUrl = isCodeScanSelfHosted ? sonarQubeNotificationsDocUrl : sonarCloudNotificationsDocUrl;
 
   const initialConnectionId = escapeHtml(initialState.connectionId) || '';
   const initialToken = escapeHtml(initialState.token);
@@ -206,8 +206,7 @@ function renderConnectionSetupPanel(context: vscode.ExtensionContext, webview: v
         </vscode-checkbox>
         <input type="hidden" id="enableNotifications-initial" value="${!initialState.disableNotifications}" />
         <p>
-          You will receive
-          <vscode-link target="_blank" href="${serverDocUrl}">notifications</vscode-link>
+          You will receive notifications
           from ${serverProductName} in situations like:
         </p>
         <ul>
