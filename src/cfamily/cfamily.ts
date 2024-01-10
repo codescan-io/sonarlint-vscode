@@ -9,10 +9,10 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-import { SONARLINT_CATEGORY } from '../settings/settings';
+import { CODESCAN_CATEGORY } from '../settings/settings';
 
 const PATH_TO_COMPILE_COMMANDS = 'pathToCompileCommands';
-const FULL_PATH_TO_COMPILE_COMMANDS = `${SONARLINT_CATEGORY}.${PATH_TO_COMPILE_COMMANDS}`;
+const FULL_PATH_TO_COMPILE_COMMANDS = `${CODESCAN_CATEGORY}.${PATH_TO_COMPILE_COMMANDS}`;
 const DO_NOT_ASK_ABOUT_COMPILE_COMMANDS_FLAG = 'doNotAskAboutCompileCommands';
 let remindMeLaterAboutCompileCommandsFlag = false;
 
@@ -23,7 +23,7 @@ function showMessageAndUpdateConfig(compilationDbPath: string) {
   const [pathForSettings, workspaceFolder] = tryRelativizeToWorkspaceFolder(compilationDbPath);
 
   if (workspaceFolder !== undefined) {
-    const config = vscode.workspace.getConfiguration(SONARLINT_CATEGORY, workspaceFolder.uri);
+    const config = vscode.workspace.getConfiguration(CODESCAN_CATEGORY, workspaceFolder.uri);
     return config.update(PATH_TO_COMPILE_COMMANDS, pathForSettings, vscode.ConfigurationTarget.WorkspaceFolder);
   }
   return vscode.workspace

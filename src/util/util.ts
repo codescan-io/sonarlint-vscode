@@ -13,7 +13,7 @@ import { TextDecoder } from 'util';
 import * as vscode from 'vscode';
 import { AnalysisFile } from '../lsp/protocol';
 import { code2ProtocolConverter } from './uri';
-import { verboseLogToSonarLintOutput } from './logging';
+import { verboseLogToCodeScanOutput } from './logging';
 
 export function startedInDebugMode(process: NodeJS.Process): boolean {
   const args = process.execArgv;
@@ -146,7 +146,7 @@ export async function createAnalysisFilesFromFileUris(
     progress.report({increment: 50.0 * currentFile / totalFiles});
     const fileStat = await vscode.workspace.fs.stat(fileUri);
     if (fileStat.size > HOTSPOTS_FULL_SCAN_FILE_SIZE_LIMIT_BYTES) {
-      verboseLogToSonarLintOutput(`File will not be analysed because it's too large: ${fileUri.path}`);
+      verboseLogToCodeScanOutput(`File will not be analysed because it's too large: ${fileUri.path}`);
       continue;
     }
     let fileContent;

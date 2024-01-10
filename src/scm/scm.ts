@@ -11,12 +11,12 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as _ from 'underscore';
 import { API, GitErrorCodes, GitExtension, Repository } from './git';
-import { SonarLintExtendedLanguageClient } from '../lsp/client';
+import { CodeScanExtendedLanguageClient } from '../lsp/client';
 import {
   logGitCheckIgnoredError,
   logNoSubmodulesFound,
-  logToSonarLintOutput,
-  verboseLogToSonarLintOutput
+  logToCodeScanOutput,
+  verboseLogToCodeScanOutput
 } from '../util/logging';
 
 const GIT_EXTENSION_ID = 'vscode.git';
@@ -64,7 +64,7 @@ class GitScm implements Scm {
 
   constructor(
     private readonly gitApi: API,
-    private readonly client: SonarLintExtendedLanguageClient,
+    private readonly client: CodeScanExtendedLanguageClient,
     private readonly referenceBranchStatusItem: vscode.StatusBarItem) {
     this.listeners = [
       gitApi.onDidOpenRepository(r => {
@@ -92,7 +92,7 @@ class GitScm implements Scm {
     this.gitApi.repositories.forEach(this.subscribeToRepositoryChanges, this);
     vscode.workspace.workspaceFolders?.forEach(folder => {
       const branchName = this.gitApi.getRepository(folder.uri)?.state.HEAD?.name;
-      verboseLogToSonarLintOutput(`Initializing ${folder.uri} on branch ${branchName}`);
+      verboseLogToCodeScanOutput(`Initializing ${folder.uri} on branch ${branchName}`);
       this.localBranchByFolderUri.set(folder.uri.toString(), branchName);
       this.client.didLocalBranchNameChange(folder.uri, branchName);
     });
@@ -105,7 +105,7 @@ class GitScm implements Scm {
         if (folderUriAsString.startsWith(repository.rootUri.toString())) {
           const branchName = repository.state.HEAD?.name;
           if (this.localBranchByFolderUri.get(folderUriAsString) !== branchName) {
-            verboseLogToSonarLintOutput(`Folder ${folder.uri} is now on branch ${branchName}`);
+            verboseLogToCodeScanOutput(`Folder ${folder.uri} is now on branch ${branchName}`);
             this.localBranchByFolderUri.set(folder.uri.toString(), branchName);
             this.client.didLocalBranchNameChange(folder.uri, branchName);
           }
@@ -149,17 +149,17 @@ class GitScm implements Scm {
   }
 }
 
-export async function initScm(client: SonarLintExtendedLanguageClient, referenceBranchStatusItem: vscode.StatusBarItem) {
+export async function initScm(client: CodeScanExtendedLanguageClient, referenceBranchStatusItem: vscode.StatusBarItem) {
   try {
     const gitExtension = vscode.extensions.getExtension<GitExtension>(GIT_EXTENSION_ID);
     if (!gitExtension) {
-      logToSonarLintOutput(`Extension with ID '${GIT_EXTENSION_ID}' was not found, branch synchronization is disabled`);
+      logToCodeScanOutput(`Extension with ID '${GIT_EXTENSION_ID}' was not found, branch synchronization is disabled`);
       return new NoopScm();
     }
     const gitApi = (await gitExtension.activate()).getAPI(GIT_API_VERSION);
     return new GitScm(gitApi, client, referenceBranchStatusItem);
   } catch (e) {
-    logToSonarLintOutput(`Exception occurred while initializing the Git API: ${e}`);
+    logToCodeScanOutput(`Exception occurred while initializing the Git API: ${e}`);
     return new NoopScm();
   }
 }
@@ -183,7 +183,7 @@ export async function filterOutScmIgnoredFiles(
              fileUris: vscode.Uri[]) => Promise<vscode.Uri[]>): Promise<vscode.Uri[]> {
   const gitExtension = vscode.extensions.getExtension<GitExtension>('vscode.git').exports;
   if (gitExtension == null) {
-    logToSonarLintOutput(`The git extension is not installed, consider all files not ignored`);
+    logToCodeScanOutput(`The git extension is not installed, consider all files not ignored`);
     return fileUris;
   }
   try {
@@ -194,7 +194,7 @@ export async function filterOutScmIgnoredFiles(
     const firstFileUri = fileUris[0];
     const repo = gitApi.getRepository(firstFileUri);
     if (!repo) {
-      verboseLogToSonarLintOutput(`There is no git repository, consider all files as not ignored`);
+      verboseLogToCodeScanOutput(`There is no git repository, consider all files as not ignored`);
       return fileUris;
     }
     const repoFsPath = repo.rootUri.fsPath;
@@ -217,7 +217,7 @@ export async function filterOutScmIgnoredFiles(
     notIgnoredFiles.push(...notIgnoredFilesOutsideSubmodules);
     return notIgnoredFiles;
   } catch (e) {
-    verboseLogToSonarLintOutput(`Error requesting ignored status, consider all files not ignored: \n ${e}`);
+    verboseLogToCodeScanOutput(`Error requesting ignored status, consider all files not ignored: \n ${e}`);
     return fileUris;
   }
 }

@@ -10,6 +10,8 @@
 import * as VSCode from 'vscode';
 import { ServerType } from '../connected/connections';
 import { BindingSuggestion } from '../lsp/protocol';
+import { BaseConnection } from '../settings/connectionsettings';
+import { removeTrailingSlashes } from '../connected/connectionsetup';
 
 export function serverProjectsToQuickPickItems(serverProjects: BindingSuggestion[], serverType: ServerType) {
   const itemsList: VSCode.QuickPickItem[] = [];
@@ -30,10 +32,8 @@ export function serverProjectsToQuickPickItems(serverProjects: BindingSuggestion
   return itemsList;
 }
 
-export function buildBaseServerUrl(serverType: ServerType, serverUrlOrOrganizationKey: string) {
-  return serverType === 'SonarQube'
-    ? `${serverUrlOrOrganizationKey}/dashboard`
-    : 'https://sonarcloud.io/project/overview';
+export function buildBaseServerUrl(connection: BaseConnection, serverUrlOrOrganizationKey: string) {
+  return connection.isCloudConnection ? removeTrailingSlashes(connection.serverUrl) + '/project/overview' : `${serverUrlOrOrganizationKey}/dashboard`;
 }
 
 export interface AutoBindProjectQuickPickItem extends VSCode.QuickPickItem {

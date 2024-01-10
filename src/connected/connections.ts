@@ -8,7 +8,7 @@
 
 import * as VSCode from 'vscode';
 import { BindingService } from './binding';
-import { SonarLintExtendedLanguageClient } from '../lsp/client';
+import { CodeScanExtendedLanguageClient } from '../lsp/client';
 import { ConnectionCheckResult } from '../lsp/protocol';
 import { BaseConnection, ConnectionSettingsService } from '../settings/connectionsettings';
 import { DEFAULT_CONNECTION_ID } from '../commons';
@@ -87,7 +87,7 @@ export class AllConnectionsTreeDataProvider implements VSCode.TreeDataProvider<C
   readonly onDidChangeTreeData: VSCode.Event<ConnectionsNode | undefined> = this._onDidChangeTreeData.event;
   private allConnections = { sonarqube: Array.from<Connection>([]), sonarcloud: Array.from<Connection>([]) };
 
-  constructor(private readonly client: SonarLintExtendedLanguageClient) {}
+  constructor(private readonly client: CodeScanExtendedLanguageClient) {}
 
   async getConnections(type: string): Promise<Connection[]> {
     const contextValue = type === 'sonarqube' ? 'sonarqubeConnection' : 'sonarcloudConnection';
@@ -97,7 +97,7 @@ export class AllConnectionsTreeDataProvider implements VSCode.TreeDataProvider<C
     const connectionsFromSettings: BaseConnection[] =
       type === 'sonarqube'
         ? ConnectionSettingsService.instance.getSonarQubeConnections()
-        : ConnectionSettingsService.instance.getSonarCloudConnections();
+        : ConnectionSettingsService.instance.getCodeScanConnections();
     const connections = await Promise.all(
       connectionsFromSettings.map(async c => {
         const label = c[labelKey] ? c[labelKey] : c[alternativeLabelKey];
@@ -179,7 +179,7 @@ export class AllConnectionsTreeDataProvider implements VSCode.TreeDataProvider<C
 
   getInitialState(): ConnectionGroup[] {
     const sqConnections = ConnectionSettingsService.instance.getSonarQubeConnections();
-    const scConnections = ConnectionSettingsService.instance.getSonarCloudConnections();
+    const scConnections = ConnectionSettingsService.instance.getCodeScanConnections();
     return [
       sqConnections.length > 0 ? new ConnectionGroup('sonarqube', 'CodeScan Self-hosted', 'sonarQubeGroup') : null,
       scConnections.length > 0 ? new ConnectionGroup('sonarcloud', 'CodeScan', 'sonarCloudGroup') : null

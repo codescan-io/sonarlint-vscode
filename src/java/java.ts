@@ -8,9 +8,9 @@
 import * as CompareVersions from 'compare-versions';
 import * as VSCode from 'vscode';
 import { Disposable } from 'vscode-languageclient';
-import { SonarLintExtendedLanguageClient } from '../lsp/client';
+import { CodeScanExtendedLanguageClient } from '../lsp/client';
 import { GetJavaConfigResponse } from '../lsp/protocol';
-import { logToSonarLintOutput } from '../util/logging';
+import { logToCodeScanOutput } from '../util/logging';
 
 let classpathChangeListener: Disposable;
 let serverModeListener: Disposable;
@@ -27,7 +27,7 @@ export enum ServerMode {
   HYBRID = 'Hybrid'
 }
 
-export function installClasspathListener(languageClient: SonarLintExtendedLanguageClient) {
+export function installClasspathListener(languageClient: CodeScanExtendedLanguageClient) {
   const extension = getJavaExtension();
   if (extension?.isActive) {
     if (!classpathChangeListener) {
@@ -47,7 +47,7 @@ export function installClasspathListener(languageClient: SonarLintExtendedLangua
   }
 }
 
-function newServerModeChangeListener(languageClient: SonarLintExtendedLanguageClient) {
+function newServerModeChangeListener(languageClient: CodeScanExtendedLanguageClient) {
   return (serverMode: ServerMode) => {
     if (serverMode !== ServerMode.LIGHTWEIGHT) {
       // Reset state of LightWeight mode warning
@@ -57,7 +57,7 @@ function newServerModeChangeListener(languageClient: SonarLintExtendedLanguageCl
   };
 }
 
-export function installServerModeChangeListener(languageClient: SonarLintExtendedLanguageClient) {
+export function installServerModeChangeListener(languageClient: CodeScanExtendedLanguageClient) {
   const extension = getJavaExtension();
   if (extension?.isActive) {
     if (!serverModeListener) {
@@ -80,14 +80,14 @@ function isJavaApiRecentEnough(apiVersion: string): boolean {
     return true;
   }
   if (!javaApiTooLowAlreadyLogged) {
-    logToSonarLintOutput(`SonarLint requires VSCode Java extension 0.56 or greater to enable analysis of Java files`);
+    logToCodeScanOutput(`SonarLint requires VSCode Java extension 0.56 or greater to enable analysis of Java files`);
     javaApiTooLowAlreadyLogged = true;
   }
   return false;
 }
 
 export async function getJavaConfig(
-  languageClient: SonarLintExtendedLanguageClient,
+  languageClient: CodeScanExtendedLanguageClient,
   fileUri: string
 ): Promise<GetJavaConfigResponse> {
   const extension = getJavaExtension();
@@ -126,7 +126,7 @@ export async function getJavaConfig(
 
 function javaConfigDisabledInLightWeightMode() {
   if (!javaServerInLightWeightModeAlreadyLogged) {
-    logToSonarLintOutput(
+    logToCodeScanOutput(
       `Java analysis is disabled in LightWeight mode. Please check java.server.launchMode in user settings`
     );
     javaServerInLightWeightModeAlreadyLogged = true;

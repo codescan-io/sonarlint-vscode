@@ -9,20 +9,20 @@
 import * as VSCode from 'vscode';
 import { isVerboseEnabled } from '../settings/settings';
 
-let sonarlintOutput: VSCode.OutputChannel;
+let codeScanOutput: VSCode.OutputChannel;
 
 export function initLogOutput(context: VSCode.ExtensionContext) {
-  sonarlintOutput = VSCode.window.createOutputChannel('CodeScan');
-  context.subscriptions.push(sonarlintOutput);
+  codeScanOutput = VSCode.window.createOutputChannel('CodeScan');
+  context.subscriptions.push(codeScanOutput);
 }
 
 export function getLogOutput() {
-  return sonarlintOutput;
+  return codeScanOutput;
 }
 
-export function logToSonarLintOutput(message) {
-  if (sonarlintOutput) {
-    sonarlintOutput.appendLine(message);
+export function logToCodeScanOutput(message) {
+  if (codeScanOutput) {
+    codeScanOutput.appendLine(message);
   }
 }
 
@@ -30,16 +30,16 @@ export function showLogOutput() {
   getLogOutput()?.show();
 }
 
-export function verboseLogToSonarLintOutput(message: string) {
+export function verboseLogToCodeScanOutput(message: string) {
   if (isVerboseEnabled()) {
-    logToSonarLintOutput(message);
+    logToCodeScanOutput(message);
   }
 }
 
 export function logNoSubmodulesFound(repo: string, error: string) {
-  verboseLogToSonarLintOutput(`No submodules found in '${repo}' repository. Error: ${error}`);
+  verboseLogToCodeScanOutput(`No submodules found in '${repo}' repository. Error: ${error}`);
 }
 
 export function logGitCheckIgnoredError(error: string) {
-  verboseLogToSonarLintOutput(`Error when detecting ignored files: ${error}`);
+  verboseLogToCodeScanOutput(`Error when detecting ignored files: ${error}`);
 }

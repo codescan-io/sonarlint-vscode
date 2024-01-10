@@ -17,9 +17,7 @@ import { AllConnectionsTreeDataProvider } from './connected/connections';
 import {
   assistCreatingConnection,
   connectToCodeScanCloud,
-  connectToCodeScanSelfHosted,
   editCodeScanConnection,
-  editSonarQubeConnection,
   reportConnectionCheckResult
 } from './connected/connectionsetup';
 import {
@@ -40,7 +38,7 @@ import {
 import { AllHotspotsTreeDataProvider, HotspotNode, HotspotTreeViewItem } from './hotspot/hotspotsTreeDataProvider';
 import { getJavaConfig, installClasspathListener } from './java/java';
 import { LocationTreeItem, SecondaryLocationsTree, navigateToLocation } from './location/locations';
-import { SonarLintExtendedLanguageClient } from './lsp/client';
+import { CodeScanExtendedLanguageClient } from './lsp/client';
 import * as protocol from './lsp/protocol';
 import { languageServerCommand } from './lsp/server';
 import { showRuleDescription } from './rules/rulepanel';
@@ -51,13 +49,13 @@ import { ConnectionSettingsService, migrateConnectedModeSettings } from './setti
 import {
   enableVerboseLogs,
   getCurrentConfiguration,
-  getSonarLintConfiguration,
+  getCodeScanConfiguration,
   isVerboseEnabled,
   loadInitialSettings,
   onConfigurationChange
 } from './settings/settings';
 import { Commands } from './util/commands';
-import { getLogOutput, initLogOutput, logToSonarLintOutput, showLogOutput } from './util/logging';
+import { getLogOutput, initLogOutput, logToCodeScanOutput, showLogOutput } from './util/logging';
 import { getPlatform } from './util/platform';
 import { JAVA_HOME_CONFIG, installManagedJre, resolveRequirements } from './util/requirements';
 import { code2ProtocolConverter, protocol2CodeConverter } from './util/uri';
@@ -77,11 +75,11 @@ const DOCUMENT_SELECTOR = [
     language: 'python'
   }
 ];
-const SONARLINT_CATEGORY = 'codescan';
+const CODESCAN_CATEGORY = 'codescan';
 
 let secondaryLocationsTree: SecondaryLocationsTree;
 let issueLocationsView: VSCode.TreeView<LocationTreeItem>;
-let languageClient: SonarLintExtendedLanguageClient;
+let languageClient: CodeScanExtendedLanguageClient;
 let allRulesTreeDataProvider: AllRulesTreeDataProvider;
 let allRulesView: VSCode.TreeView<LanguageNode>;
 let allConnectionsTreeDataProvider: AllConnectionsTreeDataProvider;
@@ -105,7 +103,7 @@ function runJavaServer(context: VSCode.ExtensionContext): Promise<StreamInfo> {
     .then(requirements => {
       return new Promise<StreamInfo>((resolve, reject) => {
         const { command, args } = languageServerCommand(context, requirements);
-        logToSonarLintOutput(`Executing ${command} ${args.join(' ')}`);
+        logToCodeScanOutput(`Executing ${command} ${args.join(' ')}`);
         const process = ChildProcess.spawn(command, args);
 
         process.stderr.on('data', function (data) {
@@ -125,7 +123,7 @@ function logWithPrefix(data, prefix) {
     const lines: string[] = data.toString().split(/\r\n|\r|\n/);
     lines.forEach((l: string) => {
       if (l.length > 0) {
-        logToSonarLintOutput(`${prefix} ${l}`);
+        logToCodeScanOutput(`${prefix} ${l}`);
       }
     });
   }
@@ -144,7 +142,7 @@ export function toUrl(filePath: string) {
 
 function toggleRule(level: protocol.ConfigLevel) {
   return (ruleKey: string | RuleNode) => {
-    const configuration = getSonarLintConfiguration();
+    const configuration = getCodeScanConfiguration();
     const rules = configuration.get('rules') || {};
 
     if (typeof ruleKey === 'string') {
@@ -204,7 +202,7 @@ export async function activate(context: VSCode.ExtensionContext) {
         workspaceName: VSCode.workspace.name,
         firstSecretDetected: isFirstSecretDetected(context),
         firstCobolIssueDetected: isFirstCobolIssueDetected(context),
-        showVerboseLogs: VSCode.workspace.getConfiguration().get(SONARLINT_CATEGORY + '.output.showVerboseLogs', false),
+        showVerboseLogs: VSCode.workspace.getConfiguration().get(CODESCAN_CATEGORY + '.output.showVerboseLogs', false),
         platform: getPlatform(),
         architecture: process.arch,
         additionalAttributes: {
@@ -225,7 +223,7 @@ export async function activate(context: VSCode.ExtensionContext) {
 
   // Create the language client and start the client.
   // id parameter is used to load 'sonarlint.trace.server' configuration
-  languageClient = new SonarLintExtendedLanguageClient(
+  languageClient = new CodeScanExtendedLanguageClient(
     'codescan',
     'CodeScan Language Server',
     serverOptions,
@@ -276,7 +274,7 @@ export async function activate(context: VSCode.ExtensionContext) {
     if (event.affectsConfiguration('codescan.rules')) {
       allRulesTreeDataProvider.refresh();
     }
-    if (event.affectsConfiguration(SONARLINT_CATEGORY + '.connectedMode')) {
+    if (event.affectsConfiguration(CODESCAN_CATEGORY + '.connectedMode')) {
       allConnectionsTreeDataProvider.refresh();
     }
   });
@@ -336,7 +334,7 @@ function cleanRemoteName(remoteName?: string): string {
 }
 
 function suggestBinding(params: protocol.SuggestBindingParams) {
-  logToSonarLintOutput(`Received binding suggestions: ${JSON.stringify(params)}`);
+  logToCodeScanOutput(`Received binding suggestions: ${JSON.stringify(params)}`);
   AutoBindingService.instance.checkConditionsAndAttemptAutobinding(params);
 }
 
@@ -442,9 +440,9 @@ function registerCommands(context: VSCode.ExtensionContext) {
   // context.subscriptions.push(
     // VSCode.commands.registerCommand(Commands.CONNECT_TO_CODESCAN_SELF_HOSTED, connectToCodeScanSelfHosted(context))
   // );
-  context.subscriptions.push(
-    VSCode.commands.registerCommand(Commands.EDIT_SONARQUBE_CONNECTION, editSonarQubeConnection(context))
-  );
+  // context.subscriptions.push(
+  //   VSCode.commands.registerCommand(Commands.EDIT_SONARQUBE_CONNECTION, editSonarQubeConnection(context))
+  // );
   context.subscriptions.push(
     VSCode.commands.registerCommand(Commands.EDIT_SONARCLOUD_CONNECTION, editCodeScanConnection(context))
   );
@@ -551,13 +549,13 @@ function installCustomRequestHandlers(context: VSCode.ExtensionContext) {
     VSCode.commands.executeCommand(Commands.OPEN_SETTINGS, JAVA_HOME_CONFIG)
   );
   languageClient.onNotification(protocol.OpenPathToNodeSettingsNotification.type, () =>
-    VSCode.commands.executeCommand(Commands.OPEN_SETTINGS, SONARLINT_CATEGORY + '.pathToNodeExecutable')
+    VSCode.commands.executeCommand(Commands.OPEN_SETTINGS, CODESCAN_CATEGORY + '.pathToNodeExecutable')
   );
   languageClient.onNotification(protocol.BrowseToNotification.type, browseTo =>
     VSCode.commands.executeCommand(Commands.OPEN_BROWSER, VSCode.Uri.parse(browseTo))
   );
   languageClient.onNotification(protocol.OpenConnectionSettingsNotification.type, isSonarCloud => {
-    const targetSection = SONARLINT_CATEGORY + `.connectedMode.connections.servers'}`;
+    const targetSection = CODESCAN_CATEGORY + `.connectedMode.connections.servers'}`;
     return VSCode.commands.executeCommand(Commands.OPEN_SETTINGS, targetSection);
   });
   languageClient.onNotification(protocol.ShowHotspotNotification.type, h =>

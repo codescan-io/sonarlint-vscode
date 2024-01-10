@@ -8,7 +8,7 @@
 
 import * as vscode from 'vscode';
 import { isValidRange, SINGLE_LOCATION_DECORATION } from '../location/locations';
-import { SonarLintExtendedLanguageClient } from '../lsp/client';
+import { CodeScanExtendedLanguageClient } from '../lsp/client';
 import {
   AnalysisFile,
   Diagnostic,
@@ -20,7 +20,7 @@ import {
 } from '../lsp/protocol';
 import { filterIgnored, filterOutScmIgnoredFiles } from '../scm/scm';
 import { Commands } from '../util/commands';
-import { verboseLogToSonarLintOutput } from '../util/logging';
+import { verboseLogToCodeScanOutput } from '../util/logging';
 import {
   HotspotAnalysisConfirmation,
   notCompatibleServerWarning,
@@ -67,7 +67,7 @@ export const showSecurityHotspot = async (
   } else {
     const documentUri = foundUris[0];
     if (foundUris.length > 1) {
-      verboseLogToSonarLintOutput(
+      verboseLogToCodeScanOutput(
         `Multiple candidates found for '${hotspot.filePath}', using first match '${documentUri}'`
       );
     }
@@ -172,7 +172,7 @@ export const showHotspotDescription = () => {
   if (!hotspotDescriptionPanel) {
     hotspotDescriptionPanel = vscode.window.createWebviewPanel(
       'codescan.DiagContext',
-      'SonarQube Security Hotspot',
+      'CodeScan Security Hotspot',
       vscode.ViewColumn.Two,
       {
         enableScripts: false
@@ -215,7 +215,7 @@ export const highlightLocation = async editor => {
 
 export async function getFilesForHotspotsAndLaunchScan(
   folderUri: vscode.Uri,
-  languageClient: SonarLintExtendedLanguageClient
+  languageClient: CodeScanExtendedLanguageClient
 ): Promise<void> {
   const response = await languageClient.getFilePatternsForAnalysis(folderUri.path);
   return vscode.window.withProgress(
@@ -241,8 +241,8 @@ export async function getFilesForHotspotsAndLaunchScan(
 export async function useProvidedFolderOrPickManuallyAndScan(
   folderUri: vscode.Uri,
   workspaceFolders: readonly vscode.WorkspaceFolder[],
-  languageClient: SonarLintExtendedLanguageClient,
-  scan: (folderUri: vscode.Uri, languageClient: SonarLintExtendedLanguageClient) => Promise<void>
+  languageClient: CodeScanExtendedLanguageClient,
+  scan: (folderUri: vscode.Uri, languageClient: CodeScanExtendedLanguageClient) => Promise<void>
 ) {
   if (!folderUri || !folderUri.path) {
     if (!workspaceFolders || workspaceFolders.length === 0) {
@@ -272,7 +272,7 @@ export async function useProvidedFolderOrPickManuallyAndScan(
 }
 
 function launchScanForHotspots(
-  languageClient: SonarLintExtendedLanguageClient,
+  languageClient: CodeScanExtendedLanguageClient,
   folderUri: vscode.Uri,
   filesForHotspotsAnalysis: AnalysisFile[]
 ) {
@@ -372,7 +372,7 @@ export function showHotspotDetails(hotspotDetails: ShowRuleDescriptionParams, ho
 }
 
 export async function changeHotspotStatus(hotspotServerKey: string, fileUriAsSting: string,
-                                                  languageClient: SonarLintExtendedLanguageClient) {
+                                                  languageClient: CodeScanExtendedLanguageClient) {
   const fileUri = vscode.Uri.parse(fileUriAsSting);
   const workspaceFolder = vscode.workspace.getWorkspaceFolder(fileUri);
   doChangeHotspotStatus(hotspotServerKey, fileUriAsSting, workspaceFolder, languageClient);
@@ -381,7 +381,7 @@ export async function changeHotspotStatus(hotspotServerKey: string, fileUriAsSti
 // visible for testing
 export async function doChangeHotspotStatus(hotspotServerKey: string, fileUriAsSting: string,
                                             workspaceFolder:vscode.WorkspaceFolder,
-                                            languageClient: SonarLintExtendedLanguageClient) {
+                                            languageClient: CodeScanExtendedLanguageClient) {
   const allowedHotspotStatuses =
     await languageClient.getAllowedHotspotStatuses(hotspotServerKey, workspaceFolder.uri.toString(), fileUriAsSting);
   if (allowedHotspotStatuses == null) {

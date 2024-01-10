@@ -122,11 +122,11 @@ suite('Connection Setup', () => {
 
     const connectionId = getDefaultConnectionId(message)
 
-    await ConnectionSettingsService.instance.addSonarQubeConnection({
-      serverUrl,
-      connectionId,
-      token
-    });
+    // await ConnectionSettingsService.instance.addSonarQubeConnection({
+    //   serverUrl,
+    //   connectionId,
+    //   token
+    // });
     await sleep(sleepTime);
 
     await vscode.commands.executeCommand(Commands.EDIT_SONARQUBE_CONNECTION, Promise.resolve({ id: connectionId }));
@@ -148,13 +148,13 @@ suite('Connection Setup', () => {
     const token = 'XXX SUPER SECRET TOKEN XXX';
     const connectionId = 'My Little SonarQube';
 
-    await ConnectionSettingsService.instance.addSonarQubeConnection(
-      {
-        connectionId,
-        serverUrl,
-        token
-      }
-    );
+    // await ConnectionSettingsService.instance.addSonarQubeConnection(
+    //   {
+    //     connectionId,
+    //     serverUrl,
+    //     token
+    //   }
+    // );
 
     await sleep(sleepTime);
 

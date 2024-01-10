@@ -1,17 +1,18 @@
 {
   "name": "codescan-vscode",
   "displayName": "CodeScan",
-  "description": "Linter to detect & fix coding issues locally in JS/TS, Python, PHP, Java, C, C++, Go, IaC. Use with CodeScan for optimal team performance.",
-  "version": "3.20.2",
+  "description": "Linter to detect & fix coding issues locally in JS/TS, Apex, HTML/CSS, Java, Python, C++, Go, IaC. Use with CodeScan for optimal team performance.",
+  "version": "2.0.0",
   "icon": "images/codescan_128px.png",
   "publisher": "codescansf",
-  "homepage": "https://www.sonarsource.com/products/sonarlint/",
+  "homepage": "https://www.codescan.io/codescan-static-code-analysis/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/codescan-io/codescan-vscode.git"
+    "url": "https://github.com/codescan-io/sonarlint-vscode.git"
   },
   "bugs": {
-    "url": "https://jira.sonarsource.com/browse/SLVSCODE"
+    "url": "https://support.autorabit.com/",
+    "email": "support@codescan.com"
   },
   "license": "SEE LICENSE IN LICENSE.txt",
   "engines": {
@@ -94,7 +95,7 @@
               },
               "organizationKey": {
                 "type": "string",
-                "description": "Only used for SonarCloud"
+                "description": "Only used for CodeScan Cloud"
               }
             },
             "additionalProperties": false
@@ -153,11 +154,11 @@
             "properties": {
               "connectionId": {
                 "type": "string",
-                "description": "A unique identifier for this connection to be used as a reference in `#sonarlint.connectedMode.project#`. Only needed if you plan to use multiple connections to CodeScan."
+                "description": "A unique identifier for this connection to be used as a reference in `#codescan.connectedMode.project#`. Only needed if you plan to use multiple connections to CodeScan."
               },
               "organizationKey": {
                 "type": "string",
-                "description": "A SonarCloud organization key. If you want to bind different projects that are in different organizations, simply declare multiple connections."
+                "description": "A CodeScan organization key. If you want to bind different projects that are in different organizations, simply declare multiple connections."
               },
               "serverUrl": {
                 "type": "string",
@@ -165,7 +166,7 @@
               },
               "token": {
                 "type": "string",
-                "description": "Token generated from 'My Account>Security' in SonarCloud"
+                "description": "Token generated from 'My Account>Security' in CodeScan"
               },
               "isCloudConnection": {
                 "type": "boolean",
@@ -275,6 +276,11 @@
           "order": 21,
           "type": "string",
           "markdownDescription": "Extra JVM arguments used to launch the CodeScan Language Server. e.g. `-Xmx1024m`",
+          "scope": "machine"
+        },
+        "codescan.httpclient.version": {
+          "type": "string",
+          "markdownDescription": "This argument will help customer to choose their HTTP protocol version. Default value is 'NEGOTIATE'",
           "scope": "machine"
         },
         "codescan.output.showVerboseLogs": {
@@ -437,13 +443,6 @@
         "title": "Connect to CodeScan",
         "category": "CodeScan",
         "icon": "$(plus)"
-      },
-      {
-        "command": "CodeScan.EditCodeScanSHConnection",
-        "title": "Edit CodeScan Self-Hosted Connection",
-        "category": "CodeScan",
-        "icon": "$(pencil)",
-        "enablement": "view == CodeScan.ConnectedMode"
       },
       {
         "command": "CodeScan.EditCodeScanCloudConnection",
@@ -684,12 +683,6 @@
         {
           "command": "CodeScan.ConnectToCodeScan",
           "when": "view == CodeScan.ConnectedMode && viewItem == sonarQubeGroup",
-          "group": "inline"
-        },
-        {
-          "command": "CodeScan.EditCodeScanSHConnection",
-          "title": "Edit",
-          "when": "view == CodeScan.ConnectedMode && viewItem == sonarqubeConnection",
           "group": "inline"
         },
         {

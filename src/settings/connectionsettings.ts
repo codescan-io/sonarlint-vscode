@@ -8,18 +8,18 @@
 
 import * as VSCode from 'vscode';
 import { Connection } from '../connected/connections';
-import { SonarLintExtendedLanguageClient } from '../lsp/client';
-import { logToSonarLintOutput } from '../util/logging';
+import { CodeScanExtendedLanguageClient } from '../lsp/client';
+import { logToCodeScanOutput } from '../util/logging';
 import { removeTrailingSlashes } from '../connected/connectionsetup';
 
-const SONARLINT_CATEGORY = 'codescan';
+const CODESCAN_CATEGORY = 'codescan';
 const CONNECTIONS_SECTION = 'connectedMode.connections';
 const SERVERS = 'servers';
-// Todo: Delete these 2
+
+// For migration
 const SONARQUBE = 'sonarqube';
 const SONARCLOUD = 'sonarcloud';
-const SONARQUBE_CONNECTIONS_CATEGORY = `${SONARLINT_CATEGORY}.${CONNECTIONS_SECTION}.${SONARQUBE}`;
-const SONARCLOUD_CONNECTIONS_CATEGORY = `${SONARLINT_CATEGORY}.${CONNECTIONS_SECTION}.${SERVERS}`;
+const CODESCAN_CONNECTIONS_CATEGORY = `${CODESCAN_CATEGORY}.${CONNECTIONS_SECTION}.${SERVERS}`;
 
 async function hasUnmigratedConnections(
   sqConnections: BaseConnection[],
@@ -65,10 +65,10 @@ export class ConnectionSettingsService {
 
   constructor(
     private readonly secretStorage: VSCode.SecretStorage,
-    private readonly client: SonarLintExtendedLanguageClient
+    private readonly client: CodeScanExtendedLanguageClient
   ) {}
 
-  static init(context: VSCode.ExtensionContext, client: SonarLintExtendedLanguageClient): void {
+  static init(context: VSCode.ExtensionContext, client: CodeScanExtendedLanguageClient): void {
     ConnectionSettingsService._instance = new ConnectionSettingsService(context.secrets, client);
   }
 
@@ -118,75 +118,29 @@ export class ConnectionSettingsService {
 
   getSonarQubeConnections(): BaseConnection[] {
     return VSCode.workspace
-      .getConfiguration(SONARLINT_CATEGORY)
+      .getConfiguration(CODESCAN_CATEGORY)
       .get<BaseConnection[]>(`${CONNECTIONS_SECTION}.${SONARQUBE}`);
   }
 
-  setSonarQubeConnections(sqConnections: BaseConnection[]) {
-    VSCode.workspace
-      .getConfiguration()
-      .update(SONARQUBE_CONNECTIONS_CATEGORY, sqConnections, VSCode.ConfigurationTarget.Global);
-  }
-
-  getSonarQubeConnectionForUrl(serverUrl: string): BaseConnection | undefined {
-    return this.getSonarQubeConnections().find(c => c.serverUrl === serverUrl);
-  }
-
-  async addSonarQubeConnection(connection: BaseConnection) {
-    const connections = this.getSonarQubeConnections();
-    const newConnection: BaseConnection = { serverUrl: connection.serverUrl };
-    if (connection.connectionId !== undefined) {
-      newConnection.connectionId = connection.connectionId;
-    }
-    if (connection.disableNotifications) {
-      newConnection.disableNotifications = true;
-    }
-    // await this.storeConnectionToken(connection, connection.token);
-    connections.push(newConnection);
-    VSCode.workspace
-      .getConfiguration()
-      .update(SONARQUBE_CONNECTIONS_CATEGORY, connections, VSCode.ConfigurationTarget.Global);
-  }
-
-  async updateSonarQubeConnection(connection: BaseConnection) {
-    const connections = this.getSonarQubeConnections();
-    const connectionToUpdate = connections.find(c => c.connectionId === connection.connectionId);
-    if (!connectionToUpdate) {
-      throw new Error(`Could not find connection '${connection.connectionId}' to update`);
-    }
-    connectionToUpdate.serverUrl = connection.serverUrl;
-    if (connection.disableNotifications) {
-      connectionToUpdate.disableNotifications = true;
-    } else {
-      delete connectionToUpdate.disableNotifications;
-    }
-    // await this.storeConnectionToken(connection, connection.token);
-    await this.client.onTokenUpdate();
-    delete connectionToUpdate.token;
-    VSCode.workspace
-      .getConfiguration()
-      .update(SONARQUBE_CONNECTIONS_CATEGORY, connections, VSCode.ConfigurationTarget.Global);
-  }
-
-  getSonarCloudConnections(): BaseConnection[] {
+  getCodeScanConnections(): BaseConnection[] {
     return VSCode.workspace
-      .getConfiguration(SONARLINT_CATEGORY)
+      .getConfiguration(CODESCAN_CATEGORY)
       .get<BaseConnection[]>(`${CONNECTIONS_SECTION}.${SERVERS}`);
   }
 
-  getSonarCloudConnectionForOrganization(organization: string): BaseConnection | undefined {
-    return this.getSonarCloudConnections().find(c => c.organizationKey === organization);
+  getCodeScanConnectionForOrganization(organization: string): BaseConnection | undefined {
+    return this.getCodeScanConnections().find(c => c.organizationKey === organization);
   }
 
-  setSonarCloudConnections(scConnections: BaseConnection[]) {
+  setCodeScanConnections(scConnections: BaseConnection[]) {
     VSCode.workspace
       .getConfiguration()
-      .update(SONARCLOUD_CONNECTIONS_CATEGORY, scConnections, VSCode.ConfigurationTarget.Global);
+      .update(CODESCAN_CONNECTIONS_CATEGORY, scConnections, VSCode.ConfigurationTarget.Global);
   }
 
   async addCodeScanConnection(connection: BaseConnection) {
     const isCloud = await isCodeScanCloudConnection(connection);
-    const connections = this.getSonarCloudConnections();
+    const connections = this.getCodeScanConnections();
     const newConnection: BaseConnection = { serverUrl: connection.serverUrl, isCloudConnection: isCloud };
     if (isCloud) {
       newConnection.organizationKey = connection.organizationKey;
@@ -201,12 +155,12 @@ export class ConnectionSettingsService {
     connections.push(newConnection);
     VSCode.workspace
       .getConfiguration()
-      .update(SONARCLOUD_CONNECTIONS_CATEGORY, connections, VSCode.ConfigurationTarget.Global);
+      .update(CODESCAN_CONNECTIONS_CATEGORY, connections, VSCode.ConfigurationTarget.Global);
   }
 
   async updateCodeScanConnection(connection: BaseConnection) {
     const isCloud = await isCodeScanCloudConnection(connection);
-    const connections = this.getSonarCloudConnections();
+    const connections = this.getCodeScanConnections();
     const connectionToUpdate = connections.find(c => c.connectionId === connection.connectionId);
     if (!connectionToUpdate) {
       throw new Error(`Could not find connection '${connection.connectionId}' to update`);
@@ -228,7 +182,7 @@ export class ConnectionSettingsService {
     delete connectionToUpdate.token;
     VSCode.workspace
       .getConfiguration()
-      .update(SONARCLOUD_CONNECTIONS_CATEGORY, connections, VSCode.ConfigurationTarget.Global);
+      .update(CODESCAN_CONNECTIONS_CATEGORY, connections, VSCode.ConfigurationTarget.Global);
   }
 
   async addTokensFromSettingsToSecureStorage(
@@ -239,13 +193,14 @@ export class ConnectionSettingsService {
       [...sqConnections, ...scConnections].map(async c => {
         if (c.token !== undefined && !(await this.hasTokenForConnection(c))) {
           const isCloud = await isCodeScanCloudConnection(c);
+          c.isCloudConnection = isCloud;
           await this.storeConnectionToken(c, c.token);
           c.token = undefined;
         }
       })
     );
-    await updateConfigIfNotEmpty(sqConnections, SONARQUBE_CONNECTIONS_CATEGORY);
-    await updateConfigIfNotEmpty(scConnections, SONARCLOUD_CONNECTIONS_CATEGORY);
+    //await updateConfigIfNotEmpty(sqConnections, SONARQUBE_CONNECTIONS_CATEGORY);
+    await updateConfigIfNotEmpty(scConnections, CODESCAN_CONNECTIONS_CATEGORY);
   }
 
   async loadSonarQubeConnection(connectionId: string) {
@@ -257,9 +212,9 @@ export class ConnectionSettingsService {
     return loadedConnection;
   }
 
-  async loadSonarCloudConnection(connectionId: string) {
-    const allSonarCloudConnections = this.getSonarCloudConnections();
-    const loadedConnection = allSonarCloudConnections.find(c => c.connectionId === connectionId);
+  async loadCodeScanConnection(connectionId: string) {
+    const allCodeScanConnections = this.getCodeScanConnections();
+    const loadedConnection = allCodeScanConnections.find(c => c.connectionId === connectionId);
     if (loadedConnection) {
       loadedConnection.token = await this.getServerToken(loadedConnection.isCloudConnection ? loadedConnection.organizationKey : loadedConnection.serverUrl);
     }
@@ -269,11 +224,9 @@ export class ConnectionSettingsService {
   async removeConnection(connectionItem: Promise<Connection>) {
     const connection = await connectionItem;
 
-    const isSonarQube = connection.contextValue === 'sonarqubeConnection';
-
     const deleteAction = 'Delete';
     const confirm = await VSCode.window.showWarningMessage(
-      `Are you sure you want to delete ${isSonarQube ? 'CodeScan Self-hosted' : 'CodeScan'} connection '${
+      `Are you sure you want to delete 'CodeScan' connection '${
         connection.id
       }' and project bindings related to it?`,
       { modal: true },
@@ -283,36 +236,24 @@ export class ConnectionSettingsService {
       return false;
     }
 
-    if (isSonarQube) {
-      const sqConnections = this.getSonarQubeConnections();
-      const matchingConnectionIndex = sqConnections.findIndex(c => c.connectionId === connection.id);
-      if (matchingConnectionIndex === -1) {
-        showSaveSettingsWarning();
-        return false;
-      }
-      const foundConnection = sqConnections[matchingConnectionIndex];
-      await this.deleteTokenForConnection(foundConnection);
-      sqConnections.splice(matchingConnectionIndex, 1);
-      this.setSonarQubeConnections(sqConnections);
-    } else {
-      const scConnections = this.getSonarCloudConnections();
-      const matchingConnectionIndex = scConnections.findIndex(c => c.connectionId === connection.id);
-      if (matchingConnectionIndex === -1) {
-        showSaveSettingsWarning();
-        return false;
-      }
-      const foundConnection = scConnections[matchingConnectionIndex];
-      await this.deleteTokenForConnection(foundConnection);
-      scConnections.splice(matchingConnectionIndex, 1);
-      this.setSonarCloudConnections(scConnections);
+    const scConnections = this.getCodeScanConnections();
+    const matchingConnectionIndex = scConnections.findIndex(c => c.connectionId === connection.id);
+    if (matchingConnectionIndex === -1) {
+      showSaveSettingsWarning();
+      return false;
     }
+    const foundConnection = scConnections[matchingConnectionIndex];
+    await this.deleteTokenForConnection(foundConnection);
+    scConnections.splice(matchingConnectionIndex, 1);
+    this.setCodeScanConnections(scConnections);
+    
     return true;
   }
 
   async generateToken(baseServerUrl: string) {
     const { token } = await this.client.generateToken(baseServerUrl);
     if (!token) {
-      logToSonarLintOutput(`Could not automatically generate server token for generation params: ${baseServerUrl}`);
+      logToCodeScanOutput(`Could not automatically generate server token for generation params: ${baseServerUrl}`);
     }
     return token;
   }

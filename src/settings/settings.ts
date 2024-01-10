@@ -11,11 +11,11 @@ import { ConnectionSettingsService, migrateConnectedModeSettings } from './conne
 
 let currentConfig: vscode.WorkspaceConfiguration;
 
-export const SONARLINT_CATEGORY = 'codescan';
+export const CODESCAN_CATEGORY = 'codescan';
 export const VERBOSE_LOGS = 'output.showVerboseLogs';
 
-export function getSonarLintConfiguration(): vscode.WorkspaceConfiguration {
-  return vscode.workspace.getConfiguration(SONARLINT_CATEGORY);
+export function getCodeScanConfiguration(): vscode.WorkspaceConfiguration {
+  return vscode.workspace.getConfiguration(CODESCAN_CATEGORY);
 }
 
 export function isVerboseEnabled(): boolean {
@@ -28,7 +28,7 @@ export function enableVerboseLogs() {
 }
 
 export function loadInitialSettings() {
-  currentConfig = getSonarLintConfiguration();
+  currentConfig = getCodeScanConfiguration();
 }
 
 export function getCurrentConfiguration() {
@@ -37,13 +37,13 @@ export function getCurrentConfiguration() {
 
 export function onConfigurationChange() {
   return vscode.workspace.onDidChangeConfiguration(event => {
-    if (!event.affectsConfiguration(SONARLINT_CATEGORY)) {
+    if (!event.affectsConfiguration(CODESCAN_CATEGORY)) {
       return;
     }
-    const newConfig = getSonarLintConfiguration();
+    const newConfig = getCodeScanConfiguration();
 
     const sonarLintLsConfigChanged =
-      hasSonarLintLsConfigChanged(currentConfig, newConfig) || hasNodeJsConfigChanged(currentConfig, newConfig);
+      hasCodeScanLsConfigChanged(currentConfig, newConfig) || hasNodeJsConfigChanged(currentConfig, newConfig);
 
     if (sonarLintLsConfigChanged) {
       const msg = 'CodeScan Language Server configuration changed, please restart VS Code.';
@@ -60,7 +60,7 @@ export function onConfigurationChange() {
   });
 }
 
-function hasSonarLintLsConfigChanged(oldConfig, newConfig) {
+function hasCodeScanLsConfigChanged(oldConfig, newConfig) {
   return !configKeyEquals('ls.javaHome', oldConfig, newConfig) || !configKeyEquals('ls.vmargs', oldConfig, newConfig);
 }
 

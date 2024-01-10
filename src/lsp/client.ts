@@ -11,7 +11,7 @@ import { ServerMode } from '../java/java';
 import { code2ProtocolConverter } from '../util/uri';
 import * as protocol from './protocol';
 
-export class SonarLintExtendedLanguageClient extends LanguageClient {
+export class CodeScanExtendedLanguageClient extends LanguageClient {
   listAllRules(): Thenable<protocol.RulesResponse> {
     return this.sendRequest(protocol.ListAllRulesRequest.type);
   }

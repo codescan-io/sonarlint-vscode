@@ -8,8 +8,8 @@
 import * as Path from 'path';
 import * as VSCode from 'vscode';
 import { TransportKind } from 'vscode-languageclient/node';
-import { getSonarLintConfiguration } from '../settings/settings';
-import { RequirementsData } from '../util/requirements';
+import { getCodeScanConfiguration } from '../settings/settings';
+import { RequirementsData, readHttpClientVersion } from '../util/requirements';
 import * as util from '../util/util';
 
 declare let v8debug: object;
@@ -27,20 +27,11 @@ export function languageServerCommand(
     params.push('-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000,quiet=y');
     params.push('-Dcodescan.telemetry.disabled=true');
   }
-  const vmargs = getSonarLintConfiguration().get('ls.vmargs', '');
+  params.push('-Dcodescan.httpclient.version=' + readHttpClientVersion());
+  const vmargs = getCodeScanConfiguration().get('ls.vmargs', '');
   parseVMargs(params, vmargs);
   params.push('-jar', serverJar);
   params.push('-stdio');
-  params.push('-analyzers');
-  params.push(Path.resolve(context.extensionPath, 'analyzers', 'sonargo.jar'));
-  params.push(Path.resolve(context.extensionPath, 'analyzers', 'sonarjava.jar'));
-  params.push(Path.resolve(context.extensionPath, 'analyzers', 'sonarjs.jar'));
-  params.push(Path.resolve(context.extensionPath, 'analyzers', 'sonarphp.jar'));
-  params.push(Path.resolve(context.extensionPath, 'analyzers', 'sonarpython.jar'));
-  params.push(Path.resolve(context.extensionPath, 'analyzers', 'sonarhtml.jar'));
-  params.push(Path.resolve(context.extensionPath, 'analyzers', 'sonarxml.jar'));
-  params.push(Path.resolve(context.extensionPath, 'analyzers', 'sonartext.jar'));
-  params.push(Path.resolve(context.extensionPath, 'analyzers', 'sonariac.jar'));
 
   return { command: javaExecutablePath, args: params, transport: TransportKind.stdio };
 }

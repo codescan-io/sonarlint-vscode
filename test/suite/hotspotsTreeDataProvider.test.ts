@@ -13,10 +13,10 @@ const mockSettingsServiceWithConnections = {
   getSonarQubeConnections(): BaseConnection[] {
     return [{ serverUrl: 'https://next.sonarqube.com/sonarqube', connectionId: 'connectionId' }];
   },
-  getSonarCloudConnections(): BaseConnection[] {
+  getCodeScanConnections(): BaseConnection[] {
     return [{ organizationKey: 'myOrg', connectionId: DEFAULT_CONNECTION_ID, serverUrl: 'https://next.sonarqube.com/sonarqube' }];
   },
-  async loadSonarCloudConnection(connectionId: string): Promise<BaseConnection> {
+  async loadCodeScanConnection(connectionId: string): Promise<BaseConnection> {
     return { organizationKey: 'orgKey', connectionId: connectionId, serverUrl: 'https://next.sonarqube.com/sonarqube' };
   }
 } as ConnectionSettingsService;
@@ -25,7 +25,7 @@ const mockSettingsServiceWithOneConnection = {
   getSonarQubeConnections(): BaseConnection[] {
     return [{ serverUrl: 'https://next.sonarqube.com/sonarqube', connectionId: 'connectionId' }];
   },
-  getSonarCloudConnections(): BaseConnection[] {
+  getCodeScanConnections(): BaseConnection[] {
     return [];
   }
 } as ConnectionSettingsService;
@@ -34,7 +34,7 @@ const mockSettingsServiceWithOutConnections = {
   getSonarQubeConnections(): BaseConnection[] {
     return [];
   },
-  getSonarCloudConnections(): BaseConnection[] {
+  getCodeScanConnections(): BaseConnection[] {
     return [];
   }
 } as ConnectionSettingsService;

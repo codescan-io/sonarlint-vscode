@@ -21,9 +21,6 @@ import { escapeHtml, ResourceResolver } from '../util/webview';
 import { DEFAULT_CONNECTION_ID } from '../commons';
 
 let connectionSetupPanel: vscode.WebviewPanel;
-
-const sonarQubeNotificationsDocUrl = 'https://docs.sonarqube.org/latest/user-guide/connected-mode/';
-const sonarCloudNotificationsDocUrl = 'https://docs.sonarcloud.io/advanced-setup/sonarlint-smart-notifications/';
 const TOKEN_RECEIVED_COMMAND = 'tokenReceived';
 const OPEN_TOKEN_GENERATION_PAGE_COMMAND = 'openTokenGenerationPage';
 const SAVE_CONNECTION_COMMAND = 'saveConnection';
@@ -31,9 +28,7 @@ const CHECK_CLOUD_COMMAND = 'checkIfCodeScanCloudUrl';
 
 export function assistCreatingConnection(context: vscode.ExtensionContext) {
   return assistCreatingConnectionParams => {
-    assistCreatingConnectionParams.isSonarCloud
-      ? connectToCodeScanCloud(context)
-      : connectToCodeScanSelfHosted(context)(assistCreatingConnectionParams.serverUrl);
+   connectToCodeScanCloud(context)
   };
 }
 
@@ -72,24 +67,10 @@ export function connectToCodeScanCloud(context: vscode.ExtensionContext) {
   };
 }
 
-export function editSonarQubeConnection(context: vscode.ExtensionContext) {
-  return async (connection: string | Promise<Connection>) => {
-    const connectionId = typeof connection === 'string' ? connection : (await connection).id;
-    const initialState = await ConnectionSettingsService.instance.loadSonarQubeConnection(connectionId);
-    const serverProductName = 'CodeScan Self-hosted';
-    lazyCreateConnectionSetupPanel(context, serverProductName);
-    connectionSetupPanel.webview.html = renderConnectionSetupPanel(context, connectionSetupPanel.webview, {
-      mode: 'update',
-      initialState
-    });
-    finishSetupAndRevealPanel(serverProductName);
-  };
-}
-
 export function editCodeScanConnection(context: vscode.ExtensionContext) {
   return async (connection: string | Promise<Connection>) => {
     const connectionId = typeof connection === 'string' ? connection : (await connection).id;
-    const initialState = await ConnectionSettingsService.instance.loadSonarCloudConnection(connectionId);
+    const initialState = await ConnectionSettingsService.instance.loadCodeScanConnection(connectionId);
     const serverProductName = 'CodeScan';
     lazyCreateConnectionSetupPanel(context, serverProductName);
     connectionSetupPanel.webview.html = renderConnectionSetupPanel(context, connectionSetupPanel.webview, {
@@ -319,7 +300,7 @@ async function openTokenGenerationPage(message) {
 }
 
 async function saveConnection(connection: BaseConnection) {
-  const foundConnection = await ConnectionSettingsService.instance.loadSonarCloudConnection(connection.connectionId);
+  const foundConnection = await ConnectionSettingsService.instance.loadCodeScanConnection(connection.connectionId);
   await connectionSetupPanel.webview.postMessage({ command: 'connectionCheckStart' });
   if (foundConnection) {
     await ConnectionSettingsService.instance.updateCodeScanConnection(connection);

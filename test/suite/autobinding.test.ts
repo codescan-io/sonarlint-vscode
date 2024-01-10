@@ -19,7 +19,7 @@ import { expect } from 'chai';
 import { AutoBindingService, DO_NOT_ASK_ABOUT_AUTO_BINDING_FOR_WS_FLAG } from '../../src/connected/autobinding';
 import { TextEncoder } from 'util';
 import { FindFileByNamesInFolderParams, FindFileByNamesInFolderResponse } from '../../src/lsp/protocol';
-import { SONARLINT_CATEGORY } from '../../src/settings/settings';
+import { CODESCAN_CATEGORY } from '../../src/settings/settings';
 
 const CONNECTED_MODE_SETTINGS_SONARQUBE = 'connectedMode.connections.sonarqube';
 const CONNECTED_MODE_SETTINGS_SONARCLOUD = 'connectedMode.connections.sonarcloud';
@@ -43,7 +43,7 @@ const mockSettingsService = {
       }
     ];
   },
-  getSonarCloudConnections(): BaseConnection[] {
+  getCodeScanConnections(): BaseConnection[] {
     return [
       {
         connectionId: 'SCconnectionId',
@@ -81,7 +81,7 @@ suite('Auto Binding Test Suite', () => {
   setup(async () => {
     // start from 1 SQ connection config
     await VSCode.workspace
-      .getConfiguration(SONARLINT_CATEGORY)
+      .getConfiguration(CODESCAN_CATEGORY)
       .update(CONNECTED_MODE_SETTINGS_SONARQUBE, [TEST_SONARQUBE_CONNECTION], VSCode.ConfigurationTarget.Global);
 
     await cleanBindings();
@@ -104,7 +104,7 @@ suite('Auto Binding Test Suite', () => {
       const workspaceFolder = VSCode.workspace.workspaceFolders[0];
 
       const bindingBefore = VSCode.workspace
-        .getConfiguration(SONARLINT_CATEGORY, workspaceFolder.uri)
+        .getConfiguration(CODESCAN_CATEGORY, workspaceFolder.uri)
         .get(BINDING_SETTINGS);
       expect(bindingBefore).to.be.empty;
 
@@ -113,7 +113,7 @@ suite('Auto Binding Test Suite', () => {
       underTest.checkConditionsAndAttemptAutobinding({ suggestions: {folderUri: [workspaceFolder.uri.toString()]} });
 
       const bindingAfter = VSCode.workspace
-        .getConfiguration(SONARLINT_CATEGORY, workspaceFolder.uri)
+        .getConfiguration(CODESCAN_CATEGORY, workspaceFolder.uri)
         .get(BINDING_SETTINGS);
       expect(bindingAfter).to.be.empty;
     });
@@ -122,7 +122,7 @@ suite('Auto Binding Test Suite', () => {
       const workspaceFolder = VSCode.workspace.workspaceFolders[0];
 
       const bindingBefore = VSCode.workspace
-        .getConfiguration(SONARLINT_CATEGORY, workspaceFolder.uri)
+        .getConfiguration(CODESCAN_CATEGORY, workspaceFolder.uri)
         .get(BINDING_SETTINGS);
       expect(bindingBefore).to.be.empty;
 
@@ -131,7 +131,7 @@ suite('Auto Binding Test Suite', () => {
       underTest.checkConditionsAndAttemptAutobinding({ suggestions: {} });
 
       const bindingAfter = VSCode.workspace
-        .getConfiguration(SONARLINT_CATEGORY, workspaceFolder.uri)
+        .getConfiguration(CODESCAN_CATEGORY, workspaceFolder.uri)
         .get(BINDING_SETTINGS);
       expect(bindingAfter).to.be.empty;
     });
@@ -178,22 +178,22 @@ suite('Auto Binding Test Suite', () => {
       const workspaceFolder = VSCode.workspace.workspaceFolders[0];
 
       await VSCode.workspace
-      .getConfiguration(SONARLINT_CATEGORY)
+      .getConfiguration(CODESCAN_CATEGORY)
       .update(CONNECTED_MODE_SETTINGS_SONARQUBE, undefined, VSCode.ConfigurationTarget.Global);
 
       await VSCode.workspace
-      .getConfiguration(SONARLINT_CATEGORY)
+      .getConfiguration(CODESCAN_CATEGORY)
       .update(CONNECTED_MODE_SETTINGS_SONARCLOUD, undefined, VSCode.ConfigurationTarget.Global);
 
       const bindingBefore = VSCode.workspace
-        .getConfiguration(SONARLINT_CATEGORY, workspaceFolder.uri)
+        .getConfiguration(CODESCAN_CATEGORY, workspaceFolder.uri)
         .get(BINDING_SETTINGS);
       expect(bindingBefore).to.be.empty;
 
       underTest.checkConditionsAndAttemptAutobinding({ suggestions: {} });
 
       const bindingAfter = VSCode.workspace
-        .getConfiguration(SONARLINT_CATEGORY, workspaceFolder.uri)
+        .getConfiguration(CODESCAN_CATEGORY, workspaceFolder.uri)
         .get(BINDING_SETTINGS);
       expect(bindingAfter).to.be.empty;
     });
@@ -204,7 +204,7 @@ async function cleanBindings() {
   return Promise.all(
     VSCode.workspace.workspaceFolders.map(folder => {
       return VSCode.workspace
-        .getConfiguration(SONARLINT_CATEGORY, folder.uri)
+        .getConfiguration(CODESCAN_CATEGORY, folder.uri)
         .update(BINDING_SETTINGS, undefined, VSCode.ConfigurationTarget.WorkspaceFolder);
     })
   );

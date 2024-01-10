@@ -74,7 +74,7 @@ export class AutoBindingService {
   }
 
   isConnectionConfigured(): boolean {
-    const sonarCloudConnections = this.settingsService.getSonarCloudConnections();
+    const sonarCloudConnections = this.settingsService.getCodeScanConnections();
     const sonarQubeConnections = this.settingsService.getSonarQubeConnections();
     return sonarCloudConnections.length > 0 || sonarQubeConnections.length > 0;
   }
@@ -108,19 +108,19 @@ export class AutoBindingService {
 
   async getTargetConnectionForManualBinding() {
     const sonarQubeConnections = this.settingsService.getSonarQubeConnections();
-    const sonarCloudConnections = this.settingsService.getSonarCloudConnections();
+    const sonarCloudConnections = this.settingsService.getCodeScanConnections();
     let targetConnection;
     if (sonarCloudConnections.length === 0 && sonarQubeConnections.length === 1) {
       targetConnection = {
         label: this.computeItemLabel('CodeScan Self-hosted', sonarQubeConnections[0]),
-        description: 'SonarQube',
+        description: 'CodeScan Self-hosted',
         connectionId: this.computeConnectionId(sonarQubeConnections[0]),
         contextValue: 'sonarqubeConnection'
       };
     } else if (sonarQubeConnections.length === 0 && sonarCloudConnections.length === 1) {
       targetConnection = {
         label: this.computeItemLabel('CodeScan', sonarCloudConnections[0]),
-        description: 'SonarCloud',
+        description: 'CodeScan',
         connectionId: this.computeConnectionId(sonarCloudConnections[0]),
         contextValue: 'sonarcloudConnection'
       };
@@ -222,7 +222,7 @@ export class AutoBindingService {
     const commonMessage =
       `Do you want to bind folder '${unboundFolder.name}' to project '${bindingSuggestion.sonarProjectKey}'`;
     const message =
-      this.isBindingSuggestionForSonarCloud(bindingSuggestion)
+      this.isBindingSuggestionForCodeScanCloud(bindingSuggestion)
         ? `${commonMessage} of CodeScan organization '${bindingSuggestion.connectionId}'?`
         : `${commonMessage} of CodeScan Self-hosted server '${bindingSuggestion.connectionId}'?`;
 
@@ -254,8 +254,8 @@ export class AutoBindingService {
     }
   }
 
-  private isBindingSuggestionForSonarCloud(bindingSuggestion: BindingSuggestion) {
-    const sonarCloudConnections = this.settingsService.getSonarCloudConnections();
+  private isBindingSuggestionForCodeScanCloud(bindingSuggestion: BindingSuggestion) {
+    const sonarCloudConnections = this.settingsService.getCodeScanConnections();
     return sonarCloudConnections.filter(sc => bindingSuggestion.connectionId === sc.connectionId).length > 0;
   }
 

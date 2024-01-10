@@ -17,16 +17,17 @@ import * as pathExists from 'path-exists';
 import * as vscode from 'vscode';
 import { Commands } from './commands';
 import * as jre from '../java/jre';
-import { logToSonarLintOutput } from './logging';
+import { logToCodeScanOutput } from './logging';
 import { PlatformInformation } from './platform';
 import * as util from './util';
-import { SONARLINT_CATEGORY } from '../settings/settings';
+import { CODESCAN_CATEGORY } from '../settings/settings';
 
 const REQUIRED_JAVA_VERSION = 11;
 
 const isWindows = process.platform.indexOf('win') === 0;
 const JAVA_FILENAME = `java${isWindows ? '.exe' : ''}`;
-export const JAVA_HOME_CONFIG = SONARLINT_CATEGORY + '.ls.javaHome';
+export const JAVA_HOME_CONFIG = CODESCAN_CATEGORY + '.ls.javaHome';
+export const HTTP_CLIENT_VERSION = 'codescan.httpclient.version';
 
 export interface RequirementsData {
   javaHome: string;
@@ -47,7 +48,7 @@ export async function resolveRequirements(context: vscode.ExtensionContext): Pro
     const source = `'${JAVA_HOME_CONFIG}' variable defined in VS Code settings`;
     javaHome = expandHomeDir(javaHome);
     if (!pathExists.sync(javaHome)) {
-      logToSonarLintOutput(`The ${source} points to a missing or inaccessible folder (${javaHome})`);
+      logToCodeScanOutput(`The ${source} points to a missing or inaccessible folder (${javaHome})`);
     } else if (!pathExists.sync(path.resolve(javaHome, 'bin', JAVA_FILENAME))) {
       let msg: string;
       if (pathExists.sync(path.resolve(javaHome, JAVA_FILENAME))) {
@@ -55,7 +56,7 @@ export async function resolveRequirements(context: vscode.ExtensionContext): Pro
       } else {
         msg = `The ${source} (${javaHome}) does not point to a JRE. Will try to use embedded JRE.`;
       }
-      logToSonarLintOutput(msg);
+      logToCodeScanOutput(msg);
       tryResolveJre = true;
     }
   }
@@ -242,4 +243,8 @@ export function installManagedJre() {
         });
     }
   );
+}
+
+export function readHttpClientVersion(): string {
+  return vscode.workspace.getConfiguration().get<string>(HTTP_CLIENT_VERSION, "NEGOTIATE");
 }

@@ -6,7 +6,7 @@
  * ------------------------------------------------------------------------------------------ */
 import { HTMLElement, parse } from 'node-html-parser';
 import hljs from 'highlight.js';
-import { logToSonarLintOutput } from '../util/logging';
+import { logToCodeScanOutput } from '../util/logging';
 
 function getNonDiffCodeSnippetsToHighlight(doc) {
   return doc.querySelectorAll(`pre:not(.code-difference-scrollable)`);
@@ -71,7 +71,7 @@ export function highlightAllCodeSnippetsInDesc(htmlDescription, ruleLanguageKey,
       });
     }
   } catch (e) {
-    logToSonarLintOutput(
+    logToCodeScanOutput(
       `Error occurred when rendering rule description. Rendering without syntax highlighting. \n ${e.message}`
     );
   }

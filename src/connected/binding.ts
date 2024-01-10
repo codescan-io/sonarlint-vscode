@@ -10,14 +10,14 @@
 import * as VSCode from 'vscode';
 import { Commands } from '../util/commands';
 import { ConnectionSettingsService } from '../settings/connectionsettings';
-import { SonarLintExtendedLanguageClient } from '../lsp/client';
+import { CodeScanExtendedLanguageClient } from '../lsp/client';
 import { Connection, ServerType, WorkspaceFolderItem } from './connections';
 import { buildBaseServerUrl, serverProjectsToQuickPickItems } from '../util/bindingUtils';
 import { code2ProtocolConverter } from '../util/uri';
 import { DEFAULT_CONNECTION_ID } from '../commons';
 import { AssistBindingParams } from '../lsp/protocol';
 
-const SONARLINT_CATEGORY = 'codescan';
+const CODESCAN_CATEGORY = 'codescan';
 const BINDING_SETTINGS = 'connectedMode.project';
 const OPEN_FOLDER_ACTION = 'Open Folder';
 const BIND_MANUALLY_ACTION = 'Bind Manually';
@@ -25,11 +25,11 @@ export const DO_NOT_ASK_ABOUT_AUTO_BINDING_FOR_FOLDER_FLAG = 'doNotAskAboutAutoB
 
 async function bindManuallyAction(workspaceFolder: VSCode.WorkspaceFolder) {
   const existingSettings = VSCode.workspace
-    .getConfiguration(SONARLINT_CATEGORY, workspaceFolder)
+    .getConfiguration(CODESCAN_CATEGORY, workspaceFolder)
     .get<ProjectBinding>(BINDING_SETTINGS);
   if (existingSettings.projectKey === undefined) {
     await VSCode.workspace
-      .getConfiguration(SONARLINT_CATEGORY, workspaceFolder)
+      .getConfiguration(CODESCAN_CATEGORY, workspaceFolder)
       .update(BINDING_SETTINGS, { connectionId: '', projectKey: '' });
   }
   VSCode.commands.executeCommand('workbench.action.openFolderSettingsFile');
@@ -39,7 +39,7 @@ export class BindingService {
   private static _instance: BindingService;
 
   static init(
-    languageClient: SonarLintExtendedLanguageClient,
+    languageClient: CodeScanExtendedLanguageClient,
     workspaceState: VSCode.Memento,
     settingsService: ConnectionSettingsService
   ): void {
@@ -47,7 +47,7 @@ export class BindingService {
   }
 
   constructor(
-    private readonly languageClient: SonarLintExtendedLanguageClient,
+    private readonly languageClient: CodeScanExtendedLanguageClient,
     private readonly workspaceState: VSCode.Memento,
     private readonly settingsService: ConnectionSettingsService
   ) {}
@@ -72,7 +72,7 @@ export class BindingService {
   async deleteBinding(workspaceFolderItem: WorkspaceFolderItem | BoundFolder): Promise<void> {
     const folder =
       workspaceFolderItem instanceof WorkspaceFolderItem ? workspaceFolderItem.uri : workspaceFolderItem.folder;
-    const config = VSCode.workspace.getConfiguration(SONARLINT_CATEGORY, folder);
+    const config = VSCode.workspace.getConfiguration(CODESCAN_CATEGORY, folder);
     return config.update(BINDING_SETTINGS, undefined, VSCode.ConfigurationTarget.WorkspaceFolder);
   }
 
@@ -90,7 +90,7 @@ export class BindingService {
   getAllBindings(): Map<string, Map<string, BoundFolder[]>> {
     const bindingsPerConnectionId = new Map<string, Map<string, BoundFolder[]>>();
     for (const folder of VSCode.workspace.workspaceFolders || []) {
-      const config = VSCode.workspace.getConfiguration(SONARLINT_CATEGORY, folder.uri);
+      const config = VSCode.workspace.getConfiguration(CODESCAN_CATEGORY, folder.uri);
       const binding = config.get<ProjectBinding>(BINDING_SETTINGS);
       const projectKey = binding.projectKey;
       if (projectKey) {
@@ -116,11 +116,11 @@ export class BindingService {
     const workspaceFolder = workspaceFolders.find(f => f.name === selectedWorkspaceFolderName);
 
     const existingSettings = VSCode.workspace
-      .getConfiguration(SONARLINT_CATEGORY, workspaceFolder)
+      .getConfiguration(CODESCAN_CATEGORY, workspaceFolder)
       .get<ProjectBinding>(BINDING_SETTINGS);
     if (existingSettings.projectKey === undefined) {
       await VSCode.workspace
-        .getConfiguration(SONARLINT_CATEGORY, workspaceFolder)
+        .getConfiguration(CODESCAN_CATEGORY, workspaceFolder)
         .update(BINDING_SETTINGS, { connectionId: params.connectionId, projectKey: params.projectKey });
     }
     VSCode.commands.executeCommand('workbench.action.openFolderSettingsFile');
@@ -158,9 +158,9 @@ export class BindingService {
   }
 
   async getBaseServerUrl(connectionId: string, serverType: ServerType): Promise<string> {
-    const connection = await this.settingsService.loadSonarCloudConnection(connectionId);
+    const connection = await this.settingsService.loadCodeScanConnection(connectionId);
     const serverUrlOrOrganizationKey = connection.isCloudConnection ? connection.organizationKey : connection.serverUrl;
-    return buildBaseServerUrl(serverType, serverUrlOrOrganizationKey);
+    return buildBaseServerUrl(connection, serverUrlOrOrganizationKey);
   }
 
   private async pickRemoteProjectToBind(
@@ -178,7 +178,7 @@ export class BindingService {
     const suggestedProjectsGroup = { label: 'Suggested Projects', kind: VSCode.QuickPickItemKind.Separator };
     if (remoteProjects) {
       const remoteProjectsQuickPick = VSCode.window.createQuickPick();
-      remoteProjectsQuickPick.title = `Select ${serverType} Project to Bind with '${selectedFolderName}/'`;
+      remoteProjectsQuickPick.title = `Select CodeScan Project to Bind with '${selectedFolderName}/'`;
       remoteProjectsQuickPick.placeholder = `Select the remote project you want to bind with '${selectedFolderName}/' folder`;
       remoteProjectsQuickPick.items = [
         suggestedProjectsGroup,
@@ -246,7 +246,7 @@ export class BindingService {
                       has been bound with project '${projectKey}'`);
     connectionId = connectionId || DEFAULT_CONNECTION_ID;
     return VSCode.workspace
-      .getConfiguration(SONARLINT_CATEGORY, workspaceFolder)
+      .getConfiguration(CODESCAN_CATEGORY, workspaceFolder)
       .update(BINDING_SETTINGS, { connectionId, projectKey });
   }
 
@@ -300,7 +300,7 @@ export class BindingService {
   }
 
   isBound(workspaceFolder: VSCode.WorkspaceFolder) {
-    const config = VSCode.workspace.getConfiguration(SONARLINT_CATEGORY, workspaceFolder.uri);
+    const config = VSCode.workspace.getConfiguration(CODESCAN_CATEGORY, workspaceFolder.uri);
     const binding = config.get<ProjectBinding>(BINDING_SETTINGS);
     return !!binding.projectKey;
   }

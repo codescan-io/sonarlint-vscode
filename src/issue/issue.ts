@@ -7,17 +7,17 @@
 
 'use strict';
 
-import { SonarLintExtendedLanguageClient } from '../lsp/client';
+import { CodeScanExtendedLanguageClient } from '../lsp/client';
 
 export class IssueService {
 
   private static _instance: IssueService;
 
-  static init(languageClient: SonarLintExtendedLanguageClient): void {
+  static init(languageClient: CodeScanExtendedLanguageClient): void {
     IssueService._instance = new IssueService(languageClient);
   }
 
-  constructor(private readonly languageClient: SonarLintExtendedLanguageClient) {
+  constructor(private readonly languageClient: CodeScanExtendedLanguageClient) {
   }
 
   static get instance(): IssueService {
