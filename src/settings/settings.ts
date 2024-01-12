@@ -42,10 +42,10 @@ export function onConfigurationChange() {
     }
     const newConfig = getCodeScanConfiguration();
 
-    const sonarLintLsConfigChanged =
+    const codeScanLsConfigChanged =
       hasCodeScanLsConfigChanged(currentConfig, newConfig) || hasNodeJsConfigChanged(currentConfig, newConfig);
 
-    if (sonarLintLsConfigChanged) {
+    if (codeScanLsConfigChanged) {
       const msg = 'CodeScan Language Server configuration changed, please restart VS Code.';
       const action = 'Restart Now';
       const restartId = 'workbench.action.reloadWindow';

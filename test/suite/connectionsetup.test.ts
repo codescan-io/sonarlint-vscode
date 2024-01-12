@@ -197,7 +197,7 @@ suite('Connection Setup', () => {
 
     await sleep(sleepTime);
 
-    await vscode.commands.executeCommand(Commands.EDIT_SONARCLOUD_CONNECTION, connectionId);
+    await vscode.commands.executeCommand(Commands.EDIT_CODESCAN_CONNECTION, connectionId);
     await sleep(sleepTime);
 
     const disableNotifications = true;

@@ -258,11 +258,11 @@ export async function activate(context: VSCode.ExtensionContext) {
   context.subscriptions.push(referenceBranchStatusItem);
   VSCode.window.onDidChangeActiveTextEditor(e => scm.updateReferenceBranchStatusItem(e));
 
-  allRulesTreeDataProvider = new AllRulesTreeDataProvider(() => languageClient.listAllRules());
-  allRulesView = VSCode.window.createTreeView('CodeScan.AllRules', {
-    treeDataProvider: allRulesTreeDataProvider
-  });
-  context.subscriptions.push(allRulesView);
+  // allRulesTreeDataProvider = new AllRulesTreeDataProvider(() => languageClient.listAllRules());
+  // allRulesView = VSCode.window.createTreeView('CodeScan.AllRules', {
+  //   treeDataProvider: allRulesTreeDataProvider
+  // });
+  // context.subscriptions.push(allRulesView);
 
   secondaryLocationsTree = new SecondaryLocationsTree();
   issueLocationsView = VSCode.window.createTreeView('CodeScan.IssueLocations', {
@@ -339,7 +339,7 @@ function suggestBinding(params: protocol.SuggestBindingParams) {
 }
 
 function registerCommands(context: VSCode.ExtensionContext) {
-  context.subscriptions.push(VSCode.commands.registerCommand('SonarLint.OpenSample', async () => {
+  context.subscriptions.push(VSCode.commands.registerCommand('CodeScan.OpenSample', async () => {
     const sampleFileUri = VSCode.Uri.joinPath(context.extensionUri, 'walkthrough', 'sample.py');
     const sampleDocument = await VSCode.workspace.openTextDocument(sampleFileUri);
     await VSCode.window.showTextDocument(sampleDocument, VSCode.ViewColumn.Beside);
@@ -444,7 +444,7 @@ function registerCommands(context: VSCode.ExtensionContext) {
   //   VSCode.commands.registerCommand(Commands.EDIT_SONARQUBE_CONNECTION, editSonarQubeConnection(context))
   // );
   context.subscriptions.push(
-    VSCode.commands.registerCommand(Commands.EDIT_SONARCLOUD_CONNECTION, editCodeScanConnection(context))
+    VSCode.commands.registerCommand(Commands.EDIT_CODESCAN_CONNECTION, editCodeScanConnection(context))
   );
   context.subscriptions.push(
     VSCode.commands.registerCommand(Commands.ADD_PROJECT_BINDING, connection =>

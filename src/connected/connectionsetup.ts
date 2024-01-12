@@ -21,6 +21,8 @@ import { escapeHtml, ResourceResolver } from '../util/webview';
 import { DEFAULT_CONNECTION_ID } from '../commons';
 
 let connectionSetupPanel: vscode.WebviewPanel;
+let unauthorizedConnectionErrorFlag: boolean;
+let connectionWasSuccessful: boolean;
 const TOKEN_RECEIVED_COMMAND = 'tokenReceived';
 const OPEN_TOKEN_GENERATION_PAGE_COMMAND = 'openTokenGenerationPage';
 const SAVE_CONNECTION_COMMAND = 'saveConnection';
@@ -94,17 +96,30 @@ export async function reportConnectionCheckResult(result: ConnectionCheckResult)
   } else {
     // If connection UI is not shown, fallback to notifications
     if (result.success) {
-      vscode.window.showInformationMessage(`Connection with '${result.connectionId}' was successful!`);
-    } else {
-      const editConnectionAction = 'Edit Connection';
-      const reply = await vscode.window.showErrorMessage(
-        `Connection with '${result.connectionId}' failed. Please check your settings.`,
-        editConnectionAction
-      );
-      if (reply === editConnectionAction) {
-        vscode.commands.executeCommand(Commands.EDIT_SONARQUBE_CONNECTION, result.connectionId);
+      if (!connectionWasSuccessful) {
+        connectionWasSuccessful = true;
+        vscode.window.showInformationMessage(`Connection with '${result.connectionId}' was successful!`);
       }
+    } else {
+      handleConnectionFailureUIMessaging(result);
     }
+  }
+}
+
+async function handleConnectionFailureUIMessaging(result: ConnectionCheckResult) {
+  if (!unauthorizedConnectionErrorFlag) {
+    const editConnectionAction = 'Edit Connection';
+    unauthorizedConnectionErrorFlag = true;
+    const reply = await vscode.window.showErrorMessage(
+      result.reason === 'Authentication failed'
+      ? `Connection with '${result.connectionId}' failed because of authorization error. Please check your credentials.`
+      : `Connection with '${result.connectionId}' failed. Please check your connection settings.`,
+      editConnectionAction
+    );
+    if (reply === editConnectionAction) {
+      vscode.commands.executeCommand(Commands.EDIT_CODESCAN_CONNECTION, result.connectionId);
+    }
+    unauthorizedConnectionErrorFlag = false;
   }
 }
 
@@ -140,11 +155,8 @@ function renderConnectionSetupPanel(context: vscode.ExtensionContext, webview: v
   const webviewMainUri = resolver.resolve('webview-ui', 'connectionsetup.js');
 
   const { mode, initialState } = options;
-  // const isCodeScanSelfHosted = !isCodeScanCloudConnection(initialState);
-  const isCodeScanSelfHosted = false;
 
-  const serverProductName = isCodeScanSelfHosted ? 'CodeScan Self-hosted' : 'CodeScan';
-  // const serverDocUrl = isCodeScanSelfHosted ? sonarQubeNotificationsDocUrl : sonarCloudNotificationsDocUrl;
+  const serverProductName = 'CodeScan';
 
   const initialConnectionId = escapeHtml(initialState.connectionId) || '';
   const initialToken = escapeHtml(initialState.token);
@@ -300,6 +312,7 @@ async function openTokenGenerationPage(message) {
 }
 
 async function saveConnection(connection: BaseConnection) {
+  connectionWasSuccessful = false;
   const foundConnection = await ConnectionSettingsService.instance.loadCodeScanConnection(connection.connectionId);
   await connectionSetupPanel.webview.postMessage({ command: 'connectionCheckStart' });
   if (foundConnection) {

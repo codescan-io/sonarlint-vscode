@@ -74,7 +74,7 @@
           "additionalProperties": false
         },
         "codescan.connectedMode.servers": {
-          "deprecationMessage": "The setting is deprecated. Use `sonarlint.connectedMode.connections.sonarqube` or `sonarlint.connectedMode.connections.sonarcloud` instead.",
+          "deprecationMessage": "The setting is deprecated. Use `codescan.connectedMode.connections.servers` instead.",
           "type": "array",
           "scope": "application",
           "default": [],
@@ -196,7 +196,7 @@
         },
         "codescan.connectedMode.project": {
           "order": 4,
-          "markdownDescription": "Bind the current workspace folder to [CodeScan](https://codescan.io)t. Requires connection details to be defined in the setting `#sonarlint.connectedMode.connections.sonarqube#` or `#sonarlint.connectedMode.connections.sonarcloud#`.\n\nBinding a workspace folder to a project allows to use the same rules and configuration that are defined in the server, as well as issue suppressions.\n\nExample:\n\n    \"sonarlint.connectedMode.project\": {\n      \"projectKey\": \"my_project\"\n    }\n\nSpecify the `connectionId` only if you have defined multiple connections.",
+          "markdownDescription": "Bind the current workspace folder to [CodeScan](https://codescan.io)t. Requires connection details to be defined in the setting `#codescan.connectedMode.connections.servers#`.\n\nBinding a workspace folder to a project allows to use the same rules and configuration that are defined in the server, as well as issue suppressions.\n\nExample:\n\n    \"codescan.connectedMode.project\": {\n      \"projectKey\": \"my_project\"\n    }\n\nSpecify the `connectionId` only if you have defined multiple connections.",
           "examples": [
             {
               "projectKey": "<replace_with_server_project_key>"
@@ -213,7 +213,7 @@
               "properties": {
                 "serverId": {
                   "type": "string",
-                  "description": "Identifier of the server connection declared in `#sonarlint.connectedMode.connections.sonarqube#` or `#sonarlint.connectedMode.connections.sonarcloud#`"
+                  "description": "Identifier of the server connection declared in `#codescan.connectedMode.connections.servers#`"
                 },
                 "projectKey": {
                   "type": "string",
@@ -362,7 +362,7 @@
     "commands": [
       {
         "command": "CodeScan.UpdateAllBindings",
-        "title": "Update all project bindings to CodeScan",
+        "title": "Update all project bindings of CodeScan",
         "icon": "$(refresh)",
         "category": "CodeScan"
       },
@@ -523,7 +523,7 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "icon": "images/sonarlint.svg",
+          "icon": "images/codescan.svg",
           "id": "CodeScan",
           "title": "CodeScan"
         }
@@ -537,10 +537,6 @@
         }
       ],
       "CodeScan": [
-        {
-          "id": "CodeScan.AllRules",
-          "name": "Rules"
-        },
         {
           "id": "CodeScan.ConnectedMode",
           "name": "Connected Mode"
@@ -578,7 +574,7 @@
           {
             "id": "CodeScan.inAction",
             "title": "$(rocket) New to CodeScan? See it in action",
-            "description": "CodeScan for VSCode supports analysis of 15+ languages including JS/TS, Apex, Java, CSS/HTML, C, C++, and [more](https://github.com/codescan-io/sonarlint-vscode/wiki/Languages-and-rules). CodeScan detects issues in all files **open** in the editor.\n\nThe best way to get started is to see it in action!\n[Open Sample File](command:SonarLint.OpenSample)",
+            "description": "CodeScan for VSCode supports analysis of 15+ languages including JS/TS, Apex, Java, CSS/HTML, C, C++, and [more](https://github.com/codescan-io/sonarlint-vscode/wiki/Languages-and-rules). CodeScan detects issues in all files **open** in the editor.\n\nThe best way to get started is to see it in action!\n[Open Sample File](command:CodeScan.OpenSample)",
             "media": {
               "markdown": "walkthrough/empty.md"
             },
@@ -670,16 +666,6 @@
         }
       ],
       "view/item/context": [
-        {
-          "command": "CodeScan.DeactivateRule",
-          "when": "view == CodeScan.AllRules && viewItem == rule-on",
-          "group": "inline"
-        },
-        {
-          "command": "CodeScan.ActivateRule",
-          "when": "view == CodeScan.AllRules && viewItem == rule-off",
-          "group": "inline"
-        },
         {
           "command": "CodeScan.ConnectToCodeScan",
           "when": "view == CodeScan.ConnectedMode && viewItem == sonarQubeGroup",

@@ -46,7 +46,7 @@ export namespace Commands {
   export const CONNECT_TO_CODESCAN = 'CodeScan.ConnectToCodeScan';
   export const CONNECT_TO_CODESCAN_SELF_HOSTED = 'CodeScan.ConnectToCodeScanSelfHosted';
   export const EDIT_SONARQUBE_CONNECTION = 'CodeScan.EditCodeScanSHConnection';
-  export const EDIT_SONARCLOUD_CONNECTION = 'CodeScan.EditCodeScanCloudConnection';
+  export const EDIT_CODESCAN_CONNECTION = 'CodeScan.EditCodeScanCloudConnection';
   export const REMOVE_CONNECTION = 'CodeScan.RemoveConnection';
 
   export const ADD_PROJECT_BINDING = 'CodeScan.AddProjectBinding';
@@ -67,4 +67,5 @@ export namespace Commands {
   export const TRIGGER_HELP_AND_FEEDBACK_LINK = 'CodeScan.HelpAndFeedbackLinkClicked';
   export const CHANGE_HOTSPOT_STATUS = 'CodeScan.ChangeHotspotStatus';
   export const ENABLE_VERBOSE_LOGS = 'CodeScan.EnableVerboseLogs';
+  export const UPDATE_ALL_BINDINGS = 'CodeScan.UpdateAllBindings';
 }

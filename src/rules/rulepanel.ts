@@ -19,7 +19,7 @@ export function showRuleDescription(context: VSCode.ExtensionContext) {
   return params => {
     lazyCreateRuleDescriptionPanel(context);
     ruleDescriptionPanel.webview.html = computeRuleDescPanelContent(context, ruleDescriptionPanel.webview, params);
-    ruleDescriptionPanel.iconPath = util.resolveExtensionFile('images', 'sonarlint.svg');
+    ruleDescriptionPanel.iconPath = util.resolveExtensionFile('images', 'codescan.svg');
     ruleDescriptionPanel.reveal();
   };
 }
@@ -27,8 +27,8 @@ export function showRuleDescription(context: VSCode.ExtensionContext) {
 function lazyCreateRuleDescriptionPanel(context: VSCode.ExtensionContext) {
   if (!ruleDescriptionPanel) {
     ruleDescriptionPanel = VSCode.window.createWebviewPanel(
-      'sonarlint.RuleDesc',
-      'SonarLint Rule Description',
+      'codescan.RuleDesc',
+      'CodeScan Rule Description',
       VSCode.ViewColumn.Two,
       {
         enableScripts: true
@@ -94,7 +94,7 @@ export function renderTaintBanner(rule: ShowRuleDescriptionParams, infoImgSrc: s
   return `<div class="info-banner-wrapper">
             <p class="info-banner"><span><img src=${infoImgSrc} alt="info"></span> 
             This injection vulnerability was detected by the latest CodeScan analysis.
-             SonarLint fetches and reports it in your local code to help you investigate it and fix it,
+             CodeScan fetches and reports it in your local code to help you investigate it and fix it,
               but cannot tell you whether you successfully fixed it. To verify your fix, please ensure
               the code containing your fix is analyzed by CodeScan.
             </p>
@@ -188,7 +188,7 @@ export function renderRuleParams(rule: ShowRuleDescriptionParams) {
   <thead>
     <tr>
       <td colspan="2">
-        Following parameter values can be set in the <em>SonarLint:Rules</em> user settings.
+        Following parameter values can be set in the <em>CodeScan:Rules</em> user settings.
         In connected mode, server side configuration overrides local settings.
       </td>
     </tr>

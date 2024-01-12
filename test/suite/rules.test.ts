@@ -20,7 +20,7 @@ suite('SonarLint Rules view', () => {
 
     await vscode.commands.executeCommand('CodeScan.AllRules.focus');
 
-    await vscode.commands.executeCommand('SonarLint.OpenRuleByKey', secretsAwsRuleKey);
+    await vscode.commands.executeCommand('CodeScan.OpenRuleByKey', secretsAwsRuleKey);
 
     await vscode.commands.executeCommand('CodeScan.OpenStandaloneRuleDesc', secretsAwsRuleKey);
 
