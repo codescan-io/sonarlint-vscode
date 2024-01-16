@@ -21,8 +21,9 @@ import { logToCodeScanOutput } from './logging';
 import { PlatformInformation } from './platform';
 import * as util from './util';
 import { CODESCAN_CATEGORY } from '../settings/settings';
+import { promptVSCodeRestart } from './showMessage';
 
-const REQUIRED_JAVA_VERSION = 11;
+const REQUIRED_JAVA_VERSION = 17;
 
 const isWindows = process.platform.indexOf('win') === 0;
 const JAVA_FILENAME = `java${isWindows ? '.exe' : ''}`;
@@ -167,12 +168,20 @@ export function parseMajorVersion(content: string): number {
 }
 
 function suggestManagedJre(reject) {
-  reject({
+  const error = {
     message: `The Java Runtime Environment can not be located. Please install a JRE, or configure its path with the
-      ${JAVA_HOME_CONFIG} property. You can also let SonarLint download the JRE from AdoptOpenJDK. This JRE will be
-      used only by SonarLint.`,
-    label: 'Let SonarLint download the JRE',
+      ${JAVA_HOME_CONFIG} property. You can also let CodeScan download the JRE from AdoptOpenJDK. This JRE will be
+      used only by CodeScan.`,
+    label: 'Let CodeScan download the JRE',
     command: Commands.INSTALL_MANAGED_JRE
+  };
+
+  vscode.window.showErrorMessage(error.message, error.label).then(selection => {
+    if (error.label && error.label === selection && error.command) {
+      vscode.commands.executeCommand(error.command, error.command);
+    } else {
+      reject(error);
+    }
   });
 }
 
@@ -226,7 +235,7 @@ export function installManagedJre() {
             version: REQUIRED_JAVA_VERSION as jre.Version
           };
           progress.report({ message: 'Downloading' });
-          return jre.download(options, path.join(util.extensionPath, '..', 'sonarsource.sonarlint_managed-jre'));
+          return jre.download(options, path.join(util.extensionPath, '..', 'codescansf.codescan_managed-jre'));
         })
         .then(downloadResponse => {
           progress.report({ message: 'Uncompressing' });
@@ -237,6 +246,7 @@ export function installManagedJre() {
           vscode.workspace
             .getConfiguration('codescan.ls')
             .update('javaHome', jreInstallDir, vscode.ConfigurationTarget.Global);
+            promptVSCodeRestart('JDK changes requires VSCode to restart to take effect.');
         })
         .catch(err => {
           throw err;

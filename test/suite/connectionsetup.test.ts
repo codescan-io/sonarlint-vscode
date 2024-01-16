@@ -129,7 +129,7 @@ suite('Connection Setup', () => {
     // });
     await sleep(sleepTime);
 
-    await vscode.commands.executeCommand(Commands.EDIT_SONARQUBE_CONNECTION, Promise.resolve({ id: connectionId }));
+    await vscode.commands.executeCommand(Commands.EDIT_CODESCAN_SH_CONNECTION, Promise.resolve({ id: connectionId }));
 
     await sleep(sleepTime);
     await handleMessage(message)
@@ -158,7 +158,7 @@ suite('Connection Setup', () => {
 
     await sleep(sleepTime);
 
-    await vscode.commands.executeCommand(Commands.EDIT_SONARQUBE_CONNECTION, connectionId);
+    await vscode.commands.executeCommand(Commands.EDIT_CODESCAN_SH_CONNECTION, connectionId);
     await sleep(sleepTime);
 
     const disableNotifications = true;

@@ -81,7 +81,11 @@ export class PlatformInformation {
   private static async GetUnixArchitecture(): Promise<string> {
     return util.execChildProcess('uname -m', util.packageJson.extensionFolderPath).then(architecture => {
       if (architecture) {
-        return architecture.trim();
+        let arch = architecture.trim();
+        if (arch === 'arm64') {
+          return 'x86_64';
+        }
+        return arch;
       }
       return null;
     });

@@ -24,7 +24,7 @@ suite('Extension Test Suite', () => {
 
   setup(async () => {
     await vscode.commands.executeCommand('workbench.action.closeAllEditors');
-    await vscode.commands.executeCommand(Commands.SHOW_SONARLINT_OUTPUT);
+    await vscode.commands.executeCommand(Commands.SHOW_CODESCAN_OUTPUT);
   });
 
   test('Extension should be present', () => {

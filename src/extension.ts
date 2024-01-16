@@ -64,6 +64,7 @@ import { resolveIssueMultiStepInput } from './issue/resolveIssue';
 import { IssueService } from './issue/issue';
 import { isFirstCobolIssueDetected, showNotificationForFirstCobolIssue } from './util/cobolUtils';
 import { showSslCertificateConfirmationDialog } from './util/showMessage';
+import { detectConflictingPlugins } from './util/recommendations';
 
 const DOCUMENT_SELECTOR = [
   { scheme: 'file', pattern: '**/*' },
@@ -176,6 +177,9 @@ export async function activate(context: VSCode.ExtensionContext) {
   util.setExtensionContext(context);
   initLogOutput(context);
 
+  detectConflictingPlugins();
+
+  preregisterCommands(context);
   const serverOptions = () => runJavaServer(context);
 
   const pythonWatcher = VSCode.workspace.createFileSystemWatcher('**/*.py');
@@ -197,7 +201,7 @@ export async function activate(context: VSCode.ExtensionContext) {
       return {
         productKey: 'vscode',
         telemetryStorage: Path.resolve(context.extensionPath, '..', 'codescan_usage'),
-        productName: 'SonarLint VSCode',
+        productName: 'CodeScan VSCode',
         productVersion: util.packageJson.version,
         workspaceName: VSCode.workspace.name,
         firstSecretDetected: isFirstSecretDetected(context),
@@ -222,7 +226,7 @@ export async function activate(context: VSCode.ExtensionContext) {
   };
 
   // Create the language client and start the client.
-  // id parameter is used to load 'sonarlint.trace.server' configuration
+  // id parameter is used to load 'codescan.trace.server' configuration
   languageClient = new CodeScanExtendedLanguageClient(
     'codescan',
     'CodeScan Language Server',
@@ -338,6 +342,10 @@ function suggestBinding(params: protocol.SuggestBindingParams) {
   AutoBindingService.instance.checkConditionsAndAttemptAutobinding(params);
 }
 
+function preregisterCommands(context: VSCode.ExtensionContext) {
+  context.subscriptions.push(VSCode.commands.registerCommand(Commands.INSTALL_MANAGED_JRE, installManagedJre));
+}
+
 function registerCommands(context: VSCode.ExtensionContext) {
   context.subscriptions.push(VSCode.commands.registerCommand('CodeScan.OpenSample', async () => {
     const sampleFileUri = VSCode.Uri.joinPath(context.extensionUri, 'walkthrough', 'sample.py');
@@ -416,9 +424,9 @@ function registerCommands(context: VSCode.ExtensionContext) {
       await VSCode.commands.executeCommand(Commands.OPEN_RULE_BY_KEY, key);
     })
   );
-  context.subscriptions.push(VSCode.commands.registerCommand(Commands.SHOW_SONARLINT_OUTPUT, () => showLogOutput()));
+  context.subscriptions.push(VSCode.commands.registerCommand(Commands.SHOW_CODESCAN_OUTPUT, () => showLogOutput()));
 
-  context.subscriptions.push(VSCode.commands.registerCommand(Commands.INSTALL_MANAGED_JRE, installManagedJre));
+  // context.subscriptions.push(VSCode.commands.registerCommand(Commands.INSTALL_MANAGED_JRE, installManagedJre));
 
   context.subscriptions.push(
     VSCode.commands.registerCommand(Commands.HIDE_HOTSPOT, () => {
@@ -543,7 +551,7 @@ function installCustomRequestHandlers(context: VSCode.ExtensionContext) {
     showNotificationForFirstCobolIssue(context)
   );
   languageClient.onNotification(protocol.ShowSonarLintOutputNotification.type, () =>
-    VSCode.commands.executeCommand(Commands.SHOW_SONARLINT_OUTPUT)
+    VSCode.commands.executeCommand(Commands.SHOW_CODESCAN_OUTPUT)
   );
   languageClient.onNotification(protocol.OpenJavaHomeSettingsNotification.type, () =>
     VSCode.commands.executeCommand(Commands.OPEN_SETTINGS, JAVA_HOME_CONFIG)
@@ -606,7 +614,7 @@ async function showAllLocations(issue: protocol.Issue) {
       : null;
     issueLocationsView.message = createdAgo
       ? `Analyzed ${createdAgo} on '${issue.connectionId}'`
-      : `Detected by SonarLint`;
+      : `Detected by CodeScan`;
   } else {
     issueLocationsView.message = null;
   }

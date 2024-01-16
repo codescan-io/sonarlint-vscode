@@ -30,7 +30,7 @@ export namespace Commands {
   export const SHOW_ALL_RULES = 'CodeScan.ShowAllRules';
   export const SHOW_ACTIVE_RULES = 'CodeScan.ShowActiveRules';
   export const SHOW_INACTIVE_RULES = 'CodeScan.ShowInactiveRules';
-  export const SHOW_SONARLINT_OUTPUT = 'CodeScan.ShowCodeScanOutput';
+  export const SHOW_CODESCAN_OUTPUT = 'CodeScan.ShowCodeScanOutput';
   export const OPEN_RULE_BY_KEY = 'CodeScan.OpenRuleByKey';
   export const FIND_RULE_BY_KEY = 'CodeScan.FindRuleByKey';
   export const SHOW_ALL_LOCATIONS = 'CodeScan.ShowAllLocations';
@@ -40,12 +40,12 @@ export namespace Commands {
   export const INSTALL_MANAGED_JRE = 'CodeScan.InstallManagedJre';
 
   export const HIDE_HOTSPOT = 'CodeScan.HideHotspot';
-  export const SHOW_HOTSPOT_DESCRIPTION = 'SonarLint.ShowHotspotDescription';
+  export const SHOW_HOTSPOT_DESCRIPTION = 'CodeScan.ShowHotspotDescription';
   export const CONFIGURE_COMPILATION_DATABASE = 'CodeScan.ConfigureCompilationDatabase';
 
   export const CONNECT_TO_CODESCAN = 'CodeScan.ConnectToCodeScan';
   export const CONNECT_TO_CODESCAN_SELF_HOSTED = 'CodeScan.ConnectToCodeScanSelfHosted';
-  export const EDIT_SONARQUBE_CONNECTION = 'CodeScan.EditCodeScanSHConnection';
+  export const EDIT_CODESCAN_SH_CONNECTION = 'CodeScan.EditCodeScanSHConnection';
   export const EDIT_CODESCAN_CONNECTION = 'CodeScan.EditCodeScanCloudConnection';
   export const REMOVE_CONNECTION = 'CodeScan.RemoveConnection';
 

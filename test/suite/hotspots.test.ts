@@ -94,7 +94,7 @@ suite('Hotspots Test Suite', async () => {
   setup(async () => {
     // Make sure workbench is clean before each test
     await vscode.commands.executeCommand('workbench.action.closeAllEditors');
-    await vscode.commands.executeCommand(Commands.SHOW_SONARLINT_OUTPUT);
+    await vscode.commands.executeCommand(Commands.SHOW_CODESCAN_OUTPUT);
     await vscode.commands.executeCommand('workbench.action.output.toggleOutput');
   });
 

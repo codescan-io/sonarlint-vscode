@@ -72,7 +72,7 @@ function toggleGenerateTokenButton() {
 }
 
 function toggleOrganizationKeyInputField(message) {
-  byId('organizationKey').disabled = !message.isCloud;
+  byId('organizationKey').hidden = !message.isCloud;
 }
 
 function hasValidRequiredField() {

@@ -4,7 +4,7 @@
   "days_since_installation": 27,
   "days_of_use": 5,
   "sonarlint_version": "Visual Studio Code 1.20.1",
-  "sonarlint_product": "SonarLint VSCode",
+  "sonarlint_product": "CodeScan VSCode",
   "ide_version": "1.53.0",
   "connected_mode_used": true,
   "connected_mode_sonarcloud": true,
