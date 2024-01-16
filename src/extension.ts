@@ -64,7 +64,7 @@ import { resolveIssueMultiStepInput } from './issue/resolveIssue';
 import { IssueService } from './issue/issue';
 import { isFirstCobolIssueDetected, showNotificationForFirstCobolIssue } from './util/cobolUtils';
 import { showSslCertificateConfirmationDialog } from './util/showMessage';
-import { detectConflictingPlugins } from './util/recommendations';
+import { detectConflictingPlugins } from './util/conflictingPlugins';
 
 const DOCUMENT_SELECTOR = [
   { scheme: 'file', pattern: '**/*' },
