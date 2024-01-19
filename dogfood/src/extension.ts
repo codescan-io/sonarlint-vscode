@@ -1,6 +1,6 @@
 /* --------------------------------------------------------------------------------------------
  * CodeScan Dogfood
- * Copyright (C) 2021-2023 SonarSource SA
+ * Copyright (C) 2021-2024 SonarSource SA
  * support@codescan.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */

@@ -1,6 +1,6 @@
 /* --------------------------------------------------------------------------------------------
  * CodeScan for VisualStudio Code
- * Copyright (C) 2017-2023 SonarSource SA
+ * Copyright (C) 2017-2024 SonarSource SA
  * support@codescan.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
@@ -42,6 +42,21 @@ export async function migrateConnectedModeSettings(
   const scConnections = settings.get<BaseConnection[]>(`${CONNECTIONS_SECTION}.${SONARCLOUD}`, []);
   if (await hasUnmigratedConnections(sqConnections, scConnections, settingsService)) {
     suggestMigrationToSecureStorage(sqConnections, scConnections, settingsService);
+  }
+}
+
+export async function migrateDeprecatedSettings(
+  settings: VSCode.WorkspaceConfiguration,
+  settingsService: ConnectionSettingsService
+) {
+  const scOldConnections = settings.get<BaseConnection[]>(SERVERS, []);
+  scOldConnections.forEach((conn, index) => {
+    // Old id was serverId so put it in connId
+    if (!conn.connectionId) 
+      conn.connectionId = conn.serverId + (index + 1);
+  })
+  if (await hasUnmigratedConnections([], scOldConnections, settingsService)) {
+    suggestMigrationToSecureStorage([], scOldConnections, settingsService);
   }
 }
 
@@ -199,7 +214,7 @@ export class ConnectionSettingsService {
         }
       })
     );
-    //await updateConfigIfNotEmpty(sqConnections, SONARQUBE_CONNECTIONS_CATEGORY);
+    await deleteDeprecatedConnectionsInConfig(scConnections, `${CODESCAN_CATEGORY}.${SERVERS}`)
     await updateConfigIfNotEmpty(scConnections, CODESCAN_CONNECTIONS_CATEGORY);
   }
 
@@ -273,6 +288,7 @@ export interface BaseConnection {
   serverUrl?: string;
   organizationKey?: string;
   isCloudConnection?: boolean;
+  serverId?: string;
 }
 
 export async function isCodeScanCloudConnection(connection : BaseConnection) {
@@ -317,5 +333,11 @@ async function getTokenStorageKey(connection: BaseConnection) {
 async function updateConfigIfNotEmpty(connections, configCategory) {
   if (connections.length > 0) {
     await VSCode.workspace.getConfiguration().update(configCategory, connections, VSCode.ConfigurationTarget.Global);
+  }
+}
+
+async function deleteDeprecatedConnectionsInConfig(migratedConnections, configCategory) {
+  if (migratedConnections.length > 0) {
+    await VSCode.workspace.getConfiguration().update(configCategory, undefined, VSCode.ConfigurationTarget.Global);
   }
 }

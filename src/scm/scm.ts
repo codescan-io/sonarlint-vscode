@@ -1,6 +1,6 @@
 /* --------------------------------------------------------------------------------------------
  * CodeScan for VisualStudio Code
- * Copyright (C) 2017-2023 SonarSource SA
+ * Copyright (C) 2017-2024 SonarSource SA
  * support@codescan.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
@@ -131,7 +131,7 @@ class GitScm implements Scm {
   updateReferenceBranchStatusItem(event?: vscode.TextEditor) {
     const referenceBranchName = this.getReferenceBranchNameForFile(event?.document?.uri);
     if (referenceBranchName) {
-      this.referenceBranchStatusItem.text = `SonarLint branch: ${referenceBranchName}`;
+      this.referenceBranchStatusItem.text = `CodeScan branch: ${referenceBranchName}`;
       this.referenceBranchStatusItem.show();
     } else {
       this.referenceBranchStatusItem.hide();

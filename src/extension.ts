@@ -1,6 +1,6 @@
 /* --------------------------------------------------------------------------------------------
  * CodeScan for VisualStudio Code
- * Copyright (C) 2017-2023 SonarSource SA
+ * Copyright (C) 2017-2024 SonarSource SA
  * support@codescan.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
@@ -45,7 +45,7 @@ import { showRuleDescription } from './rules/rulepanel';
 import { AllRulesTreeDataProvider, LanguageNode, RuleNode } from './rules/rules';
 import { initScm, isIgnoredByScm } from './scm/scm';
 import { isFirstSecretDetected, showNotificationForFirstSecretsIssue } from './secrets/secrets';
-import { ConnectionSettingsService, migrateConnectedModeSettings } from './settings/connectionsettings';
+import { ConnectionSettingsService, migrateConnectedModeSettings, migrateDeprecatedSettings } from './settings/connectionsettings';
 import {
   enableVerboseLogs,
   getCurrentConfiguration,
@@ -241,6 +241,9 @@ export async function activate(context: VSCode.ExtensionContext) {
   IssueService.init(languageClient);
   AutoBindingService.init(BindingService.instance, context.workspaceState, ConnectionSettingsService.instance);
   migrateConnectedModeSettings(getCurrentConfiguration(), ConnectionSettingsService.instance).catch(e => {
+    /* ignored */
+  });
+  migrateDeprecatedSettings(getCurrentConfiguration(), ConnectionSettingsService.instance).catch(e => {
     /* ignored */
   });
 
