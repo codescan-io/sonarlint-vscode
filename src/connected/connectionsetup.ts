@@ -41,7 +41,7 @@ export function connectToCodeScanSelfHosted(context: vscode.ExtensionContext) {
       token: '',
       connectionId: ''
     };
-    const serverProductName = 'SonarQube';
+    const serverProductName = 'CodeScan Self-hosted';
     lazyCreateConnectionSetupPanel(context, serverProductName);
     connectionSetupPanel.webview.html = renderConnectionSetupPanel(context, connectionSetupPanel.webview, {
       mode: 'create',
@@ -187,10 +187,10 @@ function renderConnectionSetupPanel(context: vscode.ExtensionContext, webview: v
         </div>
         ${renderOrganizationKeyField(initialState)}
         <vscode-text-field id="connectionId" type="text" placeholder="My ${serverProductName} Connection" size="40"
-          title="Optionally, please give this connection a memorable name. If no name is provided, Sonar will generate one." 
+          title="Optionally, please give this connection a memorable and unique name. If no name is provided, CodeScan will try to generate one." 
           value="${initialConnectionId}"
           ${options.mode === 'update' ? 'readonly' : ''}>
-          Connection Name
+          Unique Connection Name
         </vscode-text-field>
         <input type="hidden" id="connectionId-initial" value="${initialConnectionId}" />
         <input type="hidden" id="shouldGenerateConnectionId" value="${mode === 'create'}"/>
