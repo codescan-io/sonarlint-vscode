@@ -305,7 +305,7 @@ async function openTokenGenerationPage(message) {
       async _error =>
         await connectionSetupPanel.webview.postMessage({
           command: 'tokenGenerationPageIsOpen',
-          errorMessage: 'Incorrect URL or server is not available'
+          errorMessage: 'Token generation already in progress or server is not available'
         })
     );
   await connectionSetupPanel.webview.postMessage({ command: 'tokenGenerationPageIsOpen' });

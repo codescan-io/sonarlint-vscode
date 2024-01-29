@@ -282,6 +282,7 @@ function populateTokenField(token) {
   byId('token').value = token;
   byId('tokenStatus').innerText = 'Token Received!';
   byId('tokenStatus').classList.remove('hidden');
+  byId('tokenGenerationResult').innerText = '';
   toggleSaveConnectionButton();
   saveState();
 }
