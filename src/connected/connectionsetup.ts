@@ -194,18 +194,7 @@ function renderConnectionSetupPanel(context: vscode.ExtensionContext, webview: v
         </vscode-text-field>
         <input type="hidden" id="connectionId-initial" value="${initialConnectionId}" />
         <input type="hidden" id="shouldGenerateConnectionId" value="${mode === 'create'}"/>
-        <vscode-checkbox id="enableNotifications" ${!initialState.disableNotifications ? 'checked' : ''}>
-          Receive notifications from ${serverProductName}
-        </vscode-checkbox>
-        <input type="hidden" id="enableNotifications-initial" value="${!initialState.disableNotifications}" />
-        <p>
-          You will receive notifications
-          from ${serverProductName} in situations like:
-        </p>
-        <ul>
-          <li>the Quality Gate status of a bound project changes</li>
-          <li>the latest analysis of a bound project on ${serverProductName} raises new issues assigned to you</li>
-        </ul>
+        ${renderNotificationsCheckbox(serverProductName, initialState)}
         <div id="connectionCheck" class="formRowWithStatus">
           <vscode-button id="saveConnection" disabled>Save Connection</vscode-button>
           <span id="connectionProgress" class="hidden">
@@ -226,6 +215,14 @@ function renderServerUrlField(connection) {
   </vscode-text-field>
   <input type="hidden" id="serverUrl-initial" value="${serverUrl}" />`;
   return '';
+}
+
+function renderNotificationsCheckbox(serverProductName, initialState) {
+  return `<vscode-checkbox hidden id="enableNotifications" ${!initialState.disableNotifications ? 'checked' : ''}>
+    Receive notifications from ${serverProductName}
+  </vscode-checkbox>
+  <input type="hidden" id="enableNotifications-initial" value="${!initialState.disableNotifications}" />
+  `;
 }
 
 function renderGenerateTokenButton(connection, serverProductName) {
