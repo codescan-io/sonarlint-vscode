@@ -44,7 +44,7 @@ export function detectConflictingPlugins() {
 
     const error = {
         label: 'Manage Extensions',
-        disableMessage: 'Unsupported extensions detected',
+        disableMessage: 'Conflicting extensions detected',
         message: `We have detected that you currently have ${extensions} installed.\n 
         It is necessary to uninstall these extensions to ensure optimal functionality of the Codescan extension. 
         Please be aware that uninstalling these extensions may impact your existing configurations and settings.`,
