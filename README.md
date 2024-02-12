@@ -68,7 +68,7 @@ You can connect CodeScan to SonarQube 7.9+/CodeScanCloud by binding your VSCode 
 
 In v3.8 and above of CodeScan for VSCode, to set up CodeScan connections, navigate to the **CODESCAN** > **CONNECTED MODE** view container in the VS Code Activity Bar.
 
-<img src='images/connected_mode_treeview.png' alt='Empty Connected Mode View' width='350'/>
+<img src='images/connected_mode_treeview.png' alt='Empty Connected Mode View' width='400'/>
 
 Select **Add CodeScan Connection**, and complete the fields. If your connection is to a self-hosted Codescan, you do not need to input organization-key.
 
@@ -121,7 +121,3 @@ For CodeScan support questions ("How do I?", "I got this error, why?", ...), ple
 Copyright 2017-2024 CodeScan.
 
 Licensed under the [GNU Lesser General Public License, Version 3.0](http://www.gnu.org/licenses/lgpl.txt)
-
-## Data and telemetry
-
-This extension collects anonymous usage data and sends it to CodeScan to help improve CodeScan functionality.  No source code nor IP address is collected, and CodeScan does not share the data with anyone else. Collection of telemetry is controlled via the setting: `codescan.disableTelemetry`.

@@ -349,13 +349,6 @@
               "additionalProperties": false
             }
           ]
-        },
-        "codescan.disableTelemetry": {
-          "order": 99,
-          "type": "boolean",
-          "default": false,
-          "markdownDescription": "Disable sending anonymous usage statistics to SonarSource. Click [here](https://github.com/codescan-io/codescan-vscode/blob/master/telemetry-sample.md) to see a sample of the data that are collected.",
-          "scope": "window"
         }
       }
     },
