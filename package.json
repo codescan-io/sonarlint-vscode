@@ -78,12 +78,12 @@
           "type": "array",
           "scope": "application",
           "default": [],
-          "markdownDescription": "Configure one or more connection(s) to CodeScan. For security reasons, the token should not be stored in SCM with workspace settings. The `serverId` can be any identifier and will be referenced in `#sonarlint.connectedMode.project#`.\n\nExample for CodeScan Cloud:\n\n    \"sonarlint.connectedMode.servers\": [\n      {\n        \"serverId\": \"my_orga_in_sonarcloud.io\",\n        \"serverUrl\": \"https://sonarcloud.io\",\n        \"organizationKey\": \"my_organization\",\n        \"token\": \"V2VkIE1...\"\n      }\n    ]\n\nExample for CodeScan Self-Hosted:\n\n    \"sonarlint.connectedMode.servers\": [\n      {\n        \"serverId\": \"my_codescan\",\n        \"serverUrl\": \"https://codescan.mycompany.com\",\n        \"token\": \"V2VkIE1...\"\n      }\n    ]",
+          "markdownDescription": "Configure one or more connection(s) to CodeScan. For security reasons, the token should not be stored in SCM with workspace settings. The `serverId` can be any identifier and will be referenced in `#codescan.connectedMode.project#`.\n\nExample for CodeScan Cloud:\n\n    \"codescan.connectedMode.servers\": [\n      {\n        \"serverId\": \"my_orga_in_codescan.io\",\n        \"serverUrl\": \"https://app.codescan.io\",\n        \"organizationKey\": \"my_organization\",\n        \"token\": \"V2VkIE1...\"\n      }\n    ]\n\nExample for CodeScan Self-Hosted:\n\n    \"codescan.connectedMode.servers\": [\n      {\n        \"serverId\": \"my_codescan\",\n        \"serverUrl\": \"https://codescan.mycompany.com\",\n        \"token\": \"V2VkIE1...\"\n      }\n    ]",
           "items": {
             "properties": {
               "serverId": {
                 "type": "string",
-                "description": "A unique identifier for this server connection. Will be referenced from `#sonarlint.connectedMode.project#`"
+                "description": "A unique identifier for this server connection. Will be referenced from `#codescan.connectedMode.project#`"
               },
               "serverUrl": {
                 "type": "string",
@@ -99,48 +99,6 @@
               }
             },
             "additionalProperties": false
-          }
-        },
-        "codescan.connectedMode.connections.sonarqube": {
-          "order": 2,
-          "type": "array",
-          "scope": "application",
-          "default": [],
-          "markdownDescription": "In connected mode, CodeScan applies the quality profile to the local analysis and synchronizes the issue status and other analysis settings. Please find the documentation [here](https://github.com/codescan-io/codescan-vscode/wiki/Connected-Mode)",
-          "items": {
-            "type": "object",
-            "properties": {
-              "connectionId": {
-                "type": "string",
-                "description": "A unique identifier for this connection to be used as a reference in `#sonarlint.connectedMode.project#`. Only needed if you plan to use multiple connections to CodeScan."
-              },
-              "serverUrl": {
-                "type": "string",
-                "description": "URL of the CodeScan Self-Hosted server."
-              },
-              "token": {
-                "type": "string",
-                "description": "Token generated from 'My Account>Security' in CodeScan"
-              },
-              "disableNotifications": {
-                "type": "boolean",
-                "description": "CodeScan will show notifications for bound projects when there are new issues assigned to you, or when the quality gate status changed. Set to false to disable all notifications for projects bound to this connection."
-              }
-            },
-            "additionalProperties": false,
-            "required": [
-              "serverUrl"
-            ],
-            "examples": [
-              {
-                "serverUrl": "https://<replace_with_your_codescan_server_url>"
-              },
-              {
-                "connectionId": "MyCompany",
-                "serverUrl": "https://<replace_with_your_codescan_server_url>",
-                "disableNotifications": false
-              }
-            ]
           }
         },
         "codescan.connectedMode.connections.servers": {
@@ -184,11 +142,11 @@
             ],
             "examples": [
               {
-                "organizationKey": "<replace_with_your_sonarcloud_organization_key>"
+                "organizationKey": "<replace_with_your_codescan_organization_key>"
               },
               {
                 "connectionId": "MyOrganization",
-                "organizationKey": "<replace_with_your_sonarcloud_organization_key>",
+                "organizationKey": "<replace_with_your_codescan_organization_key>",
                 "disableNotifications": false
               }
             ]
@@ -232,7 +190,7 @@
               "properties": {
                 "connectionId": {
                   "type": "string",
-                  "description": "Identifier of the server connection declared in `#sonarlint.connectedMode.connections.sonarqube#` or `#sonarlint.connectedMode.connections.sonarcloud#`"
+                  "description": "Identifier of the server connection declared in `#codescan.connectedMode.connections.servers#`"
                 },
                 "projectKey": {
                   "type": "string",
@@ -567,7 +525,7 @@
           {
             "id": "CodeScan.inAction",
             "title": "$(rocket) New to CodeScan? See it in action",
-            "description": "CodeScan for VSCode supports analysis of 15+ languages including JS/TS, Apex, Java, CSS/HTML, C, C++, and [more](https://github.com/codescan-io/sonarlint-vscode/wiki/Languages-and-rules). CodeScan detects issues in all files **open** in the editor.\n\nThe best way to get started is to see it in action!\n[Open Sample File](command:CodeScan.OpenSample)",
+            "description": "CodeScan for VSCode supports analysis of 15+ languages including JS/TS, Apex, Java, CSS/HTML, C, C++, and more. CodeScan detects issues in all files **open** in the editor.\n\nThe best way to get started is to see it in action!\n[Open Sample File](command:CodeScan.OpenSample)",
             "media": {
               "markdown": "walkthrough/empty.md"
             },
