@@ -1,5 +1,6 @@
 ## 2.0.0
-* Added support for Sonarqube 9.9 and later versions, automatic token generation and connection UI flow.
+* Added support for Sonarqube 9.9 and later versions
+* Added automatic token generation and connection UI flow.
 
 ## 1.6.13
 * Fixed binding issue in case of empty projects

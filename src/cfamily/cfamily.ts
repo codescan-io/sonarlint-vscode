@@ -68,7 +68,7 @@ export function notifyMissingCompileCommands(context: vscode.ExtensionContext) {
     const doNotAskAgainAction = `Don't ask again`;
     const remindMeLaterAction = 'Ask me later';
     const configureCompileCommandsAction = 'Configure compile commands';
-    const message = `SonarLint is unable to analyze C and C++ file(s) because there is no configured compilation 
+    const message = `CodeScan is unable to analyze C and C++ file(s) because there is no configured compilation 
       database.`;
     vscode.window
       .showWarningMessage(message, configureCompileCommandsAction, remindMeLaterAction, doNotAskAgainAction)

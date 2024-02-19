@@ -27,7 +27,7 @@ export async function waitForSonarLintDiagnostics(fileUri: vscode.Uri, options?:
     elapsedMillis += periodMillis;
   }
   if (options?.atLeastIssues && diags.length < atLeastIssues) {
-    fail(`Expected at least ${options?.atLeastIssues} SonarLint diagnostics, got ${diags.length} after ${timeoutMillis}ms`);
+    fail(`Expected at least ${options?.atLeastIssues} CodeScan diagnostics, got ${diags.length} after ${timeoutMillis}ms`);
   }
   return diags;
 }
