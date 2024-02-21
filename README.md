@@ -105,7 +105,7 @@ After selecting the folder, choose the remote CodeScan project you would like to
 
 Select the desired project and enjoy Connected Mode! You can also edit or delete bindings from the **CONNECTED MODE** view.
 
-<img src='images/edit-binding.png' alt='Edit Binding' width='500'/>
+<img src='https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FGZNGL3oDkXu3pPCzA5Vv%2Fuploads%2Fk8KNO1yApjCS9EDhXyDr%2Fedit-binding.png?alt=media&token=9a14d097-3e45-4790-bf3f-a8a2fe19a85a' alt='Edit Binding' width='500'/>
 <img src='images/3.8_selectProject.png' alt='Edit Binding' width='500'/>
 
 Action buttons in the UI used to edit/delete existing, or create additional bindings will be revealed when hovering over each connection.
