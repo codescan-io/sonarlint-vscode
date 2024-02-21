@@ -68,7 +68,7 @@ function onChangeOrganizationKey() {
 }
 
 function toggleGenerateTokenButton() {
-  byId('generateToken').disabled = byId('serverUrl') && !hasValidRequiredField();
+  byId('generateToken').disabled = byId('serverUrl') && !hasValidServerUrl();
 }
 
 function toggleOrganizationKeyInputField(message) {
@@ -76,11 +76,7 @@ function toggleOrganizationKeyInputField(message) {
 }
 
 function hasValidRequiredField() {
-  if (byId('serverUrl')) {
-    return hasValidServerUrl();
-  } else {
-    return hasValidOrganizationKey();
-  }
+  return hasValidServerUrl() && hasValidOrganizationKey() && hasValidConnectionId();
 }
 
 function checkIfUrlIsCloud() {
@@ -117,7 +113,15 @@ function hasValidOrganizationKey() {
    * @type {HTMLInputElement}
    */
   const organizationKeyInput = byId('organizationKey');
-  return organizationKeyInput.validity.valid;
+  return organizationKeyInput.hidden || organizationKeyInput.validity.valid;
+}
+
+function hasValidConnectionId() {
+  /**
+   * @type {HTMLInputElement}
+   */
+  const connectionIdInput = byId('connectionId');
+  return connectionIdInput.validity.valid;
 }
 
 function onClickGenerateToken() {
@@ -249,7 +253,7 @@ function handleMessage(event) {
       connectionCheckFailure(message.reason);
       break;
     case 'tokenReceived':
-      populateTokenField(message.token);
+      populateTokenField(message.tokenObj);
       break;
     case 'tokenGenerationPageIsOpen':
       tokenGenerationPageIsOpen(message.errorMessage);
@@ -278,8 +282,11 @@ function connectionCheckFailure(reason) {
   byId('connectionStatus').innerText = `Failed: ${reason}`;
 }
 
-function populateTokenField(token) {
-  byId('token').value = token;
+function populateTokenField(tokenObj) {
+  byId('token').value = tokenObj.token;
+  if (tokenObj.organizationKey) {
+    byId('organizationKey').value = tokenObj.organizationKey;
+  }
   byId('tokenStatus').innerText = 'Token Received!';
   byId('tokenStatus').classList.remove('hidden');
   byId('tokenGenerationResult').innerText = '';

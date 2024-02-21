@@ -364,6 +364,8 @@ export interface GenerateTokenParams {
 
 export interface GenerateTokenResponse {
   token?: string;
+  organizationKey?: string;
+  projectKey?: string;
 }
 
 export namespace GenerateToken {

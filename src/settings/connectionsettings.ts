@@ -266,11 +266,11 @@ export class ConnectionSettingsService {
   }
 
   async generateToken(baseServerUrl: string) {
-    const { token } = await this.client.generateToken(baseServerUrl);
-    if (!token) {
+    const tokenObj = await this.client.generateToken(baseServerUrl);
+    if (!tokenObj) {
       logToCodeScanOutput(`Could not automatically generate server token for generation params: ${baseServerUrl}`);
     }
-    return token;
+    return tokenObj;
   }
 }
 

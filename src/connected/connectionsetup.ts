@@ -179,8 +179,8 @@ function renderConnectionSetupPanel(context: vscode.ExtensionContext, webview: v
         ${renderGenerateTokenButton(initialState, serverProductName)}
         <div class="formRowWithStatus">
           <vscode-text-field id="token" type="password" placeholder="········" required size="40"
-            title="A user token generated for your account on ${serverProductName}" value="${initialToken}">
-            User Token
+            title="A security token generated for your account on ${serverProductName}" value="${initialToken}">
+            Token
           </vscode-text-field>
           <span id="tokenStatus" class="hidden">Token received!</span>
           <input type="hidden" id="token-initial" value="${initialToken}" />
@@ -295,8 +295,8 @@ async function openTokenGenerationPage(message) {
   const cleanedUrl = cleanServerUrl(serverUrl);
   ConnectionSettingsService.instance
     .generateToken(cleanedUrl)
-    .then(async token => {
-      await handleTokenReceivedNotification(token);
+    .then(async tokenObj => {
+      await handleTokenReceivedNotification(tokenObj);
     })
     .catch(
       async _error =>
@@ -337,9 +337,9 @@ export function removeTrailingSlashes(url: string) {
   return cleanedUrl;
 }
 
-export async function handleTokenReceivedNotification(token: string) {
-  if (connectionSetupPanel?.active && token) {
-    await connectionSetupPanel.webview.postMessage({ command: TOKEN_RECEIVED_COMMAND, token });
+export async function handleTokenReceivedNotification(tokenObj) {
+  if (connectionSetupPanel?.active && tokenObj.token) {
+    await connectionSetupPanel.webview.postMessage({ command: TOKEN_RECEIVED_COMMAND, tokenObj });
   }
 }
 
