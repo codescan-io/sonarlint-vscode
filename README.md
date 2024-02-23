@@ -68,11 +68,11 @@ You can connect CodeScan to SonarQube 7.9+/CodeScanCloud by binding your VSCode 
 
 In v3.8 and above of CodeScan for VSCode, to set up CodeScan connections, navigate to the **CODESCAN** > **CONNECTED MODE** view container in the VS Code Activity Bar.
 
-<img src='images/connected_mode_treeview.png' alt='Empty Connected Mode View' width='400'/>
+<img src='https://3402429765-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2Fp7YqIKGjCueSS155QZ9v%2Fuploads%2F5kunyHVu2m5aHH7ndRHx%2F30bf0396-a517-4981-a654-ef7d6e9ec6e0.jpg?alt=media&token=16cefe84-5597-4b21-8ec3-7f8e00772cdb' alt='Empty Connected Mode View' width='400'/>
 
 Select **Add CodeScan Connection**, and complete the fields. If your connection is to a self-hosted Codescan, you do not need to input organization-key.
 
-<img src='images/create_view.png' alt='Create Connection View' width='600'/>
+<img src='https://3402429765-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2Fp7YqIKGjCueSS155QZ9v%2Fuploads%2FNGyDNYA7VZDs03hvssbE%2F94c12a2c-8089-446d-bf11-a639923562ed.jpg?alt=media&token=2ec280fa-dba0-4fbe-ab1b-35944eb032dc' alt='Create Connection View' width='600'/>
 
 User Token can be generated using these pages:
 
@@ -93,20 +93,20 @@ From v3.10, CodeScan for VSCode tries to automatically detect a remote CodeScan 
 
 To manually configure a project binding, open the **CONNECTED MODE** view and select **Add Project Binding** for the desired connection.
 
-<img src='images/add-binding.png' alt='Add Project Binding' width='500'/>
+<img src='https://3402429765-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2Fp7YqIKGjCueSS155QZ9v%2Fuploads%2FvTXSaiicArodJJge8zh2%2Fadd-binding.png?alt=media&token=2f3ea830-14e1-4ed6-9208-c3d6293dcf1b' alt='Add Project Binding' width='500'/>
 
 If your open workspace contains multiple folders, you will be prompted to choose a specific folder.
 
-<img src='images/3.8_selectFolder.png' alt='Select Folder' width='500'/>
+<img src='https://3402429765-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2Fp7YqIKGjCueSS155QZ9v%2Fuploads%2F9aDdzkzRseNDGOVBrLN9%2F3.8_selectFolder.png?alt=media&token=ec916a58-9045-44fe-b773-00966444861d' alt='Select Folder' width='500'/>
 
 After selecting the folder, choose the remote CodeScan project you would like to bind.
 
-<img src='images/3.8_selectProject.png' alt='Select Project' width='500'/>
+<img src='https://3402429765-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2Fp7YqIKGjCueSS155QZ9v%2Fuploads%2F76GzgJUn78caxkby2Rim%2F3.8_selectProject.png?alt=media&token=ea0b08ea-858c-4230-83ad-7e141497c7ca' alt='Select Project' width='500'/>
 
 Select the desired project and enjoy Connected Mode! You can also edit or delete bindings from the **CONNECTED MODE** view.
 
-<img src='https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FGZNGL3oDkXu3pPCzA5Vv%2Fuploads%2Fk8KNO1yApjCS9EDhXyDr%2Fedit-binding.png?alt=media&token=9a14d097-3e45-4790-bf3f-a8a2fe19a85a' alt='Edit Binding' width='500'/>
-<img src='images/3.8_selectProject.png' alt='Edit Binding' width='500'/>
+<img src='https://3402429765-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2Fp7YqIKGjCueSS155QZ9v%2Fuploads%2FU0BghXHQVASCMIEVoXdN%2Fedit-binding.png?alt=media&token=96ca54e2-f271-4454-a9be-116e3df10b51' alt='Edit Binding' width='500'/>
+<img src='https://3402429765-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2Fp7YqIKGjCueSS155QZ9v%2Fuploads%2F76GzgJUn78caxkby2Rim%2F3.8_selectProject.png?alt=media&token=ea0b08ea-858c-4230-83ad-7e141497c7ca' alt='Edit Binding and Select Project' width='500'/>
 
 Action buttons in the UI used to edit/delete existing, or create additional bindings will be revealed when hovering over each connection.
 
