@@ -6,11 +6,11 @@ CodeScan is a Visual Studio Code extension that provides on-the-fly feedback to 
 
 Simply open a Apex or VisualForce file, start coding, and you will start seeing issues reported by CodeScan. Issues are highlighted in your code, and also listed in the 'Problems' panel.
 
-<img src='https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExendrNWpkM2Z4anUwcGFtb3FhNW1nc2s0bWR2NmNnbTF6a3Z6dnYxNCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/H4oQb972hKDQE4C4Mv/giphy.gif' alt='CodeScan on-the-fly'/>
+<img src='https://jmp.sh/s/Q8j3rFq5TxBd09MNKdpo' alt='CodeScan on-the-fly'/>
 
 You can access the detailed rule description directly from your editor, using the provided contextual menu.
 
-<img src='https://3402429765-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2Fp7YqIKGjCueSS155QZ9v%2Fuploads%2FrXWoWwd6B63AdZIcxozu%2F1%201.gif?alt=media&token=b8de35b6-5398-4caa-88f6-ec6eec50905d' alt='Rule description'/>
+<img src='https://drive.google.com/file/d/1UuGUVwIf1smtUZXinnsjB17zY0_uMpqq/view?usp=sharing' alt='Rule description'/>
 
 You can find all available rules descriptions on the dedicated [CodeScan Knowledgebase](https://knowledgebase.autorabit.com/product-guides/codescan/quality-rules/codescan-rule-list)
 
