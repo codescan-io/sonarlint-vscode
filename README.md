@@ -6,18 +6,17 @@ CodeScan is a Visual Studio Code extension that provides on-the-fly feedback to 
 
 Simply open a Apex or VisualForce file, start coding, and you will start seeing issues reported by CodeScan. Issues are highlighted in your code, and also listed in the 'Problems' panel.
 
-![codescan on-the-fly](images/codescan-vscode.gif)
+![codescan on-the-fly](https://3402429765-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2Fp7YqIKGjCueSS155QZ9v%2Fuploads%2FLBptp9v8hjwthgzdLG19%2F2%201.gif?alt=media&token=64ccf6e4-dac0-4eeb-9ead-e26707e64c12)
 
 You can access the detailed rule description directly from your editor, using the provided contextual menu.
 
-![rule description](images/codescan-rule-description.gif)
+![rule description](https://3402429765-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2Fp7YqIKGjCueSS155QZ9v%2Fuploads%2FrXWoWwd6B63AdZIcxozu%2F1%201.gif?alt=media&token=b8de35b6-5398-4caa-88f6-ec6eec50905d)
 
 You can find all available rules descriptions on the dedicated [CodeScan Knowledgebase](https://knowledgebase.autorabit.com/product-guides/codescan/quality-rules/codescan-rule-list)
 
 ## Requirements
 
 The CodeScan language server needs a Java Runtime (JRE) 17+.
-
 
 If a Java runtime is already installed on your computer, CodeScan should automatically find and use it. Here is how CodeScan will search for an installed JRE (in priority order):
 
@@ -44,7 +43,7 @@ If a suitable JRE cannot be found at those places, CodeScan will ask for your pe
 
 ### JS/TS analysis specific requirements
 
-To analyze JavaScript and TypeScript code, CodeScan requires Node.js executable. The minimal supported version is `14.17.0` for standalone analysis in CodeScan Cloud. For CodeScan Self-hosted, it depends on the version of the JS/TS analyzer on your SonarQube server. CodeScan will attempt to automatically locate node, or you can force the location using:
+To analyze JavaScript and TypeScript code, CodeScan requires Node.js executable. The minimal supported version is `14.17.0` for standalone analysis in CodeScan Cloud. For CodeScan Self-hosted, it depends on the version of the JS/TS analyzer on your CodeScan server. CodeScan will attempt to automatically locate node, or you can force the location using:
 
 ```json
 {
@@ -61,20 +60,20 @@ To enable the support for Java analysis, you need the [Language support for Java
 
 ## Connected Mode
 
-You can connect CodeScan to SonarQube 7.9+/CodeScanCloud by binding your VSCode workspace folder to your CodeScan project(s), and benefit from the same rules and settings that are used to inspect your project on the server. CodeScan in VSCode then hides **Won’t Fix** and **False Positive** issues in any file from a bound folder.
+You can connect to CodeScan by binding your VSCode workspace folder to your CodeScan project(s), and benefit from the same rules and settings that are used to inspect your project on the server. CodeScan in VSCode then hides **Won’t Fix** and **False Positive** issues in any file from a bound folder.
 
 
 ## Connection Setup
 
 In v3.8 and above of CodeScan for VSCode, to set up CodeScan connections, navigate to the **CODESCAN** > **CONNECTED MODE** view container in the VS Code Activity Bar.
 
-<img src='https://3402429765-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2Fp7YqIKGjCueSS155QZ9v%2Fuploads%2F5kunyHVu2m5aHH7ndRHx%2F30bf0396-a517-4981-a654-ef7d6e9ec6e0.jpg?alt=media&token=16cefe84-5597-4b21-8ec3-7f8e00772cdb' alt='Empty Connected Mode View' width='400'/>
+<img src='https://3402429765-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2Fp7YqIKGjCueSS155QZ9v%2Fuploads%2F5kunyHVu2m5aHH7ndRHx%2F30bf0396-a517-4981-a654-ef7d6e9ec6e0.jpg?alt=media&token=16cefe84-5597-4b21-8ec3-7f8e00772cdb' alt='Empty Connected Mode View' width='210' height='500'/>
 
 Select **Add CodeScan Connection**, and complete the fields. If your connection is to a self-hosted Codescan, you do not need to input organization-key.
 
 <img src='https://3402429765-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2Fp7YqIKGjCueSS155QZ9v%2Fuploads%2FNGyDNYA7VZDs03hvssbE%2F94c12a2c-8089-446d-bf11-a639923562ed.jpg?alt=media&token=2ec280fa-dba0-4fbe-ab1b-35944eb032dc' alt='Create Connection View' width='600'/>
 
-User Token can be generated using these pages:
+Token can be generated using these pages:
 
 - CodeScan Self-hosted - `https://<your-codescan-url>/account/security/`
 - CodeScan - `https://app.codescan.io/account/security/`
@@ -113,7 +112,7 @@ Action buttons in the UI used to edit/delete existing, or create additional bind
 
 ## Have Questions or Feedback?
 
-For CodeScan support questions ("How do I?", "I got this error, why?", ...), please first read the [FAQ](https://knowledgebase.autorabit.com/product-guides/codescan/codescan-integration/ide-plugins/).
+For CodeScan support questions, please first read the [FAQ](https://knowledgebase.autorabit.com/product-guides/codescan/codescan-integration/ide-plugins/).
 
 
 ## License

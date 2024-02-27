@@ -284,12 +284,18 @@ function connectionCheckFailure(reason) {
 
 function populateTokenField(tokenObj) {
   byId('token').value = tokenObj.token;
-  if (tokenObj.organizationKey) {
-    byId('organizationKey').value = tokenObj.organizationKey;
-  }
   byId('tokenStatus').innerText = 'Token Received!';
   byId('tokenStatus').classList.remove('hidden');
   byId('tokenGenerationResult').innerText = '';
+  
+  // Set org key if present in response
+  if (tokenObj.organizationKey) {
+    byId('organizationKey').value = tokenObj.organizationKey;
+    byId('organizationKey').disabled = true;
+  } else {
+    byId('organizationKey').disabled = false;
+  }
+
   toggleSaveConnectionButton();
   saveState();
 }
