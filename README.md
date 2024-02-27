@@ -6,7 +6,7 @@ CodeScan is a Visual Studio Code extension that provides on-the-fly feedback to 
 
 Simply open a Apex or VisualForce file, start coding, and you will start seeing issues reported by CodeScan. Issues are highlighted in your code, and also listed in the 'Problems' panel.
 
-<img src='https://3402429765-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2Fp7YqIKGjCueSS155QZ9v%2Fuploads%2FLBptp9v8hjwthgzdLG19%2F2%201.gif?alt=media&token=64ccf6e4-dac0-4eeb-9ead-e26707e64c12' alt='CodeScan on-the-fly'/>
+<img src='https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExendrNWpkM2Z4anUwcGFtb3FhNW1nc2s0bWR2NmNnbTF6a3Z6dnYxNCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/H4oQb972hKDQE4C4Mv/giphy.gif' alt='CodeScan on-the-fly'/>
 
 You can access the detailed rule description directly from your editor, using the provided contextual menu.
 
