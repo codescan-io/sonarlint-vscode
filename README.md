@@ -6,11 +6,11 @@ CodeScan is a Visual Studio Code extension that provides on-the-fly feedback to 
 
 Simply open a Apex or VisualForce file, start coding, and you will start seeing issues reported by CodeScan. Issues are highlighted in your code, and also listed in the 'Problems' panel.
 
-<img src='https://d2xumecg7cd3ow.cloudfront.net/w6sq6h%2Fpreview%2F56229220%2Fmain_large.gif?response-content-disposition=inline%3Bfilename%3D%22main_large.gif%22%3B&response-content-type=image%2Fgif&Expires=1709040728&Signature=TYvQ5vCJ62yktePTppEsCHHfSfL7jlroM9AW9UUAFvi2Y8Az6l1GsE1uz-tDbz6ZewRdrc1tW6kJv4qw3SraocaeGUnZw2gq9pUGyT-K2CgSKxn2a5G~GuvYSoNZ3kDzUp2duV3UOSYR-uu4OcUZ9zUNsZVLDxxDDglsemiGsKUbnXdMamhSrLi1E6FEdAhJjLwiDVJ2JqjaypyRFbjpxvbnybpOtWaZCbWHxM6xdcgyxYTt88ajQ6y8EYpgOMm~RPoFoP7iZ6SNm1OZJ7V6vryGcv3vifx1qrAt0JOjc1EjmdiezhFKXntPUFnw1lNAOAhUAjZOVBOqkwun6lxtxg__&Key-Pair-Id=APKAJT5WQLLEOADKLHBQ' alt='CodeScan on-the-fly'/>
+<img src='https://3402429765-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2Fp7YqIKGjCueSS155QZ9v%2Fuploads%2Fck6dJnIE0npX9f8olKHS%2F2_2.gif?alt=media&token=6a7be613-ede3-4a1e-b1b8-9050c9ae3710' alt='CodeScan on-the-fly'/>
 
 You can access the detailed rule description directly from your editor, using the provided contextual menu.
 
-<img src='https://drive.google.com/file/d/1UuGUVwIf1smtUZXinnsjB17zY0_uMpqq/view?usp=sharing' alt='Rule description'/>
+<img src='https://3402429765-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2Fp7YqIKGjCueSS155QZ9v%2Fuploads%2FsELGYcReH5x9rceBbbZn%2F1_1.gif?alt=media&token=ca66f276-0482-46d9-b677-fe86b44d77c6' alt='Rule description'/>
 
 You can find all available rules descriptions on the dedicated [CodeScan Knowledgebase](https://knowledgebase.autorabit.com/product-guides/codescan/quality-rules/codescan-rule-list)
 
