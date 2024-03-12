@@ -1,7 +1,7 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
- * Copyright (C) 2017-2023 SonarSource SA
- * sonarlint@sonarsource.com
+ * CodeScan for VisualStudio Code
+ * Copyright (C) 2017-2024 SonarSource SA
+ * support@codescan.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 'use strict';
@@ -25,7 +25,7 @@ import {
   HotspotTreeViewItem
 } from '../../src/hotspot/hotspotsTreeDataProvider';
 import { Position, Selection } from 'vscode';
-import { SonarLintExtendedLanguageClient } from '../../src/lsp/client';
+import { CodeScanExtendedLanguageClient } from '../../src/lsp/client';
 import { expect } from 'chai';
 import * as path from 'path';
 import { HotspotAnalysisConfirmation } from '../../src/util/showMessage';
@@ -94,7 +94,7 @@ suite('Hotspots Test Suite', async () => {
   setup(async () => {
     // Make sure workbench is clean before each test
     await vscode.commands.executeCommand('workbench.action.closeAllEditors');
-    await vscode.commands.executeCommand(Commands.SHOW_SONARLINT_OUTPUT);
+    await vscode.commands.executeCommand(Commands.SHOW_CODESCAN_OUTPUT);
     await vscode.commands.executeCommand('workbench.action.output.toggleOutput');
   });
 
@@ -165,7 +165,7 @@ suite('Hotspots Test Suite', async () => {
   test('should use folder if provided', async () => {
     const sampleFolderUri = vscode.Uri.file(path.join(__dirname, '../../../test/samples'));
     let scanWasPerformedForFolder: vscode.Uri = null;
-    const scan: (folderUri: vscode.Uri, languageClient: SonarLintExtendedLanguageClient) => Promise<void> = async (
+    const scan: (folderUri: vscode.Uri, languageClient: CodeScanExtendedLanguageClient) => Promise<void> = async (
       folderUri,
       _
     ) => {
@@ -184,7 +184,7 @@ suite('Hotspots Test Suite', async () => {
   test('should use only opened folder if not provided', async () => {
     const sampleFolderUri = vscode.Uri.file(path.join(__dirname, '../../../test/samples'));
     let scanWasPerformedForFolder: vscode.Uri = null;
-    const scan: (folderUri: vscode.Uri, languageClient: SonarLintExtendedLanguageClient) => Promise<void> = async (
+    const scan: (folderUri: vscode.Uri, languageClient: CodeScanExtendedLanguageClient) => Promise<void> = async (
       folderUri,
       _
     ) => {
@@ -208,7 +208,7 @@ suite('Hotspots Test Suite', async () => {
 
   test('should scan nothing if no folder uri provided and no workspace folders opened', async () => {
     let scanWasPerformedForFolder: vscode.Uri = null;
-    const scan: (folderUri: vscode.Uri, languageClient: SonarLintExtendedLanguageClient) => Promise<void> = async (
+    const scan: (folderUri: vscode.Uri, languageClient: CodeScanExtendedLanguageClient) => Promise<void> = async (
       folderUri,
       _
     ) => {
@@ -224,7 +224,7 @@ suite('Hotspots Test Suite', async () => {
 
   test('should let to choose form quick pick list if no folder uri provided and more than one workspace folder opened', async () => {
     let scanWasPerformedForFolder: vscode.Uri = null;
-    const scan: (folderUri: vscode.Uri, languageClient: SonarLintExtendedLanguageClient) => Promise<void> = async (
+    const scan: (folderUri: vscode.Uri, languageClient: CodeScanExtendedLanguageClient) => Promise<void> = async (
       folderUri,
       _
     ) => {
@@ -317,7 +317,7 @@ suite('Hotspots Test Suite', async () => {
           changeHotspotStatusBeenCalled = true;
           return null;
         }
-      } as SonarLintExtendedLanguageClient;
+      } as CodeScanExtendedLanguageClient;
 
       doChangeHotspotStatus('serverKey',
         '/file/path',
@@ -339,7 +339,7 @@ suite('Hotspots Test Suite', async () => {
           changeHotspotStatusBeenCalled = true;
           return null;
         }
-      } as SonarLintExtendedLanguageClient;
+      } as CodeScanExtendedLanguageClient;
 
       doChangeHotspotStatus('serverKey',
         '/file/path',
@@ -365,7 +365,7 @@ suite('Hotspots Test Suite', async () => {
           changeHotspotStatusBeenCalled = true;
           return null;
         }
-      } as SonarLintExtendedLanguageClient;
+      } as CodeScanExtendedLanguageClient;
 
       doChangeHotspotStatus('serverKey',
         '/file/path',

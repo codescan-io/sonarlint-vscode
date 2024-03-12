@@ -1,7 +1,7 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
- * Copyright (C) 2017-2023 SonarSource SA
- * sonarlint@sonarsource.com
+ * CodeScan for VisualStudio Code
+ * Copyright (C) 2017-2024 SonarSource SA
+ * support@codescan.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 'use strict';
@@ -11,7 +11,7 @@ import { ServerMode } from '../java/java';
 import { code2ProtocolConverter } from '../util/uri';
 import * as protocol from './protocol';
 
-export class SonarLintExtendedLanguageClient extends LanguageClient {
+export class CodeScanExtendedLanguageClient extends LanguageClient {
   listAllRules(): Thenable<protocol.RulesResponse> {
     return this.sendRequest(protocol.ListAllRulesRequest.type);
   }

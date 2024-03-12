@@ -1,7 +1,7 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
- * Copyright (C) 2017-2023 SonarSource SA
- * sonarlint@sonarsource.com
+ * CodeScan for VisualStudio Code
+ * Copyright (C) 2017-2024 SonarSource SA
+ * support@codescan.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 'use strict';
@@ -9,9 +9,7 @@
 import { BindingService, ServerProject } from '../../src/connected/binding';
 import {
   BaseConnection,
-  ConnectionSettingsService,
-  SonarCloudConnection,
-  SonarQubeConnection
+  ConnectionSettingsService
 } from '../../src/settings/connectionsettings';
 
 import * as path from 'path';
@@ -21,10 +19,10 @@ import { expect } from 'chai';
 import { AutoBindingService, DO_NOT_ASK_ABOUT_AUTO_BINDING_FOR_WS_FLAG } from '../../src/connected/autobinding';
 import { TextEncoder } from 'util';
 import { FindFileByNamesInFolderParams, FindFileByNamesInFolderResponse } from '../../src/lsp/protocol';
+import { CODESCAN_CATEGORY } from '../../src/settings/settings';
 
 const CONNECTED_MODE_SETTINGS_SONARQUBE = 'connectedMode.connections.sonarqube';
 const CONNECTED_MODE_SETTINGS_SONARCLOUD = 'connectedMode.connections.sonarcloud';
-const SONARLINT_CATEGORY = 'sonarlint';
 const BINDING_SETTINGS = 'connectedMode.project';
 
 const TEST_SONARQUBE_CONNECTION = {
@@ -33,10 +31,10 @@ const TEST_SONARQUBE_CONNECTION = {
 };
 
 const mockSettingsService = {
-  async loadSonarQubeConnection(connectionId: string): Promise<SonarQubeConnection> {
+  async loadSonarQubeConnection(connectionId: string): Promise<BaseConnection> {
     return { serverUrl: 'https://next.sonarqube.com/sonarqube', connectionId };
   },
-  getSonarQubeConnections(): SonarQubeConnection[] {
+  getSonarQubeConnections(): BaseConnection[] {
     return [
       {
         connectionId: 'SQconnectionId',
@@ -45,12 +43,13 @@ const mockSettingsService = {
       }
     ];
   },
-  getSonarCloudConnections(): SonarCloudConnection[] {
+  getCodeScanConnections(): BaseConnection[] {
     return [
       {
         connectionId: 'SCconnectionId',
         disableNotifications: true,
-        organizationKey: 'organizationKey'
+        organizationKey: 'organizationKey',
+        serverUrl: 'https://server1'
       }
     ];
   }
@@ -82,7 +81,7 @@ suite('Auto Binding Test Suite', () => {
   setup(async () => {
     // start from 1 SQ connection config
     await VSCode.workspace
-      .getConfiguration(SONARLINT_CATEGORY)
+      .getConfiguration(CODESCAN_CATEGORY)
       .update(CONNECTED_MODE_SETTINGS_SONARQUBE, [TEST_SONARQUBE_CONNECTION], VSCode.ConfigurationTarget.Global);
 
     await cleanBindings();
@@ -105,7 +104,7 @@ suite('Auto Binding Test Suite', () => {
       const workspaceFolder = VSCode.workspace.workspaceFolders[0];
 
       const bindingBefore = VSCode.workspace
-        .getConfiguration(SONARLINT_CATEGORY, workspaceFolder.uri)
+        .getConfiguration(CODESCAN_CATEGORY, workspaceFolder.uri)
         .get(BINDING_SETTINGS);
       expect(bindingBefore).to.be.empty;
 
@@ -114,7 +113,7 @@ suite('Auto Binding Test Suite', () => {
       underTest.checkConditionsAndAttemptAutobinding({ suggestions: {folderUri: [workspaceFolder.uri.toString()]} });
 
       const bindingAfter = VSCode.workspace
-        .getConfiguration(SONARLINT_CATEGORY, workspaceFolder.uri)
+        .getConfiguration(CODESCAN_CATEGORY, workspaceFolder.uri)
         .get(BINDING_SETTINGS);
       expect(bindingAfter).to.be.empty;
     });
@@ -123,7 +122,7 @@ suite('Auto Binding Test Suite', () => {
       const workspaceFolder = VSCode.workspace.workspaceFolders[0];
 
       const bindingBefore = VSCode.workspace
-        .getConfiguration(SONARLINT_CATEGORY, workspaceFolder.uri)
+        .getConfiguration(CODESCAN_CATEGORY, workspaceFolder.uri)
         .get(BINDING_SETTINGS);
       expect(bindingBefore).to.be.empty;
 
@@ -132,7 +131,7 @@ suite('Auto Binding Test Suite', () => {
       underTest.checkConditionsAndAttemptAutobinding({ suggestions: {} });
 
       const bindingAfter = VSCode.workspace
-        .getConfiguration(SONARLINT_CATEGORY, workspaceFolder.uri)
+        .getConfiguration(CODESCAN_CATEGORY, workspaceFolder.uri)
         .get(BINDING_SETTINGS);
       expect(bindingAfter).to.be.empty;
     });
@@ -179,22 +178,22 @@ suite('Auto Binding Test Suite', () => {
       const workspaceFolder = VSCode.workspace.workspaceFolders[0];
 
       await VSCode.workspace
-      .getConfiguration(SONARLINT_CATEGORY)
+      .getConfiguration(CODESCAN_CATEGORY)
       .update(CONNECTED_MODE_SETTINGS_SONARQUBE, undefined, VSCode.ConfigurationTarget.Global);
 
       await VSCode.workspace
-      .getConfiguration(SONARLINT_CATEGORY)
+      .getConfiguration(CODESCAN_CATEGORY)
       .update(CONNECTED_MODE_SETTINGS_SONARCLOUD, undefined, VSCode.ConfigurationTarget.Global);
 
       const bindingBefore = VSCode.workspace
-        .getConfiguration(SONARLINT_CATEGORY, workspaceFolder.uri)
+        .getConfiguration(CODESCAN_CATEGORY, workspaceFolder.uri)
         .get(BINDING_SETTINGS);
       expect(bindingBefore).to.be.empty;
 
       underTest.checkConditionsAndAttemptAutobinding({ suggestions: {} });
 
       const bindingAfter = VSCode.workspace
-        .getConfiguration(SONARLINT_CATEGORY, workspaceFolder.uri)
+        .getConfiguration(CODESCAN_CATEGORY, workspaceFolder.uri)
         .get(BINDING_SETTINGS);
       expect(bindingAfter).to.be.empty;
     });
@@ -205,7 +204,7 @@ async function cleanBindings() {
   return Promise.all(
     VSCode.workspace.workspaceFolders.map(folder => {
       return VSCode.workspace
-        .getConfiguration(SONARLINT_CATEGORY, folder.uri)
+        .getConfiguration(CODESCAN_CATEGORY, folder.uri)
         .update(BINDING_SETTINGS, undefined, VSCode.ConfigurationTarget.WorkspaceFolder);
     })
   );

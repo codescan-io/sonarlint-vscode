@@ -1,7 +1,7 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
- * Copyright (C) 2017-2023 SonarSource SA
- * sonarlint@sonarsource.com
+ * CodeScan for VisualStudio Code
+ * Copyright (C) 2017-2024 SonarSource SA
+ * support@codescan.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 
@@ -33,15 +33,15 @@ suite('Connection Setup', () => {
     await vscode.commands.executeCommand('workbench.action.closeAllEditors');
   });
 
-  test('should show SonarQube creation webview when command is called', async () => {
+  test('should show CodeScan creation webview when command is called', async () => {
     const sleepTime = 1000;
     const connectionsBefore = getSonarQubeConnections();
     assert.deepStrictEqual(connectionsBefore, []);
 
-    await vscode.commands.executeCommand(Commands.CONNECT_TO_SONARQUBE);
+    await vscode.commands.executeCommand(Commands.CONNECT_TO_CODESCAN_SELF_HOSTED);
     await sleep(sleepTime);
 
-    const serverUrl = 'https://sonarqube.example';
+    const serverUrl = 'https://codescan.example';
     const token = 'definitely not a valid token';
     const disableNotifications = false;
 
@@ -62,10 +62,10 @@ suite('Connection Setup', () => {
     const connectionsBefore = getSonarQubeConnections();
     assert.deepStrictEqual(connectionsBefore, []);
 
-    await vscode.commands.executeCommand(Commands.CONNECT_TO_SONARQUBE);
+    await vscode.commands.executeCommand(Commands.CONNECT_TO_CODESCAN_SELF_HOSTED);
     await sleep(sleepTime);
 
-    const serverUrl = 'https://sonarqube.example';
+    const serverUrl = 'https://codescan.example';
     const message = {
       command: 'saveConnection',
       serverUrl: serverUrl,
@@ -81,12 +81,12 @@ suite('Connection Setup', () => {
 
   }).timeout(FIVE_SECONDS);
 
-  test('should show SonarCloud creation webview when command is called', async () => {
+  test('should show CodeScan creation webview when command is called', async () => {
     const sleepTime = 1000;
     const connectionsBefore = getSonarCloudConnections();
     assert.deepStrictEqual(connectionsBefore, []);
 
-    await vscode.commands.executeCommand(Commands.CONNECT_TO_SONARCLOUD);
+    await vscode.commands.executeCommand(Commands.CONNECT_TO_CODESCAN_SELF_HOSTED);
     await sleep(sleepTime);
 
     const token = 'definitely not a valid token';
@@ -122,14 +122,14 @@ suite('Connection Setup', () => {
 
     const connectionId = getDefaultConnectionId(message)
 
-    await ConnectionSettingsService.instance.addSonarQubeConnection({
-      serverUrl,
-      connectionId,
-      token
-    });
+    // await ConnectionSettingsService.instance.addSonarQubeConnection({
+    //   serverUrl,
+    //   connectionId,
+    //   token
+    // });
     await sleep(sleepTime);
 
-    await vscode.commands.executeCommand(Commands.EDIT_SONARQUBE_CONNECTION, Promise.resolve({ id: connectionId }));
+    await vscode.commands.executeCommand(Commands.EDIT_CODESCAN_SH_CONNECTION, Promise.resolve({ id: connectionId }));
 
     await sleep(sleepTime);
     await handleMessage(message)
@@ -148,17 +148,17 @@ suite('Connection Setup', () => {
     const token = 'XXX SUPER SECRET TOKEN XXX';
     const connectionId = 'My Little SonarQube';
 
-    await ConnectionSettingsService.instance.addSonarQubeConnection(
-      {
-        connectionId,
-        serverUrl,
-        token
-      }
-    );
+    // await ConnectionSettingsService.instance.addSonarQubeConnection(
+    //   {
+    //     connectionId,
+    //     serverUrl,
+    //     token
+    //   }
+    // );
 
     await sleep(sleepTime);
 
-    await vscode.commands.executeCommand(Commands.EDIT_SONARQUBE_CONNECTION, connectionId);
+    await vscode.commands.executeCommand(Commands.EDIT_CODESCAN_SH_CONNECTION, connectionId);
     await sleep(sleepTime);
 
     const disableNotifications = true;
@@ -184,18 +184,20 @@ suite('Connection Setup', () => {
     const organizationKey = 'another-organization';
     const token = 'XXX SUPER SECRET TOKEN XXX';
     const connectionId = 'My Little SonarQube';
+    const serverUrl = 'https://server';
 
-    await ConnectionSettingsService.instance.addSonarCloudConnection(
+    await ConnectionSettingsService.instance.addCodeScanConnection(
       {
         connectionId,
         organizationKey,
-        token
+        token,
+        serverUrl
       }
     );
 
     await sleep(sleepTime);
 
-    await vscode.commands.executeCommand(Commands.EDIT_SONARCLOUD_CONNECTION, connectionId);
+    await vscode.commands.executeCommand(Commands.EDIT_CODESCAN_CONNECTION, connectionId);
     await sleep(sleepTime);
 
     const disableNotifications = true;

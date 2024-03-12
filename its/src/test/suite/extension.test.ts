@@ -1,7 +1,7 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
- * Copyright (C) 2017-2023 SonarSource SA
- * sonarlint@sonarsource.com
+ * CodeScan for VisualStudio Code
+ * Copyright (C) 2017-2024 SonarSource SA
+ * support@codescan.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 import * as assert from 'assert';
@@ -26,7 +26,7 @@ suite('Extension Test Suite', () => {
     const ext = vscode.extensions.getExtension('sonarsource.sonarlint-vscode')!;
     await ext.activate();
 
-    vscode.commands.executeCommand('SonarLint.ShowSonarLintOutput');
+    vscode.commands.executeCommand('CodeScan.ShowCodeScanOutput');
 
     const fileUri = vscode.Uri.file(path.join(__dirname, sampleFolderLocation, 'sample-js', 'main.js'));
     const document = await vscode.workspace.openTextDocument(fileUri);
@@ -48,7 +48,7 @@ suite('Extension Test Suite', () => {
     const ext = vscode.extensions.getExtension('sonarsource.sonarlint-vscode')!;
     await ext.activate();
 
-    vscode.commands.executeCommand('SonarLint.ShowSonarLintOutput');
+    vscode.commands.executeCommand('CodeScan.ShowCodeScanOutput');
 
     const fileUri = vscode.Uri.file(path.join(__dirname, sampleFolderLocation, 'sample-js', 'lambda.yaml'));
     const document = await vscode.workspace.openTextDocument(fileUri);

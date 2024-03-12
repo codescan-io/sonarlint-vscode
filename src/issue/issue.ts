@@ -1,23 +1,23 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
- * Copyright (C) 2017-2023 SonarSource SA
- * sonarlint@sonarsource.com
+ * CodeScan for VisualStudio Code
+ * Copyright (C) 2017-2024 SonarSource SA
+ * support@codescan.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 
 'use strict';
 
-import { SonarLintExtendedLanguageClient } from '../lsp/client';
+import { CodeScanExtendedLanguageClient } from '../lsp/client';
 
 export class IssueService {
 
   private static _instance: IssueService;
 
-  static init(languageClient: SonarLintExtendedLanguageClient): void {
+  static init(languageClient: CodeScanExtendedLanguageClient): void {
     IssueService._instance = new IssueService(languageClient);
   }
 
-  constructor(private readonly languageClient: SonarLintExtendedLanguageClient) {
+  constructor(private readonly languageClient: CodeScanExtendedLanguageClient) {
   }
 
   static get instance(): IssueService {

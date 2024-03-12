@@ -1,7 +1,7 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
- * Copyright (C) 2017-2023 SonarSource SA
- * sonarlint@sonarsource.com
+ * CodeScan for VisualStudio Code
+ * Copyright (C) 2017-2024 SonarSource SA
+ * support@codescan.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 import * as assert from 'assert';
@@ -39,7 +39,7 @@ suite('Java Test Suite', () => {
   });
 
   test('should report issue on java file', async function () {
-    await vscode.commands.executeCommand('SonarLint.ShowSonarLintOutput');
+    await vscode.commands.executeCommand('CodeScan.ShowCodeScanOutput');
 
     const fileUri = vscode.Uri.file(
       path.join(
@@ -82,7 +82,7 @@ suite('Java Test Suite', () => {
   }).timeout(60 * 1000);
 
   test('should report issue on single java test file', async function () {
-    await vscode.commands.executeCommand('SonarLint.ShowSonarLintOutput');
+    await vscode.commands.executeCommand('CodeScan.ShowCodeScanOutput');
     const fileUri = vscode.Uri.file(
       path.join(__dirname, sampleJavaFolderLocation, 'module-java/src/test/java/edu/marcelo', 'AppTest.java')
     );

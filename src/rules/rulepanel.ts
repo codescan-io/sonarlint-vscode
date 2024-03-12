@@ -1,7 +1,7 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
- * Copyright (C) 2017-2023 SonarSource SA
- * sonarlint@sonarsource.com
+ * CodeScan for VisualStudio Code
+ * Copyright (C) 2017-2024 SonarSource SA
+ * support@codescan.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 'use strict';
@@ -19,7 +19,7 @@ export function showRuleDescription(context: VSCode.ExtensionContext) {
   return params => {
     lazyCreateRuleDescriptionPanel(context);
     ruleDescriptionPanel.webview.html = computeRuleDescPanelContent(context, ruleDescriptionPanel.webview, params);
-    ruleDescriptionPanel.iconPath = util.resolveExtensionFile('images', 'sonarlint.svg');
+    ruleDescriptionPanel.iconPath = util.resolveExtensionFile('images', 'codescan.svg');
     ruleDescriptionPanel.reveal();
   };
 }
@@ -27,8 +27,8 @@ export function showRuleDescription(context: VSCode.ExtensionContext) {
 function lazyCreateRuleDescriptionPanel(context: VSCode.ExtensionContext) {
   if (!ruleDescriptionPanel) {
     ruleDescriptionPanel = VSCode.window.createWebviewPanel(
-      'sonarlint.RuleDesc',
-      'SonarLint Rule Description',
+      'codescan.RuleDesc',
+      'CodeScan Rule Description',
       VSCode.ViewColumn.Two,
       {
         enableScripts: true
@@ -93,10 +93,10 @@ export function renderTaintBanner(rule: ShowRuleDescriptionParams, infoImgSrc: s
   }
   return `<div class="info-banner-wrapper">
             <p class="info-banner"><span><img src=${infoImgSrc} alt="info"></span> 
-            This injection vulnerability was detected by the latest SonarQube or SonarCloud analysis.
-             SonarLint fetches and reports it in your local code to help you investigate it and fix it,
+            This injection vulnerability was detected by the latest CodeScan analysis.
+             CodeScan fetches and reports it in your local code to help you investigate it and fix it,
               but cannot tell you whether you successfully fixed it. To verify your fix, please ensure
-              the code containing your fix is analyzed by SonarQube or SonarCloud.
+              the code containing your fix is analyzed by CodeScan.
             </p>
            </div>`;
 }
@@ -182,13 +182,13 @@ export function computeHeading(tab, contextualDescription) {
 
 export function renderRuleParams(rule: ShowRuleDescriptionParams) {
   if (rule.parameters && rule.parameters.length > 0) {
-    const ruleParamsConfig = VSCode.workspace.getConfiguration(`sonarlint.rules.${rule.key}.parameters`);
+    const ruleParamsConfig = VSCode.workspace.getConfiguration(`codescan.rules.${rule.key}.parameters`);
     return `<table class="rule-params">
   <caption>Parameters</caption>
   <thead>
     <tr>
       <td colspan="2">
-        Following parameter values can be set in the <em>SonarLint:Rules</em> user settings.
+        Following parameter values can be set in the <em>CodeScan:Rules</em> user settings.
         In connected mode, server side configuration overrides local settings.
       </td>
     </tr>

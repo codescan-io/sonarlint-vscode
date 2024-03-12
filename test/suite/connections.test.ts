@@ -1,7 +1,7 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
- * Copyright (C) 2017-2023 SonarSource SA
- * sonarlint@sonarsource.com
+ * CodeScan for VisualStudio Code
+ * Copyright (C) 2017-2024 SonarSource SA
+ * support@codescan.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 'use strict';
@@ -9,9 +9,10 @@
 import * as vscode from 'vscode';
 import { expect } from 'chai';
 import { AllConnectionsTreeDataProvider, ConnectionGroup } from '../../src/connected/connections';
-import { SonarLintExtendedLanguageClient } from '../../src/lsp/client';
+import { CodeScanExtendedLanguageClient } from '../../src/lsp/client';
 import * as path from 'path';
 import { sampleFolderLocation } from './commons';
+import { CODESCAN_CATEGORY } from '../../src/settings/settings';
 
 const CONNECTED_MODE_SETTINGS = 'connectedMode.connections';
 const CONNECTED_MODE_SETTINGS_SONARQUBE = 'connectedMode.connections.sonarqube';
@@ -31,7 +32,7 @@ const mockClient = {
   async getRemoteProjectNames(_connectionId, _projectKeys) {
     return Promise.resolve(projectKeysToNames);
   }
-} as SonarLintExtendedLanguageClient;
+} as CodeScanExtendedLanguageClient;
 
 suite('Connected Mode Test Suite', () => {
   setup(async () => {
@@ -61,7 +62,7 @@ suite('Connected Mode Test Suite', () => {
     });
 
     test('should return same number of sonarqube settings as in config file', async () => {
-      const connectionConfig = vscode.workspace.getConfiguration('sonarlint.connectedMode.connections');
+      const connectionConfig = vscode.workspace.getConfiguration(CODESCAN_CATEGORY + '.connectedMode.connections');
       expect(connectionConfig.sonarqube.length).to.equal((await underTest.getConnections('sonarqube')).length);
     });
 
@@ -71,14 +72,14 @@ suite('Connected Mode Test Suite', () => {
     });
 
     test('should return same number of sonarcloud settings as in config file', async () => {
-      const connectionConfig = vscode.workspace.getConfiguration('sonarlint.connectedMode.connections');
+      const connectionConfig = vscode.workspace.getConfiguration(CODESCAN_CATEGORY + '.connectedMode.connections');
       expect(connectionConfig.sonarcloud.length).to.equal((await underTest.getConnections('sonarcloud')).length);
     });
   });
 
   suite('ConnectedMode TreeView', () => {
-    const SQGroup = new ConnectionGroup('sonarqube', 'SonarQube', 'sonarQubeGroup');
-    const SCGroup = new ConnectionGroup('sonarcloud', 'SonarCloud', 'sonarCloudGroup');
+    const SQGroup = new ConnectionGroup('sonarqube', 'CodeScan Self-hosted', 'sonarQubeGroup');
+    const SCGroup = new ConnectionGroup('sonarcloud', 'CodeScan', 'sonarCloudGroup');
 
     test('should return empty lists when expanding SQ and SC tabs and no connections exist', async () => {
       const underTest = new AllConnectionsTreeDataProvider(mockClient);

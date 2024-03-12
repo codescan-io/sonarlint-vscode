@@ -1,7 +1,7 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
- * Copyright (C) 2017-2023 SonarSource SA
- * sonarlint@sonarsource.com
+ * CodeScan for VisualStudio Code
+ * Copyright (C) 2017-2024 SonarSource SA
+ * support@codescan.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 'use strict';
@@ -13,7 +13,7 @@ import { TextDecoder } from 'util';
 import * as vscode from 'vscode';
 import { AnalysisFile } from '../lsp/protocol';
 import { code2ProtocolConverter } from './uri';
-import { verboseLogToSonarLintOutput } from './logging';
+import { verboseLogToCodeScanOutput } from './logging';
 
 export function startedInDebugMode(process: NodeJS.Process): boolean {
   const args = process.execArgv;
@@ -23,7 +23,7 @@ export function startedInDebugMode(process: NodeJS.Process): boolean {
   return false;
 }
 
-export const extension = vscode.extensions.getExtension('SonarSource.sonarlint-vscode');
+export const extension = vscode.extensions.getExtension('codescansf.codescan-vscode');
 export const packageJson = extension.packageJSON;
 export const HOTSPOTS_FULL_SCAN_FILE_SIZE_LIMIT_BYTES = 500_000;
 
@@ -97,7 +97,7 @@ export function sleep(ms: number) {
 }
 
 export function formatIssueMessage(message: string, ruleKey: string) {
-  return new vscode.MarkdownString(`$(warning) ${message} \`sonarlint(${ruleKey})\``, true);
+  return new vscode.MarkdownString(`$(warning) ${message} \`codescan(${ruleKey})\``, true);
 }
 
 export async function findFilesInFolder(
@@ -146,7 +146,7 @@ export async function createAnalysisFilesFromFileUris(
     progress.report({increment: 50.0 * currentFile / totalFiles});
     const fileStat = await vscode.workspace.fs.stat(fileUri);
     if (fileStat.size > HOTSPOTS_FULL_SCAN_FILE_SIZE_LIMIT_BYTES) {
-      verboseLogToSonarLintOutput(`File will not be analysed because it's too large: ${fileUri.path}`);
+      verboseLogToCodeScanOutput(`File will not be analysed because it's too large: ${fileUri.path}`);
       continue;
     }
     let fileContent;

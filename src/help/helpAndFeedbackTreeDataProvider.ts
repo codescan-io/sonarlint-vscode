@@ -1,7 +1,7 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
- * Copyright (C) 2017-2023 SonarSource SA
- * sonarlint@sonarsource.com
+ * CodeScan for VisualStudio Code
+ * Copyright (C) 2017-2024 SonarSource SA
+ * support@codescan.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 'use strict';
@@ -20,37 +20,31 @@ export const helpAndFeedbackViewItems: HelpAndFeedbackItem[] = [
   {
     id: 'docs',
     label: 'Read Documentation',
-    url: 'https://github.com/SonarSource/sonarlint-vscode/wiki',
+    url: 'https://knowledgebase.autorabit.com/product-guides/codescan',
     icon: 'book'
   },
   {
     id: 'getHelp',
     label: 'Get Help | Report Issue',
-    url: 'https://community.sonarsource.com/c/sl/vs-code/36',
+    url: 'https://knowledgebase.autorabit.com/product-guides/codescan/codescan-support/contact-support-team',
     icon: 'comment-discussion'
   },
   {
     id: 'supportedRules',
     label: 'See Languages & Rules',
-    url: 'https://github.com/SonarSource/sonarlint-vscode/wiki/Languages-and-rules',
+    url: 'https://knowledgebase.autorabit.com/product-guides/codescan/quality-rules/codescan-rule-list',
     icon: 'checklist'
   },
   {
     id: 'whatsNew',
     label: "Check What's New",
-    url: 'https://www.sonarsource.com/products/sonarlint/whats-new/vs-code/',
+    url: 'https://knowledgebase.autorabit.com/overview/release-notes/codescan-release-notes',
     icon: 'megaphone'
-  },
-  {
-    id: 'suggestFeature',
-    label: 'Suggest a Feature',
-    url: 'https://www.sonarsource.com/products/sonarlint/roadmap/',
-    icon: 'extensions'
   },
   {
     id: 'faq',
     label: 'Review FAQ',
-    url: 'https://community.sonarsource.com/t/frequently-asked-questions/7204',
+    url: 'https://knowledgebase.autorabit.com/product-guides/codescan/frequently-asked-questions',
     icon: 'question'
   }
 ];

@@ -1,21 +1,21 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
- * Copyright (C) 2017-2023 SonarSource SA
- * sonarlint@sonarsource.com
+ * CodeScan for VisualStudio Code
+ * Copyright (C) 2017-2024 SonarSource SA
+ * support@codescan.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 'use strict';
 
 import * as vscode from 'vscode';
-import { ConnectionSettingsService, migrateConnectedModeSettings } from './connectionsettings';
+import { ConnectionSettingsService, migrateConnectedModeSettings, migrateDeprecatedSettings } from './connectionsettings';
 
 let currentConfig: vscode.WorkspaceConfiguration;
 
-export const SONARLINT_CATEGORY = 'sonarlint';
+export const CODESCAN_CATEGORY = 'codescan';
 export const VERBOSE_LOGS = 'output.showVerboseLogs';
 
-export function getSonarLintConfiguration(): vscode.WorkspaceConfiguration {
-  return vscode.workspace.getConfiguration(SONARLINT_CATEGORY);
+export function getCodeScanConfiguration(): vscode.WorkspaceConfiguration {
+  return vscode.workspace.getConfiguration(CODESCAN_CATEGORY);
 }
 
 export function isVerboseEnabled(): boolean {
@@ -28,7 +28,7 @@ export function enableVerboseLogs() {
 }
 
 export function loadInitialSettings() {
-  currentConfig = getSonarLintConfiguration();
+  currentConfig = getCodeScanConfiguration();
 }
 
 export function getCurrentConfiguration() {
@@ -37,16 +37,16 @@ export function getCurrentConfiguration() {
 
 export function onConfigurationChange() {
   return vscode.workspace.onDidChangeConfiguration(event => {
-    if (!event.affectsConfiguration('sonarlint')) {
+    if (!event.affectsConfiguration(CODESCAN_CATEGORY)) {
       return;
     }
-    const newConfig = getSonarLintConfiguration();
+    const newConfig = getCodeScanConfiguration();
 
-    const sonarLintLsConfigChanged =
-      hasSonarLintLsConfigChanged(currentConfig, newConfig) || hasNodeJsConfigChanged(currentConfig, newConfig);
+    const codeScanLsConfigChanged =
+      hasCodeScanLsConfigChanged(currentConfig, newConfig) || hasNodeJsConfigChanged(currentConfig, newConfig);
 
-    if (sonarLintLsConfigChanged) {
-      const msg = 'SonarLint Language Server configuration changed, please restart VS Code.';
+    if (codeScanLsConfigChanged) {
+      const msg = 'CodeScan Language Server configuration changed, please restart VS Code.';
       const action = 'Restart Now';
       const restartId = 'workbench.action.reloadWindow';
       currentConfig = newConfig;
@@ -57,10 +57,11 @@ export function onConfigurationChange() {
       });
     }
     migrateConnectedModeSettings(newConfig, ConnectionSettingsService.instance);
+    migrateDeprecatedSettings(newConfig, ConnectionSettingsService.instance);
   });
 }
 
-function hasSonarLintLsConfigChanged(oldConfig, newConfig) {
+function hasCodeScanLsConfigChanged(oldConfig, newConfig) {
   return !configKeyEquals('ls.javaHome', oldConfig, newConfig) || !configKeyEquals('ls.vmargs', oldConfig, newConfig);
 }
 

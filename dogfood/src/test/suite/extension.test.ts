@@ -1,7 +1,7 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint Dogfood
- * Copyright (C) 2021-2023 SonarSource SA
- * sonarlint@sonarsource.com
+ * CodeScan Dogfood
+ * Copyright (C) 2021-2024 SonarSource SA
+ * support@codescan.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 
@@ -14,7 +14,7 @@ suite('Extension Test Suite', () => {
   test('should activate', async () => {
 
     const registeredCommands = await vscode.commands.getCommands();
-    assert.equal(registeredCommands.filter(c => c === 'SonarLintDogfood.CheckNow').length, 1);
+    assert.equal(registeredCommands.filter(c => c === 'CodeScanDogfood.CheckNow').length, 1);
 
   });
 });

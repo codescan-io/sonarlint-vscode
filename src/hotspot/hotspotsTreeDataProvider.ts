@@ -1,7 +1,7 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
- * Copyright (C) 2017-2023 SonarSource SA
- * sonarlint@sonarsource.com
+ * CodeScan for VisualStudio Code
+ * Copyright (C) 2017-2024 SonarSource SA
+ * support@codescan.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 'use strict';
@@ -14,7 +14,7 @@ import { ConnectionSettingsService } from '../settings/connectionsettings';
 import { Commands } from '../util/commands';
 import { getFileNameFromFullPath, getRelativePathFromFullPath, protocol2CodeConverter } from '../util/uri';
 import { OPEN_HOTSPOT_IN_IDE_SOURCE } from './hotspots';
-import { logToSonarLintOutput } from '../util/logging';
+import { logToCodeScanOutput } from '../util/logging';
 import { isVerboseEnabled } from '../settings/settings';
 
 const SONARLINT_SOURCE = 'sonarlint';
@@ -122,7 +122,7 @@ export class AllHotspotsTreeDataProvider implements VSCode.TreeDataProvider<Hots
 
   private async updateContextShowMode(showMode: ShowMode) {
     this.showMode = showMode;
-    await VSCode.commands.executeCommand('setContext', 'SonarLint.Hotspots.ShowMode', showMode);
+    await VSCode.commands.executeCommand('setContext', 'CodeScan.Hotspots.ShowMode', showMode);
   }
 
   async refresh(hotspotsPerFile?: PublishHotspotsForFileParams) {
@@ -143,7 +143,7 @@ export class AllHotspotsTreeDataProvider implements VSCode.TreeDataProvider<Hots
     this.cleanupHotspotsCache()
       .then(() => this._onDidChangeTreeData.fire(null))
       .catch(e => {
-        logToSonarLintOutput(`Error refreshing hotspots: ${e}`);
+        logToCodeScanOutput(`Error refreshing hotspots: ${e}`);
         this._onDidChangeTreeData.fire(null);
       });
   }
@@ -192,9 +192,8 @@ export class AllHotspotsTreeDataProvider implements VSCode.TreeDataProvider<Hots
   }
 
   isAnyConnectionConfigured(): boolean {
-    const sonarQubeConnections = this.connectionSettingsService.getSonarQubeConnections();
-    const sonarCloudConnections = this.connectionSettingsService.getSonarCloudConnections();
-    return sonarCloudConnections.length > 0 || sonarQubeConnections.length > 0;
+    const sonarCloudConnections = this.connectionSettingsService.getCodeScanConnections();
+    return sonarCloudConnections.length > 0;
   }
 
   getHotspotsForFile(fileUri: string, contextValue: string): HotspotNode[] {
@@ -331,7 +330,7 @@ export class AllHotspotsTreeDataProvider implements VSCode.TreeDataProvider<Hots
       const foundFileUris = await VSCode.workspace.findFiles(fullPathInfolder);
       if (!foundFileUris.some(file => file.path === vscodeUri.path)) {
         if (isVerboseEnabled()) {
-          logToSonarLintOutput(`Removing unknown file ${fullPathInfolder} from hotspot cache`);
+          logToCodeScanOutput(`Removing unknown file ${fullPathInfolder} from hotspot cache`);
         }
         this.fileHotspotsCache.delete(fullFileUri);
         this.filesWithHotspots.delete(fullPathInfolder);

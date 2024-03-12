@@ -1,7 +1,7 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
- * Copyright (C) 2017-2023 SonarSource SA
- * sonarlint@sonarsource.com
+ * CodeScan for VisualStudio Code
+ * Copyright (C) 2017-2024 SonarSource SA
+ * support@codescan.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 
@@ -34,8 +34,7 @@ export async function noWorkspaceFolderToScanMessage(): Promise<void> {
 export async function tooManyFilesConfirmation(filesCount: number): Promise<HotspotAnalysisConfirmation> {
   return vscode.window.showWarningMessage(
     `There are ${filesCount} files to analyze for hotspots in project. 
-        Analysis may consume too many resources. Do you want to proceed?\n 
-        [Server analysis recommended](https://docs.sonarqube.org/latest/analyzing-source-code/overview/)`,
+        Analysis may consume too many resources. Do you want to proceed?`,
     HotspotAnalysisConfirmation.RUN_ANALYSIS, HotspotAnalysisConfirmation.DONT_ANALYZE
   );
 }
@@ -68,7 +67,7 @@ export async function showSslCertificateConfirmationDialog(cert: SslCertificateC
     SHA-256:\n ${cert.sha256Fingerprint}\n
     SHA-1:\n ${cert.sha1Fingerprint}\n`;
   const dialogResponse = await vscode.window.showErrorMessage(`
-    SonarLint found untrusted server's certificate\n
+    CodeScan found untrusted server's certificate\n
     Issued to:\n ${cert.issuedTo}\n
     Issued by:\n ${cert.issuedBy}\n
     VALIDITY PERIOD\n
@@ -80,4 +79,16 @@ export async function showSslCertificateConfirmationDialog(cert: SslCertificateC
     Consider removing connection if you don't trust the certificate\n`,
     { modal: true }, dontTrust, trust);
   return dialogResponse === trust;
+}
+
+export function promptVSCodeRestart(message: string) {
+  vscode.window.showInformationMessage(
+    message,
+    { modal: true },
+    'Restart VSCode'
+  ).then((choice) => {
+    if (choice === 'Restart VSCode') {
+      vscode.commands.executeCommand('workbench.action.reloadWindow');
+    }
+  });
 }

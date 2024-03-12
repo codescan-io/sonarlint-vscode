@@ -1,12 +1,12 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
- * Copyright (C) 2017-2023 SonarSource SA
- * sonarlint@sonarsource.com
+ * CodeScan for VisualStudio Code
+ * Copyright (C) 2017-2024 SonarSource SA
+ * support@codescan.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 import { HTMLElement, parse } from 'node-html-parser';
 import hljs from 'highlight.js';
-import { logToSonarLintOutput } from '../util/logging';
+import { logToCodeScanOutput } from '../util/logging';
 
 function getNonDiffCodeSnippetsToHighlight(doc) {
   return doc.querySelectorAll(`pre:not(.code-difference-scrollable)`);
@@ -71,7 +71,7 @@ export function highlightAllCodeSnippetsInDesc(htmlDescription, ruleLanguageKey,
       });
     }
   } catch (e) {
-    logToSonarLintOutput(
+    logToCodeScanOutput(
       `Error occurred when rendering rule description. Rendering without syntax highlighting. \n ${e.message}`
     );
   }

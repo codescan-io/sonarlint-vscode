@@ -1,7 +1,7 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
+ * CodeScan for VisualStudio Code
  * Copyright (C) 2017-2022 SonarSource SA
- * sonarlint@sonarsource.com
+ * support@codescan.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 'use strict';
@@ -18,18 +18,18 @@ suite('SonarLint Rules view', () => {
 
     const secretsAwsRuleKey = 'secrets:S6290';
 
-    await vscode.commands.executeCommand('SonarLint.AllRules.focus');
+    await vscode.commands.executeCommand('CodeScan.AllRules.focus');
 
-    await vscode.commands.executeCommand('SonarLint.OpenRuleByKey', secretsAwsRuleKey);
+    await vscode.commands.executeCommand('CodeScan.OpenRuleByKey', secretsAwsRuleKey);
 
-    await vscode.commands.executeCommand('SonarLint.OpenStandaloneRuleDesc', secretsAwsRuleKey);
+    await vscode.commands.executeCommand('CodeScan.OpenStandaloneRuleDesc', secretsAwsRuleKey);
 
-    await vscode.commands.executeCommand('SonarLint.DeactivateRule', secretsAwsRuleKey);
+    await vscode.commands.executeCommand('CodeScan.DeactivateRule', secretsAwsRuleKey);
 
     const rulesAfterDeactivation = vscode.workspace.getConfiguration('sonarlint').get('rules');
     expect(rulesAfterDeactivation[secretsAwsRuleKey].level).to.equal('off');
 
-    await vscode.commands.executeCommand('SonarLint.ActivateRule', secretsAwsRuleKey);
+    await vscode.commands.executeCommand('CodeScan.ActivateRule', secretsAwsRuleKey);
 
     const rulesAfterReactivation = vscode.workspace.getConfiguration('sonarlint').get('rules');
     expect(rulesAfterReactivation[secretsAwsRuleKey].level).to.equal('on');

@@ -1,14 +1,14 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
- * Copyright (C) 2017-2023 SonarSource SA
- * sonarlint@sonarsource.com
+ * CodeScan for VisualStudio Code
+ * Copyright (C) 2017-2024 SonarSource SA
+ * support@codescan.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 'use strict';
 
 import * as VSCode from 'vscode';
 import { BindingService } from './binding';
-import { SonarLintExtendedLanguageClient } from '../lsp/client';
+import { CodeScanExtendedLanguageClient } from '../lsp/client';
 import { ConnectionCheckResult } from '../lsp/protocol';
 import { BaseConnection, ConnectionSettingsService } from '../settings/connectionsettings';
 import { DEFAULT_CONNECTION_ID } from '../commons';
@@ -73,7 +73,7 @@ export class Connection extends VSCode.TreeItem {
 export class ConnectionGroup extends VSCode.TreeItem {
   constructor(
     public readonly id: 'sonarqube' | 'sonarcloud',
-    public readonly label: 'SonarQube' | 'SonarCloud',
+    public readonly label: 'CodeScan Self-hosted' | 'CodeScan',
     public readonly contextValue: 'sonarQubeGroup' | 'sonarCloudGroup'
   ) {
     super(label, VSCode.TreeItemCollapsibleState.Collapsed);
@@ -87,7 +87,7 @@ export class AllConnectionsTreeDataProvider implements VSCode.TreeDataProvider<C
   readonly onDidChangeTreeData: VSCode.Event<ConnectionsNode | undefined> = this._onDidChangeTreeData.event;
   private allConnections = { sonarqube: Array.from<Connection>([]), sonarcloud: Array.from<Connection>([]) };
 
-  constructor(private readonly client: SonarLintExtendedLanguageClient) {}
+  constructor(private readonly client: CodeScanExtendedLanguageClient) {}
 
   async getConnections(type: string): Promise<Connection[]> {
     const contextValue = type === 'sonarqube' ? 'sonarqubeConnection' : 'sonarcloudConnection';
@@ -97,7 +97,7 @@ export class AllConnectionsTreeDataProvider implements VSCode.TreeDataProvider<C
     const connectionsFromSettings: BaseConnection[] =
       type === 'sonarqube'
         ? ConnectionSettingsService.instance.getSonarQubeConnections()
-        : ConnectionSettingsService.instance.getSonarCloudConnections();
+        : ConnectionSettingsService.instance.getCodeScanConnections();
     const connections = await Promise.all(
       connectionsFromSettings.map(async c => {
         const label = c[labelKey] ? c[labelKey] : c[alternativeLabelKey];
@@ -179,10 +179,10 @@ export class AllConnectionsTreeDataProvider implements VSCode.TreeDataProvider<C
 
   getInitialState(): ConnectionGroup[] {
     const sqConnections = ConnectionSettingsService.instance.getSonarQubeConnections();
-    const scConnections = ConnectionSettingsService.instance.getSonarCloudConnections();
+    const scConnections = ConnectionSettingsService.instance.getCodeScanConnections();
     return [
-      sqConnections.length > 0 ? new ConnectionGroup('sonarqube', 'SonarQube', 'sonarQubeGroup') : null,
-      scConnections.length > 0 ? new ConnectionGroup('sonarcloud', 'SonarCloud', 'sonarCloudGroup') : null
+      sqConnections.length > 0 ? new ConnectionGroup('sonarqube', 'CodeScan Self-hosted', 'sonarQubeGroup') : null,
+      scConnections.length > 0 ? new ConnectionGroup('sonarcloud', 'CodeScan', 'sonarCloudGroup') : null
     ];
   }
 

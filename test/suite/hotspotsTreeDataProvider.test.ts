@@ -1,7 +1,6 @@
 import {
   ConnectionSettingsService,
-  SonarCloudConnection,
-  SonarQubeConnection
+  BaseConnection
 } from '../../src/settings/connectionsettings';
 import { AllHotspotsTreeDataProvider, HotspotNode } from '../../src/hotspot/hotspotsTreeDataProvider';
 import { assert } from 'chai';
@@ -11,31 +10,31 @@ import { protocol2CodeConverter } from '../../src/util/uri';
 import { DEFAULT_CONNECTION_ID } from '../../src/commons';
 
 const mockSettingsServiceWithConnections = {
-  getSonarQubeConnections(): SonarQubeConnection[] {
+  getSonarQubeConnections(): BaseConnection[] {
     return [{ serverUrl: 'https://next.sonarqube.com/sonarqube', connectionId: 'connectionId' }];
   },
-  getSonarCloudConnections(): SonarCloudConnection[] {
-    return [{ organizationKey: 'myOrg', connectionId: DEFAULT_CONNECTION_ID }];
+  getCodeScanConnections(): BaseConnection[] {
+    return [{ organizationKey: 'myOrg', connectionId: DEFAULT_CONNECTION_ID, serverUrl: 'https://next.sonarqube.com/sonarqube' }];
   },
-  async loadSonarCloudConnection(connectionId: string): Promise<SonarCloudConnection> {
-    return { organizationKey: 'orgKey', connectionId: connectionId };
+  async loadCodeScanConnection(connectionId: string): Promise<BaseConnection> {
+    return { organizationKey: 'orgKey', connectionId: connectionId, serverUrl: 'https://next.sonarqube.com/sonarqube' };
   }
 } as ConnectionSettingsService;
 
 const mockSettingsServiceWithOneConnection = {
-  getSonarQubeConnections(): SonarQubeConnection[] {
+  getSonarQubeConnections(): BaseConnection[] {
     return [{ serverUrl: 'https://next.sonarqube.com/sonarqube', connectionId: 'connectionId' }];
   },
-  getSonarCloudConnections(): SonarCloudConnection[] {
+  getCodeScanConnections(): BaseConnection[] {
     return [];
   }
 } as ConnectionSettingsService;
 
 const mockSettingsServiceWithOutConnections = {
-  getSonarQubeConnections(): SonarQubeConnection[] {
+  getSonarQubeConnections(): BaseConnection[] {
     return [];
   },
-  getSonarCloudConnections(): SonarCloudConnection[] {
+  getCodeScanConnections(): BaseConnection[] {
     return [];
   }
 } as ConnectionSettingsService;

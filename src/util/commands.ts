@@ -1,7 +1,7 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
- * Copyright (C) 2017-2023 SonarSource SA
- * sonarlint@sonarsource.com
+ * CodeScan for VisualStudio Code
+ * Copyright (C) 2017-2024 SonarSource SA
+ * support@codescan.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 'use strict';
@@ -25,46 +25,47 @@ export namespace Commands {
    */
   export const OPEN_SETTINGS = 'workbench.action.openSettings';
 
-  export const DEACTIVATE_RULE = 'SonarLint.DeactivateRule';
-  export const ACTIVATE_RULE = 'SonarLint.ActivateRule';
-  export const SHOW_ALL_RULES = 'SonarLint.ShowAllRules';
-  export const SHOW_ACTIVE_RULES = 'SonarLint.ShowActiveRules';
-  export const SHOW_INACTIVE_RULES = 'SonarLint.ShowInactiveRules';
-  export const SHOW_SONARLINT_OUTPUT = 'SonarLint.ShowSonarLintOutput';
-  export const OPEN_RULE_BY_KEY = 'SonarLint.OpenRuleByKey';
-  export const FIND_RULE_BY_KEY = 'SonarLint.FindRuleByKey';
-  export const SHOW_ALL_LOCATIONS = 'SonarLint.ShowAllLocations';
-  export const CLEAR_LOCATIONS = 'SonarLint.ClearLocations';
-  export const NAVIGATE_TO_LOCATION = 'SonarLint.NavigateToLocation';
+  export const DEACTIVATE_RULE = 'CodeScan.DeactivateRule';
+  export const ACTIVATE_RULE = 'CodeScan.ActivateRule';
+  export const SHOW_ALL_RULES = 'CodeScan.ShowAllRules';
+  export const SHOW_ACTIVE_RULES = 'CodeScan.ShowActiveRules';
+  export const SHOW_INACTIVE_RULES = 'CodeScan.ShowInactiveRules';
+  export const SHOW_CODESCAN_OUTPUT = 'CodeScan.ShowCodeScanOutput';
+  export const OPEN_RULE_BY_KEY = 'CodeScan.OpenRuleByKey';
+  export const FIND_RULE_BY_KEY = 'CodeScan.FindRuleByKey';
+  export const SHOW_ALL_LOCATIONS = 'CodeScan.ShowAllLocations';
+  export const CLEAR_LOCATIONS = 'CodeScan.ClearLocations';
+  export const NAVIGATE_TO_LOCATION = 'CodeScan.NavigateToLocation';
 
-  export const INSTALL_MANAGED_JRE = 'SonarLint.InstallManagedJre';
+  export const INSTALL_MANAGED_JRE = 'CodeScan.InstallManagedJre';
 
-  export const HIDE_HOTSPOT = 'SonarLint.HideHotspot';
-  export const SHOW_HOTSPOT_DESCRIPTION = 'SonarLint.ShowHotspotDescription';
-  export const CONFIGURE_COMPILATION_DATABASE = 'SonarLint.ConfigureCompilationDatabase';
+  export const HIDE_HOTSPOT = 'CodeScan.HideHotspot';
+  export const SHOW_HOTSPOT_DESCRIPTION = 'CodeScan.ShowHotspotDescription';
+  export const CONFIGURE_COMPILATION_DATABASE = 'CodeScan.ConfigureCompilationDatabase';
 
-  export const CONNECT_TO_SONARQUBE = 'SonarLint.ConnectToSonarQube';
-  export const CONNECT_TO_SONARCLOUD = 'SonarLint.ConnectToSonarCloud';
-  export const EDIT_SONARQUBE_CONNECTION = 'SonarLint.EditSonarQubeConnection';
-  export const EDIT_SONARCLOUD_CONNECTION = 'SonarLint.EditSonarCloudConnection';
-  export const REMOVE_CONNECTION = 'SonarLint.RemoveConnection';
+  export const CONNECT_TO_CODESCAN = 'CodeScan.ConnectToCodeScan';
+  export const CONNECT_TO_CODESCAN_SELF_HOSTED = 'CodeScan.ConnectToCodeScanSelfHosted';
+  export const EDIT_CODESCAN_SH_CONNECTION = 'CodeScan.EditCodeScanSHConnection';
+  export const EDIT_CODESCAN_CONNECTION = 'CodeScan.EditCodeScanCloudConnection';
+  export const REMOVE_CONNECTION = 'CodeScan.RemoveConnection';
 
-  export const ADD_PROJECT_BINDING = 'SonarLint.AddProjectBinding';
-  export const EDIT_PROJECT_BINDING = 'SonarLint.EditProjectBinding';
-  export const REMOVE_PROJECT_BINDING = 'SonarLint.RemoveProjectBinding';
+  export const ADD_PROJECT_BINDING = 'CodeScan.AddProjectBinding';
+  export const EDIT_PROJECT_BINDING = 'CodeScan.EditProjectBinding';
+  export const REMOVE_PROJECT_BINDING = 'CodeScan.RemoveProjectBinding';
 
-  export const SHOW_HOTSPOT_LOCATION = 'SonarLint.ShowHotspotLocation';
-  export const SHOW_HOTSPOT_RULE_DESCRIPTION = 'SonarLint.ShowHotspotRuleDescription';
-  export const SHOW_HOTSPOT_DETAILS = 'SonarLint.ShowHotspotDetails';
-  export const OPEN_HOTSPOT_ON_SERVER = 'SonarLint.OpenHotspotOnServer';
-  export const HIGHLIGHT_REMOTE_HOTSPOT_LOCATION = 'SonarLint.HighlightRemoteHotspotLocation';
-  export const CLEAR_HOTSPOT_HIGHLIGHTING = 'SonarLint.ClearHotspotLocations';
-  export const SHOW_HOTSPOTS_IN_OPEN_FILES = 'SonarLint.ShowHotspotsInOpenFiles';
-  export const SCAN_FOR_HOTSPOTS_IN_FOLDER = 'SonarLint.ScanForHotspotsInFolder';
-  export const FORGET_FOLDER_HOTSPOTS = 'SonarLint.ForgetFolderHotspots';
+  export const SHOW_HOTSPOT_LOCATION = 'CodeScan.ShowHotspotLocation';
+  export const SHOW_HOTSPOT_RULE_DESCRIPTION = 'CodeScan.ShowHotspotRuleDescription';
+  export const SHOW_HOTSPOT_DETAILS = 'CodeScan.ShowHotspotDetails';
+  export const OPEN_HOTSPOT_ON_SERVER = 'CodeScan.OpenHotspotOnServer';
+  export const HIGHLIGHT_REMOTE_HOTSPOT_LOCATION = 'CodeScan.HighlightRemoteHotspotLocation';
+  export const CLEAR_HOTSPOT_HIGHLIGHTING = 'CodeScan.ClearHotspotLocations';
+  export const SHOW_HOTSPOTS_IN_OPEN_FILES = 'CodeScan.ShowHotspotsInOpenFiles';
+  export const SCAN_FOR_HOTSPOTS_IN_FOLDER = 'CodeScan.ScanForHotspotsInFolder';
+  export const FORGET_FOLDER_HOTSPOTS = 'CodeScan.ForgetFolderHotspots';
 
-  export const RESOLVE_ISSUE = 'SonarLint.ResolveIssue';
-  export const TRIGGER_HELP_AND_FEEDBACK_LINK = 'SonarLint.HelpAndFeedbackLinkClicked';
-  export const CHANGE_HOTSPOT_STATUS = 'SonarLint.ChangeHotspotStatus';
-  export const ENABLE_VERBOSE_LOGS = 'SonarLint.EnableVerboseLogs';
+  export const RESOLVE_ISSUE = 'CodeScan.ResolveIssue';
+  export const TRIGGER_HELP_AND_FEEDBACK_LINK = 'CodeScan.HelpAndFeedbackLinkClicked';
+  export const CHANGE_HOTSPOT_STATUS = 'CodeScan.ChangeHotspotStatus';
+  export const ENABLE_VERBOSE_LOGS = 'CodeScan.EnableVerboseLogs';
+  export const UPDATE_ALL_BINDINGS = 'CodeScan.UpdateAllBindings';
 }

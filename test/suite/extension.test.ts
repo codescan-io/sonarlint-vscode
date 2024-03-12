@@ -1,7 +1,7 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
- * Copyright (C) 2017-2023 SonarSource SA
- * sonarlint@sonarsource.com
+ * CodeScan for VisualStudio Code
+ * Copyright (C) 2017-2024 SonarSource SA
+ * support@codescan.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 import * as assert from 'assert';
@@ -24,7 +24,7 @@ suite('Extension Test Suite', () => {
 
   setup(async () => {
     await vscode.commands.executeCommand('workbench.action.closeAllEditors');
-    await vscode.commands.executeCommand(Commands.SHOW_SONARLINT_OUTPUT);
+    await vscode.commands.executeCommand(Commands.SHOW_CODESCAN_OUTPUT);
   });
 
   test('Extension should be present', () => {

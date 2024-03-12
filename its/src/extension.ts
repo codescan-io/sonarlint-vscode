@@ -1,7 +1,7 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
- * Copyright (C) 2017-2023 SonarSource SA
- * sonarlint@sonarsource.com
+ * CodeScan for VisualStudio Code
+ * Copyright (C) 2017-2024 SonarSource SA
+ * support@codescan.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 // The module 'vscode' contains the VS Code extensibility API
@@ -13,7 +13,7 @@ import * as vscode from 'vscode';
 export function activate(context: vscode.ExtensionContext) {
   // Use the console to output diagnostic information (console.log) and errors (console.error)
   // This line of code will only be executed once when your extension is activated
-  console.log('Congratulations, your extension "sonarlint-its" is now active!');
+  console.log('Congratulations, your extension "codescan-its" is now active!');
 
   // The command has been defined in the package.json file
   // Now provide the implementation of the command with registerCommand

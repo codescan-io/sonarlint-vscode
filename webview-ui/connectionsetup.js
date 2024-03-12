@@ -1,7 +1,7 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
- * Copyright (C) 2017-2023 SonarSource SA
- * sonarlint@sonarsource.com
+ * CodeScan for VisualStudio Code
+ * Copyright (C) 2017-2024 SonarSource SA
+ * support@codescan.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 'use strict';
@@ -22,6 +22,7 @@ function init() {
   if (serverUrl) {
     serverUrl.addEventListener('change', onChangeServerUrl);
     serverUrl.addEventListener('keyup', onChangeServerUrl);
+    serverUrl.addEventListener('blur', onBlurServerUrl);
   }
   const organizationKey = byId('organizationKey');
   if (organizationKey) {
@@ -52,6 +53,12 @@ function onChangeServerUrl() {
   toggleSaveConnectionButton();
 }
 
+function onBlurServerUrl() {
+  if (hasValidServerUrl()) {
+    checkIfUrlIsCloud()();
+  }
+}
+
 function onChangeOrganizationKey() {
   saveState();
   if (byId('shouldGenerateConnectionId').value === 'true') {
@@ -61,15 +68,27 @@ function onChangeOrganizationKey() {
 }
 
 function toggleGenerateTokenButton() {
-  byId('generateToken').disabled = byId('serverUrl') && !hasValidRequiredField();
+  byId('generateToken').disabled = byId('serverUrl') && !hasValidServerUrl();
+}
+
+function toggleOrganizationKeyInputField(message) {
+  byId('organizationKey').hidden = !message.isCloud;
 }
 
 function hasValidRequiredField() {
-  if (byId('serverUrl')) {
-    return hasValidServerUrl();
-  } else {
-    return hasValidOrganizationKey();
-  }
+  return hasValidServerUrl() && hasValidOrganizationKey() && hasValidConnectionId();
+}
+
+function checkIfUrlIsCloud() {
+  /**
+   * @type {HTMLInputElement}
+   */
+  const serverUrlElement = byId('serverUrl');
+  const serverUrl = serverUrlElement ? serverUrlElement.value : 'https://app.codescan.io';
+  vscode.postMessage({
+    command: 'checkIfCodeScanCloudUrl',
+    serverUrl
+  });
 }
 
 function hasValidServerUrl() {
@@ -94,7 +113,15 @@ function hasValidOrganizationKey() {
    * @type {HTMLInputElement}
    */
   const organizationKeyInput = byId('organizationKey');
-  return organizationKeyInput.validity.valid;
+  return organizationKeyInput.hidden || organizationKeyInput.validity.valid;
+}
+
+function hasValidConnectionId() {
+  /**
+   * @type {HTMLInputElement}
+   */
+  const connectionIdInput = byId('connectionId');
+  return connectionIdInput.validity.valid;
 }
 
 function onClickGenerateToken() {
@@ -102,14 +129,13 @@ function onClickGenerateToken() {
    * @type {HTMLInputElement}
    */
   const serverUrlElement = byId('serverUrl');
-  const serverUrl = serverUrlElement ? serverUrlElement.value : 'https://sonarcloud.io';
+  const serverUrl = serverUrlElement ? serverUrlElement.value : 'https://app.codescan.io';
   byId('tokenGenerationProgress').classList.remove('hidden');
   vscode.postMessage({
     command: 'openTokenGenerationPage',
     serverUrl
   });
 }
-
 
 
 function onChangeToken() {
@@ -227,10 +253,13 @@ function handleMessage(event) {
       connectionCheckFailure(message.reason);
       break;
     case 'tokenReceived':
-      populateTokenField(message.token);
+      populateTokenField(message.tokenObj);
       break;
     case 'tokenGenerationPageIsOpen':
       tokenGenerationPageIsOpen(message.errorMessage);
+      break;
+    case 'isCodeScanCloudServer':
+      toggleOrganizationKeyInputField(message);
       break;
   }
 }
@@ -244,6 +273,7 @@ function connectionCheckSuccess() {
   byId('tokenStatus').classList.add('hidden');
   byId('connectionProgress').classList.add('hidden');
   byId('connectionStatus').innerText = 'Success!';
+  byId('saveConnection').disabled = true;
 }
 
 function connectionCheckFailure(reason) {
@@ -252,10 +282,20 @@ function connectionCheckFailure(reason) {
   byId('connectionStatus').innerText = `Failed: ${reason}`;
 }
 
-function populateTokenField(token) {
-  byId('token').value = token;
+function populateTokenField(tokenObj) {
+  byId('token').value = tokenObj.token;
   byId('tokenStatus').innerText = 'Token Received!';
   byId('tokenStatus').classList.remove('hidden');
+  byId('tokenGenerationResult').innerText = '';
+  
+  // Set org key if present in response
+  if (tokenObj.organizationKey) {
+    byId('organizationKey').value = tokenObj.organizationKey;
+    byId('organizationKey').disabled = true;
+  } else {
+    byId('organizationKey').disabled = false;
+  }
+
   toggleSaveConnectionButton();
   saveState();
 }

@@ -1,7 +1,7 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
- * Copyright (C) 2017-2023 SonarSource SA
- * sonarlint@sonarsource.com
+ * CodeScan for VisualStudio Code
+ * Copyright (C) 2017-2024 SonarSource SA
+ * support@codescan.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 
@@ -27,7 +27,7 @@ export async function waitForSonarLintDiagnostics(fileUri: vscode.Uri, options?:
     elapsedMillis += periodMillis;
   }
   if (options?.atLeastIssues && diags.length < atLeastIssues) {
-    fail(`Expected at least ${options?.atLeastIssues} SonarLint diagnostics, got ${diags.length} after ${timeoutMillis}ms`);
+    fail(`Expected at least ${options?.atLeastIssues} CodeScan diagnostics, got ${diags.length} after ${timeoutMillis}ms`);
   }
   return diags;
 }
@@ -42,7 +42,7 @@ export function dumpLogOutput() {
 }
 
 function getSonarLintDiagnostics(fileUri: vscode.Uri) {
-  return vscode.languages.getDiagnostics(fileUri).filter(d => d.source === 'sonarlint');
+  return vscode.languages.getDiagnostics(fileUri).filter(d => d.source === 'codescan');
 }
 
 function sleep(ms: number): Promise<void> {

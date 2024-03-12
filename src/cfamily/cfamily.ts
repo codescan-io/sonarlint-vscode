@@ -1,7 +1,7 @@
 /* --------------------------------------------------------------------------------------------
- * SonarLint for VisualStudio Code
- * Copyright (C) 2017-2023 SonarSource SA
- * sonarlint@sonarsource.com
+ * CodeScan for VisualStudio Code
+ * Copyright (C) 2017-2024 SonarSource SA
+ * support@codescan.com
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 'use strict';
@@ -9,10 +9,10 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-import { SONARLINT_CATEGORY } from '../settings/settings';
+import { CODESCAN_CATEGORY } from '../settings/settings';
 
 const PATH_TO_COMPILE_COMMANDS = 'pathToCompileCommands';
-const FULL_PATH_TO_COMPILE_COMMANDS = `${SONARLINT_CATEGORY}.${PATH_TO_COMPILE_COMMANDS}`;
+const FULL_PATH_TO_COMPILE_COMMANDS = `${CODESCAN_CATEGORY}.${PATH_TO_COMPILE_COMMANDS}`;
 const DO_NOT_ASK_ABOUT_COMPILE_COMMANDS_FLAG = 'doNotAskAboutCompileCommands';
 let remindMeLaterAboutCompileCommandsFlag = false;
 
@@ -23,7 +23,7 @@ function showMessageAndUpdateConfig(compilationDbPath: string) {
   const [pathForSettings, workspaceFolder] = tryRelativizeToWorkspaceFolder(compilationDbPath);
 
   if (workspaceFolder !== undefined) {
-    const config = vscode.workspace.getConfiguration(SONARLINT_CATEGORY, workspaceFolder.uri);
+    const config = vscode.workspace.getConfiguration(CODESCAN_CATEGORY, workspaceFolder.uri);
     return config.update(PATH_TO_COMPILE_COMMANDS, pathForSettings, vscode.ConfigurationTarget.WorkspaceFolder);
   }
   return vscode.workspace
@@ -68,7 +68,7 @@ export function notifyMissingCompileCommands(context: vscode.ExtensionContext) {
     const doNotAskAgainAction = `Don't ask again`;
     const remindMeLaterAction = 'Ask me later';
     const configureCompileCommandsAction = 'Configure compile commands';
-    const message = `SonarLint is unable to analyze C and C++ file(s) because there is no configured compilation 
+    const message = `CodeScan is unable to analyze C and C++ file(s) because there is no configured compilation 
       database.`;
     vscode.window
       .showWarningMessage(message, configureCompileCommandsAction, remindMeLaterAction, doNotAskAgainAction)
