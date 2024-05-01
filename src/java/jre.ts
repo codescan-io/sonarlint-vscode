@@ -37,7 +37,7 @@ interface Options {
 const DEFAULT_OPTIONS = {
   request: 'binary',
   release: 'releases',
-  version: 11,
+  version: 17,
   implementation: 'hotspot',
   binary: 'jre',
   heapSize: 'normal'
