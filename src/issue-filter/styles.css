@@ -1,0 +1,138 @@
+/* Issue CSS */
+.issue-container {
+    display: flex;
+    /* Enables horizontal alignment */
+    width: 100%;
+    /* Takes full width of the available space */
+}
+
+.issue-container:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.icon {
+    margin-right: 10px;
+    /* Add some space between the icon and the text */
+}
+
+.left-div .right-div {
+    flex: 1;
+}
+
+.right-div {
+    flex: 1;
+    color: gray;
+    font-size: 12px;
+    margin-left: 10px;
+    white-space: nowrap;
+}
+
+.left-div {
+    overflow: hidden;
+    /* Hides overflowing text with ellipsis */
+    text-overflow: ellipsis;
+    /* Adds ellipsis (...) to indicate truncated text */
+    white-space: nowrap;
+    /* Prevents wrapping of text to a new line */
+}
+
+
+/* Expand CSS */
+.expandable {
+    cursor: pointer;
+    /* Set cursor to pointer on hover */
+}
+
+.children {
+    display: none;
+    margin-left: 10px;
+    padding: 2px;
+    transition: all 0.3s ease-in-out;
+    /* Smooth transition for show/hide */
+}
+
+.expandable.expanded .children {
+    display: block;
+    /* Show children on expansion */
+}
+
+.arrow {
+    transition: transform 0.2s ease-in-out;
+    /* Smooth transition for arrow rotation */
+}
+
+.expandable.expanded .arrow {
+    transform: rotate(90deg);
+    /* Rotate arrow down on expansion */
+}
+
+/* Filter CSS */
+.filter-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.filter-severity-container {
+    gap: 10px;
+    margin: 10px;
+}
+
+.filter-type-container {
+    gap: 10px;
+    margin: 10px;
+}
+
+.filter-text {
+    height: 100%;
+    margin-right: 10px;
+    padding: 5px 10px;
+}
+
+.filter {
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: #888;
+}
+
+.filter.active {
+    background-color: #eee;
+    color: #333;
+}
+
+.filter:hover {
+    opacity: 0.8;
+}
+
+.filename-wrapper {
+    color: #eee;
+}
+
+.filepath-wrapper {
+    color: gray;
+    font-size: 12px;
+    margin-left: 10px;
+    white-space: nowrap;
+}
+
+#icons {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+    justify-content: center;
+}
+
+#icons .icon {
+	width: 140px;
+	padding: 20px;
+	font-size: 14px;
+	display: flex;
+	flex-direction: column;
+	text-align: center;
+}
+
+#icons .icon .codicon {
+	font-size: 32px;
+	padding-bottom: 16px;
+}

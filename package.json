@@ -2,7 +2,7 @@
   "name": "codescan-vscode",
   "displayName": "CodeScan",
   "description": "Linter to detect & fix coding issues locally in JS/TS, Apex, HTML/CSS, Java, Python, C++, Go, IaC. Use with CodeScan for optimal team performance.",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "icon": "images/codescan_128px.png",
   "publisher": "codescansf",
   "homepage": "https://www.codescan.io/codescan-static-code-analysis/",
@@ -511,6 +511,10 @@
         "command": "CodeScan.EnableVerboseLogs",
         "title": "Enable Verbose Logging",
         "category": "CodeScan"
+      },
+      {
+        "command": "CodeScan.ShowCodeScanIssueFilter",
+        "title": "Open CodeScan Issue Filter"
       }
     ],
     "viewsContainers": {
@@ -519,6 +523,13 @@
           "icon": "images/codescan.svg",
           "id": "CodeScan",
           "title": "CodeScan"
+        }
+      ],
+      "panel": [
+        {
+          "icon": "images/codescan.svg",
+          "id": "CodeScanIssueFilter",
+          "title": "CodeScan Issue Filter"
         }
       ]
     },
@@ -541,6 +552,13 @@
         {
           "id": "CodeScan.HelpAndFeedback",
           "name": "Help and Feedback"
+        }
+      ],
+      "CodeScanIssueFilter": [
+        {
+          "type": "webview",
+          "id": "CodeScanIssueFilter",
+          "name": "CodeScan Issue Filter"
         }
       ]
     },

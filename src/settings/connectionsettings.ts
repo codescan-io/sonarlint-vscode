@@ -312,7 +312,7 @@ async function checkIfCloudApiExistForServer(serverUrl) {
 
     try {
       const responseBody = await response.json();
-      if (responseBody.status === "UP") {
+      if (responseBody.status === "UP" || responseBody.status === "DOWN") {
         return true;
       } else {
         console.debug(`isCodeScanCloudAlias health check request for host: ${serverUrl} returned JSON with unexpected status: ${responseBody.status}.`);
