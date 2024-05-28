@@ -85,11 +85,14 @@ function getIssueHtml(issueMap) {
         let fileInfo = issueMap[fileUri];
         let childrenHtml = '';
         for (const issue of fileInfo.issues) {
-            let issueIcon = getIconForSeverity(issue.issueSeverity);
+            let icons = getIconsForIssue(issue);
 
             childrenHtml +=
                 `<div class="issue-container" data-file-uri=${fileUri} data-line-number=${issue.range.start.line}>
-                    <div class="icon"><i class="fa fa-${issueIcon.icon}" style="color:${issueIcon.color}; padding: 1dp"></i></div>
+                    <div class="icon">
+                        <i class="fa fa-${icons.severityIcon.icon} fa-fw" style="color:${icons.severityIcon.color}; padding: 1dp;"></i>
+                        <i class="fa fa-${icons.ruleTypeIcon.icon} fa-fw" style="color:${icons.ruleTypeIcon.color}; padding: 1dp;"></i>
+                    </div>
                     <div class="left-div">
                         ${issue.message}
                     </div>
@@ -101,11 +104,11 @@ function getIssueHtml(issueMap) {
 
         html +=
             `<div class="expandable expanded">
-                <span class="filename-wrapper">
-                    <i class="fa fa-chevron-down" style="font-size: 10px"></i>
-                    ${fileInfo.fileName}
+                <div class="filename-wrapper">
+                    <i class="fa fa-chevron-down" style="font-size: 10px; margin-right: 4px;"></i>
+                    <span>${fileInfo.fileName}</span>
                     <span class="filepath-wrapper">${fileInfo.fileRelativePath}</span>
-                </span>
+                </div>
                 <div class="children">
                     ${childrenHtml}
                 </div>
@@ -115,19 +118,40 @@ function getIssueHtml(issueMap) {
     return html;
 }
 
-function getIconForSeverity(issueSeverity) {
-    switch (issueSeverity) {
-        case 'CRITICAL':
-            return {icon: 'arrow-circle-up', color: '#d02f3a'};
-        case 'BLOCKER':
-            return {icon: 'exclamation', color: '#d02f3a'};
-        case 'MAJOR':
-            return {icon: 'chevron-up', color: '#d02f3a'};
-        case 'MINOR':
-            return {icon: 'arrow-circle-down', color: '#b0d513'};
-        case 'INFO':
-            return {icon: 'info-circle', color: '#4b9fd5'};
+function getIconsForIssue(issue) {
+    let ruleTypeIcon = {};
+    switch (issue.ruleType) {
+        case 'BUG':
+            ruleTypeIcon = {icon: 'bug', color: '#ed8c8c'};
+            break;
+        case 'VULNERABILITY':
+            ruleTypeIcon = {icon: 'unlock-alt', color: '#69caf5'};
+            break;
+        case 'CODE_SMELL':
         default:
-            return {icon: 'chevron-up', color: "#d02f3a"};
+            ruleTypeIcon = {icon: 'code', color: '#61c96b'};
+            break;
     }
+
+    let severityIcon = {};
+    switch (issue.issueSeverity) {
+        case 'CRITICAL':
+            severityIcon = {icon: 'arrow-circle-up', color: '#d02f3a'};
+            break;
+        case 'BLOCKER':
+            severityIcon = {icon: 'exclamatio-circle', color: '#d02f3a'};
+            break;
+        case 'MAJOR':
+            severityIcon = {icon: 'chevron-up', color: '#d02f3a'};
+            break;
+        case 'MINOR':
+            severityIcon = {icon: 'arrow-circle-down', color: '#b0d513'};
+            break;
+        case 'INFO':
+        default:
+            severityIcon = {icon: 'info-circle', color: "#d02f3a"};
+            break;
+    }
+
+    return {ruleTypeIcon: ruleTypeIcon, severityIcon: severityIcon}
 }

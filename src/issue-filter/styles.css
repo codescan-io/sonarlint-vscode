@@ -12,7 +12,12 @@
 
 .icon {
     margin-right: 10px;
-    /* Add some space between the icon and the text */
+    display: flex;
+    flex-direction: row;
+	flex-wrap: nowrap;
+    justify-content: space-between;
+    height: 100%;
+    width: 30px;
 }
 
 .left-div .right-div {
@@ -106,7 +111,11 @@
 }
 
 .filename-wrapper {
-    color: #eee;
+    color: #899dff;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
 }
 
 .filepath-wrapper {
@@ -114,25 +123,4 @@
     font-size: 12px;
     margin-left: 10px;
     white-space: nowrap;
-}
-
-#icons {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-    justify-content: center;
-}
-
-#icons .icon {
-	width: 140px;
-	padding: 20px;
-	font-size: 14px;
-	display: flex;
-	flex-direction: column;
-	text-align: center;
-}
-
-#icons .icon .codicon {
-	font-size: 32px;
-	padding-bottom: 16px;
 }
