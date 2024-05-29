@@ -22,7 +22,7 @@ export class CodeScanIssueFilterViewProvider implements VSCode.WebviewViewProvid
 
     constructor(context: VSCode.ExtensionContext) {
         this.context = context;
-        this.extensionUri = context.extensionUri;
+        this.extensionUri = VSCode.Uri.file(context.extensionPath);
         this.filterSeverityValue = 'ALL';
         this.filterTypeValue = 'ALL';
     }
@@ -38,10 +38,10 @@ export class CodeScanIssueFilterViewProvider implements VSCode.WebviewViewProvid
         };
 
         // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
-        this.scriptUri = webview.webview.asWebviewUri(VSCode.Uri.joinPath(this.extensionUri, 'src', 'issue-filter', 'script.js'));
+        this.scriptUri = webview.webview.asWebviewUri(VSCode.Uri.joinPath(this.extensionUri, 'media', 'codescan-issue-filter', 'js', 'script.js'));
 
         // Do the same for the stylesheet.
-        this.stylesUri = webview.webview.asWebviewUri(VSCode.Uri.joinPath(this.extensionUri, 'src', 'issue-filter', 'styles.css'));
+        this.stylesUri = webview.webview.asWebviewUri(VSCode.Uri.joinPath(this.extensionUri, 'media', 'codescan-issue-filter', 'css', 'styles.css'));
 		this.fontAwesomeUri = webview.webview.asWebviewUri(VSCode.Uri.joinPath(this.extensionUri, 'icons', 'font-awesome-4.7.0', 'css', 'font-awesome.min.css'));
 
         this.webview.webview.html = this.getWebviewContent();
