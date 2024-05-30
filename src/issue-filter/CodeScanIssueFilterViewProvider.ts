@@ -79,28 +79,44 @@ export class CodeScanIssueFilterViewProvider implements VSCode.WebviewViewProvid
                 <title>CodeScan Issue Filter</title>
             </head>
             <body>
-                <div class="filter-container">
-                    <div class="filter-type-container">
-                        <span class="filter-text">Type:</span>
-                        <span class="filter active" data-filter-type="ALL">All</span>
-                        <span class="filter" data-filter-type="${RuleType.BUG.toString()}">Bug</span>
-                        <span class="filter" data-filter-type="${RuleType.VULNERABILITY.toString()}">Vulnerability</span>
-                        <span class="filter" data-filter-type="${RuleType.CODE_SMELL.toString()}">Code Smell</span>
-                    </div>
-                    <div class="filter-severity-container">
-                        <span class="filter-text">Severity:</span>
-                        <span class="filter active" data-filter-severity="ALL">All</span>
-                        <span class="filter" data-filter-severity="${IssueSeverity.BLOCKER.toString()}">Blocker</span>
-                        <span class="filter" data-filter-severity="${IssueSeverity.CRITICAL.toString()}">Critical</span>
-                        <span class="filter" data-filter-severity="${IssueSeverity.MAJOR.toString()}">Major</span>
-                        <span class="filter" data-filter-severity="${IssueSeverity.MINOR.toString()}">Minor</span>
-                        <span class="filter" data-filter-severity="${IssueSeverity.INFO.toString()}">Info</span>
-                    </div>
-                </div>
+                <div id="filter-container" class="filter-container"></div>
                 <div id="issues"></div>
-                <script src="${this.scriptUri}"></script>           
+                <script type="module" src="${this.scriptUri}"></script>           
             </body>
             </html>`;
+    }
+
+    private getFilterCategoriesIssueCount() {
+        if (!this.publishedIssues) return null;
+
+        let categoryCounts = {
+            'SEVERITY-ALL': 0,
+            'RULETYPE-ALL': 0,
+            [RuleType.BUG.toString()]: 0,
+            [RuleType.VULNERABILITY.toString()]: 0,
+            [RuleType.CODE_SMELL.toString()]: 0,
+            [IssueSeverity.BLOCKER.toString()]: 0,
+            [IssueSeverity.CRITICAL.toString()]: 0,
+            [IssueSeverity.MAJOR.toString()]: 0,
+            [IssueSeverity.MINOR.toString()]: 0,
+            [IssueSeverity.INFO.toString()]: 0
+        };
+
+        for (const fileUri of Object.keys(this.publishedIssues)) {
+            const fileIssues = this.publishedIssues[fileUri];
+            for (const issue of fileIssues.diagnostics) {
+                if (issue.issueSeverity) {
+                    categoryCounts['SEVERITY-ALL'] += 1;
+                    categoryCounts[issue.issueSeverity] += 1;
+                }
+                if (issue.ruleType) {
+                    categoryCounts['RULETYPE-ALL'] += 1;
+                    categoryCounts[issue.ruleType] += 1;
+                }
+            }
+        }
+
+        return categoryCounts;
     }
 
     private getIssues() {
@@ -139,7 +155,7 @@ export class CodeScanIssueFilterViewProvider implements VSCode.WebviewViewProvid
         );
     }
 
-    async openFileAtLocation(filePath, lineNumber) {
+    async openFileAtLocation(filePath: string, lineNumber: number) {
         const uri = VSCode.Uri.parse(filePath);
         const doc = await VSCode.workspace.openTextDocument(uri);
         const editor = await VSCode.window.showTextDocument(doc);
@@ -165,8 +181,9 @@ export class CodeScanIssueFilterViewProvider implements VSCode.WebviewViewProvid
 
     private updateIssuesInUI() {
         const issues = this.getIssues();
+        const categoryCounts = this.getFilterCategoriesIssueCount();
         if (issues) {
-            this.webview.webview.postMessage({ command: 'updateIssues', issues: issues });
+            this.webview.webview.postMessage({ command: 'updateIssues', issues: issues,  categoryCounts: categoryCounts});
         }
     }
 }
