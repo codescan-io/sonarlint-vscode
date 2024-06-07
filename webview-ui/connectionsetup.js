@@ -55,7 +55,7 @@ function onChangeServerUrl() {
 
 function onBlurServerUrl() {
   if (hasValidServerUrl()) {
-    checkIfUrlIsCloud()();
+    checkIfUrlIsCloud();
   }
 }
 

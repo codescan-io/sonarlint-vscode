@@ -13,12 +13,12 @@ import { Connection } from './connections';
 import { ConnectionCheckResult } from '../lsp/protocol';
 import {
   BaseConnection,
-  ConnectionSettingsService,
-  isCodeScanCloudConnection
+  ConnectionSettingsService
 } from '../settings/connectionsettings';
 import * as util from '../util/util';
 import { escapeHtml, ResourceResolver } from '../util/webview';
 import { DEFAULT_CONNECTION_ID } from '../commons';
+import { logToCodeScanOutput } from '../util/logging';
 
 let connectionSetupPanel: vscode.WebviewPanel;
 let unauthorizedConnectionErrorFlag: boolean;
@@ -321,7 +321,7 @@ async function saveConnection(connection: BaseConnection) {
 
 async function isCodeScanCloudServer(message) {
   const { serverUrl } = message;
-  const isCloud = await isCodeScanCloudConnection({serverUrl})  
+  const isCloud = await ConnectionSettingsService.instance.isCodeScanCloudConnection({serverUrl});
   await connectionSetupPanel.webview.postMessage({ command: 'isCodeScanCloudServer', isCloud });
 }
 

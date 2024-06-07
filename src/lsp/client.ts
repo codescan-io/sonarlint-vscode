@@ -108,4 +108,8 @@ export class CodeScanExtendedLanguageClient extends LanguageClient {
   getHotspotDetails(ruleKey, hotspotId, fileUri): Promise<protocol.ShowRuleDescriptionParams> {
     return this.sendRequest(protocol.GetHotspotDetails.type, { ruleKey, hotspotId, fileUri });
   }
+
+  checkIfConnectionIsCloud(url: string): Promise<protocol.CheckIfConnectionIsCloudResponse> {
+    return this.sendRequest(protocol.CheckIfConnectionIsCloud.type, { url });
+  }
 }
