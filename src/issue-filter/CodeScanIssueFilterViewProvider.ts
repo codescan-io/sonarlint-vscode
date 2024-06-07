@@ -19,12 +19,14 @@ export class CodeScanIssueFilterViewProvider implements VSCode.WebviewViewProvid
     private webview: VSCode.WebviewView;
     private context: VSCode.ExtensionContext;
     private publishedIssues = {};
+    private categoryIssueCounts = {};
 
     constructor(context: VSCode.ExtensionContext) {
         this.context = context;
         this.extensionUri = VSCode.Uri.file(context.extensionPath);
         this.filterSeverityValue = 'ALL';
         this.filterTypeValue = 'ALL';
+        this.resetIssueCounts();
     }
 
     public resolveWebviewView(webview: VSCode.WebviewView, webviewContext: VSCode.WebviewViewResolveContext<unknown>, token: VSCode.CancellationToken): void | Thenable<void> {
@@ -86,37 +88,12 @@ export class CodeScanIssueFilterViewProvider implements VSCode.WebviewViewProvid
             </html>`;
     }
 
-    private getFilterCategoriesIssueCount() {
+    private setFilterCategoriesIssueCount() {
         if (!this.publishedIssues) return null;
 
-        let categoryCounts = {
-            'SEVERITY-ALL': 0,
-            'RULETYPE-ALL': 0,
-            [RuleType.BUG.toString()]: 0,
-            [RuleType.VULNERABILITY.toString()]: 0,
-            [RuleType.CODE_SMELL.toString()]: 0,
-            [IssueSeverity.BLOCKER.toString()]: 0,
-            [IssueSeverity.CRITICAL.toString()]: 0,
-            [IssueSeverity.MAJOR.toString()]: 0,
-            [IssueSeverity.MINOR.toString()]: 0,
-            [IssueSeverity.INFO.toString()]: 0
-        };
-
-        for (const fileUri of Object.keys(this.publishedIssues)) {
-            const fileIssues = this.publishedIssues[fileUri];
-            for (const issue of fileIssues.diagnostics) {
-                if (issue.issueSeverity) {
-                    categoryCounts['SEVERITY-ALL'] += 1;
-                    categoryCounts[issue.issueSeverity] += 1;
-                }
-                if (issue.ruleType) {
-                    categoryCounts['RULETYPE-ALL'] += 1;
-                    categoryCounts[issue.ruleType] += 1;
-                }
-            }
-        }
-
-        return categoryCounts;
+        this.resetIssueCounts();
+        this.setIssuesCategoryCountForSeverityFilter();
+        this.setIssuesCategoryCountForRuleTypeFilter();
     }
 
     private getIssues() {
@@ -155,6 +132,48 @@ export class CodeScanIssueFilterViewProvider implements VSCode.WebviewViewProvid
         );
     }
 
+    private setIssuesCategoryCountForSeverityFilter() {
+        for (const fileUri of Object.keys(this.publishedIssues)) {
+            const fileIssues = this.publishedIssues[fileUri];
+
+            for (const issue of fileIssues.diagnostics) {
+                if (!this.filterSeverityValue || this.filterSeverityValue === 'ALL' || this.filterSeverityValue === issue.issueSeverity) {
+                    this.categoryIssueCounts[issue.ruleType] += 1;
+                    this.categoryIssueCounts['RULETYPE-ALL'] += 1;
+                }
+            }
+        }
+    }
+
+    private setIssuesCategoryCountForRuleTypeFilter() {
+        for (const fileUri of Object.keys(this.publishedIssues)) {
+            const fileIssues = this.publishedIssues[fileUri];
+                              
+            for (const issue of fileIssues.diagnostics) {
+                if (!this.filterTypeValue || this.filterTypeValue === 'ALL' || this.filterTypeValue === issue.ruleType) {
+                    this.categoryIssueCounts[issue.issueSeverity] += 1;
+                    this.categoryIssueCounts['SEVERITY-ALL'] += 1;
+                }
+            }
+        }
+    }
+
+    private resetIssueCounts() {
+        this.categoryIssueCounts = {
+            'SEVERITY-ALL': 0,
+            'RULETYPE-ALL': 0,
+            [RuleType.BUG.toString()]: 0,
+            [RuleType.VULNERABILITY.toString()]: 0,
+            [RuleType.CODE_SMELL.toString()]: 0,
+            [IssueSeverity.BLOCKER.toString()]: 0,
+            [IssueSeverity.CRITICAL.toString()]: 0,
+            [IssueSeverity.MAJOR.toString()]: 0,
+            [IssueSeverity.MINOR.toString()]: 0,
+            [IssueSeverity.INFO.toString()]: 0
+        };
+    }
+
+
     async openFileAtLocation(filePath: string, lineNumber: number) {
         const uri = VSCode.Uri.parse(filePath);
         const doc = await VSCode.workspace.openTextDocument(uri);
@@ -181,9 +200,9 @@ export class CodeScanIssueFilterViewProvider implements VSCode.WebviewViewProvid
 
     private updateIssuesInUI() {
         const issues = this.getIssues();
-        const categoryCounts = this.getFilterCategoriesIssueCount();
+        this.setFilterCategoriesIssueCount();
         if (issues) {
-            this.webview.webview.postMessage({ command: 'updateIssues', issues: issues,  categoryCounts: categoryCounts});
+            this.webview.webview.postMessage({ command: 'updateIssues', issues: issues,  categoryCounts: this.categoryIssueCounts});
         }
     }
 }
