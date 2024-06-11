@@ -154,7 +154,7 @@ export class ConnectionSettingsService {
   }
 
   async addCodeScanConnection(connection: BaseConnection) {
-    const isCloud = await isCodeScanCloudConnection(connection);
+    const isCloud = await ConnectionSettingsService.instance.isCodeScanCloudConnection(connection);
     const connections = this.getCodeScanConnections();
     const newConnection: BaseConnection = { serverUrl: connection.serverUrl, isCloudConnection: isCloud };
     if (isCloud) {
@@ -174,7 +174,7 @@ export class ConnectionSettingsService {
   }
 
   async updateCodeScanConnection(connection: BaseConnection) {
-    const isCloud = await isCodeScanCloudConnection(connection);
+    const isCloud = await ConnectionSettingsService.instance.isCodeScanCloudConnection(connection);
     const connections = this.getCodeScanConnections();
     const connectionToUpdate = connections.find(c => c.connectionId === connection.connectionId);
     if (!connectionToUpdate) {
@@ -207,7 +207,7 @@ export class ConnectionSettingsService {
     await Promise.all(
       [...sqConnections, ...scConnections].map(async c => {
         if (c.token !== undefined && !(await this.hasTokenForConnection(c))) {
-          const isCloud = await isCodeScanCloudConnection(c);
+          const isCloud = await ConnectionSettingsService.instance.isCodeScanCloudConnection(c);
           c.isCloudConnection = isCloud;
           await this.storeConnectionToken(c, c.token);
           c.token = undefined;
@@ -272,6 +272,15 @@ export class ConnectionSettingsService {
     }
     return tokenObj;
   }
+
+  async isCodeScanCloudConnection(connection : BaseConnection) {
+    const serverUrl = connection.serverUrl;
+    if (!serverUrl) return false;
+
+    logToCodeScanOutput("Checking if host url provided is cloud or self-hosted: " + serverUrl);
+    const cloudConnection = await this.client.checkIfConnectionIsCloud(serverUrl);
+    return cloudConnection ? cloudConnection.isCloudConnection : false; 
+  }
 }
 
 function showSaveSettingsWarning() {
@@ -289,41 +298,6 @@ export interface BaseConnection {
   organizationKey?: string;
   isCloudConnection?: boolean;
   serverId?: string;
-}
-
-export async function isCodeScanCloudConnection(connection : BaseConnection) {
-  const serverUrl = connection.serverUrl;
-  if (!serverUrl) return false;
-  if (serverUrl.includes("codescan.io")) return true;
-
-  const isCloud = await checkIfCloudApiExistForServer(serverUrl);
-  return isCloud;
-}
-
-async function checkIfCloudApiExistForServer(serverUrl) {
-  const CODESCAN_HEALTH_ENDPOINT = removeTrailingSlashes(serverUrl) + "/_codescan/actuator/health";
-  try {
-    const response = await fetch(CODESCAN_HEALTH_ENDPOINT);
-
-    if (!response.ok) {
-      logToCodeScanOutput(`isCodeScanCloudAlias health check request for host: ${serverUrl} failed with status code: ${response.status}.`);
-      return false;
-    }
-
-    try {
-      const responseBody = await response.json();
-      if (responseBody.status === "UP" || responseBody.status === "DOWN") {
-        return true;
-      } else {
-        logToCodeScanOutput(`isCodeScanCloudAlias health check request for host: ${serverUrl} returned JSON with unexpected status: ${responseBody.status}.`);
-      }
-    } catch (jsonError) {
-      logToCodeScanOutput(`isCodeScanCloudAlias health check request for host: ${serverUrl} returned invalid JSON.`);
-    }
-    return false;
-  } catch (error) {
-    return false;
-  }
 }
 
 async function getTokenStorageKey(connection: BaseConnection) {

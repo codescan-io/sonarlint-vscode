@@ -289,9 +289,19 @@ export interface CheckLocalDetectionSupportedResponse {
   reason?: string;
 }
 
+export interface CheckIfConnectionIsCloudResponse {
+  isCloudConnection: boolean;
+}
+
 export namespace CheckLocalDetectionSupported {
   export const type = new lsp.RequestType<FolderUriParams, CheckLocalDetectionSupportedResponse, null>(
     'codescan/checkLocalDetectionSupported'
+  );
+}
+
+export namespace CheckIfConnectionIsCloud {
+  export const type = new lsp.RequestType<CheckIfCloudConnectionParams, CheckIfConnectionIsCloudResponse, null>(
+    'codescan/checkIfConnectionIsCloud'
   );
 }
 
@@ -454,6 +464,10 @@ export namespace ForgetFolderHotspots {
 
 export interface FolderUriParams {
   folderUri: string;
+}
+
+export interface CheckIfCloudConnectionParams {
+  url: string;
 }
 
 export interface GetFilePatternsForAnalysisResponse {
