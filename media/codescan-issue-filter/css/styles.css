@@ -1,0 +1,129 @@
+/* Issue CSS */
+.issue-container {
+    display: flex;
+    /* Enables horizontal alignment */
+    width: 100%;
+    /* Takes full width of the available space */
+}
+
+.issue-container:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.icon {
+    margin-right: 10px;
+    display: flex;
+    flex-direction: row;
+	flex-wrap: nowrap;
+    justify-content: space-between;
+    height: 100%;
+    width: 30px;
+}
+
+.left-div .right-div {
+    flex: 1;
+}
+
+.right-div {
+    flex: 1;
+    color: gray;
+    font-size: 12px;
+    margin-left: 10px;
+    white-space: nowrap;
+}
+
+.left-div {
+    overflow: hidden;
+    /* Hides overflowing text with ellipsis */
+    text-overflow: ellipsis;
+    /* Adds ellipsis (...) to indicate truncated text */
+    white-space: nowrap;
+    /* Prevents wrapping of text to a new line */
+}
+
+
+/* Expand CSS */
+.expandable {
+    cursor: pointer;
+    /* Set cursor to pointer on hover */
+}
+
+.children {
+    display: none;
+    margin-left: 10px;
+    padding: 2px;
+    transition: all 0.3s ease-in-out;
+    /* Smooth transition for show/hide */
+}
+
+.expandable.expanded .children {
+    display: block;
+    /* Show children on expansion */
+}
+
+.arrow {
+    transition: transform 0.2s ease-in-out;
+    /* Smooth transition for arrow rotation */
+}
+
+.expandable.expanded .arrow {
+    transform: rotate(90deg);
+    /* Rotate arrow down on expansion */
+}
+
+/* Filter CSS */
+.filter-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+
+.filter-severity-container {
+    gap: 10px;
+    margin: 10px;
+}
+
+.filter-type-container {
+    gap: 10px;
+    margin: 10px;
+}
+
+.filter-text {
+    height: 100%;
+    margin-right: 10px;
+    padding: 5px 10px;
+}
+
+.filter {
+    cursor: pointer;
+    padding: 5px 10px;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    border-radius: 5px;
+    color: #888;
+}
+
+.filter.active {
+    background-color: #eee;
+    color: #333;
+}
+
+.filter:hover {
+    opacity: 0.8;
+}
+
+.filename-wrapper {
+    color: #899dff;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+.filepath-wrapper {
+    color: gray;
+    font-size: 12px;
+    margin-left: 10px;
+    white-space: nowrap;
+}

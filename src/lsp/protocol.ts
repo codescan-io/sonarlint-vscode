@@ -7,6 +7,7 @@
 'use strict';
 
 import * as lsp from 'vscode-languageserver-protocol';
+import { CodeScanPublishDiagnosticsParams } from '../issue-filter/CodeScanIssueFilterViewProvider';
 
 //#region Client side extensions to LSP
 
@@ -147,6 +148,21 @@ export enum HotspotProbability {
   low
 }
 
+export enum IssueSeverity {
+  INFO = "INFO",
+  MINOR = "MINOR",
+  MAJOR = "MAJOR",
+  CRITICAL = "CRITICAL",
+  BLOCKER = "BLOCKER"
+}
+
+export enum RuleType {
+  CODE_SMELL = "CODE_SMELL",
+  BUG = "BUG",
+  VULNERABILITY = "VULNERABILITY",
+  SECURITY_HOTSPOT = "SECURITY_HOTSPOT"
+}
+
 export enum HotspotStatus {
   ToReview,
   Reviewed
@@ -249,6 +265,10 @@ export interface ConnectionCheckParams {
 
 export namespace ReportConnectionCheckResult {
   export const type = new lsp.NotificationType<ConnectionCheckResult>('codescan/reportConnectionCheckResult');
+}
+
+export namespace PublishCodeScanDiagnosticsResult {
+  export const type = new lsp.NotificationType<CodeScanPublishDiagnosticsParams>('codescan/publishCodeScanDiagnostics');
 }
 
 export namespace CheckConnection {

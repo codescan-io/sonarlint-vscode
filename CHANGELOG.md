@@ -1,3 +1,6 @@
+## 2.0.2
+* New CodeScan Issue Filter: Quickly sort and filter issues by type and severity for efficient code review.
+
 ## 2.0.1
 * Resolved duplicate issue detection for specific APEX rules.
 

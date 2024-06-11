@@ -9,7 +9,7 @@ import * as ChildProcess from 'child_process';
 import { DateTime } from 'luxon';
 import * as Path from 'path';
 import * as VSCode from 'vscode';
-import { LanguageClientOptions, StreamInfo } from 'vscode-languageclient/node';
+import { LanguageClientOptions, PublishDiagnosticsParams, StreamInfo } from 'vscode-languageclient/node';
 import { configureCompilationDatabase, notifyMissingCompileCommands } from './cfamily/cfamily';
 import { AutoBindingService } from './connected/autobinding';
 import { BindingService } from './connected/binding';
@@ -65,6 +65,8 @@ import { IssueService } from './issue/issue';
 import { isFirstCobolIssueDetected, showNotificationForFirstCobolIssue } from './util/cobolUtils';
 import { showSslCertificateConfirmationDialog } from './util/showMessage';
 import { detectConflictingPlugins } from './util/conflictingPlugins';
+import { CodeScanIssueFilterViewProvider, CodeScanPublishDiagnosticsParams } from './issue-filter/CodeScanIssueFilterViewProvider';
+
 
 const DOCUMENT_SELECTOR = [
   { scheme: 'file', pattern: '**/*' },
@@ -88,6 +90,8 @@ let hotspotsTreeDataProvider: AllHotspotsTreeDataProvider;
 let allHotspotsView: VSCode.TreeView<HotspotTreeViewItem>;
 let helpAndFeedbackTreeDataProvider: HelpAndFeedbackTreeDataProvider;
 let helpAndFeedbackView: VSCode.TreeView<HelpAndFeedbackLink>;
+let codeScanDiagnosticsViewProvider: CodeScanIssueFilterViewProvider;
+
 
 function runJavaServer(context: VSCode.ExtensionContext): Promise<StreamInfo> {
   return resolveRequirements(context)
@@ -315,6 +319,16 @@ export async function activate(context: VSCode.ExtensionContext) {
       installClasspathListener(languageClient);
     })
   );
+
+  codeScanDiagnosticsViewProvider = new CodeScanIssueFilterViewProvider(context);
+  VSCode.window.registerWebviewViewProvider(CodeScanIssueFilterViewProvider.viewType, codeScanDiagnosticsViewProvider);
+
+  context.subscriptions.push(
+    VSCode.commands.registerCommand(Commands.SHOW_CODESCAN_ISSUE_FILTER, () => {
+      VSCode.commands.executeCommand('workbench.view.extension.' + CodeScanIssueFilterViewProvider.viewType);
+    })
+  );
+
   installClasspathListener(languageClient);
 }
 
@@ -585,6 +599,10 @@ function installCustomRequestHandlers(context: VSCode.ExtensionContext) {
     async params => await BindingService.instance.assistBinding(params)
   );
   languageClient.onRequest(protocol.SslCertificateConfirmation.type, cert => showSslCertificateConfirmationDialog(cert))
+
+  languageClient.onNotification(protocol.PublishCodeScanDiagnosticsResult.type, async publishResult => {
+    await reportPublishedCodeScanDiagnostics(publishResult);
+  });
 }
 
 function updateSonarLintViewContainerBadge() {
@@ -596,6 +614,10 @@ function updateSonarLintViewContainerBadge() {
           tooltip: `Total ${allHotspotsCount} Security Hotspots`
         }
       : undefined;
+}
+
+async function reportPublishedCodeScanDiagnostics(result: CodeScanPublishDiagnosticsParams) {
+  codeScanDiagnosticsViewProvider.setPublishedIssues(result);
 }
 
 async function getTokenForServer(serverId: string): Promise<string> {

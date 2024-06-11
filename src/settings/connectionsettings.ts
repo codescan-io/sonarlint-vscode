@@ -306,19 +306,19 @@ async function checkIfCloudApiExistForServer(serverUrl) {
     const response = await fetch(CODESCAN_HEALTH_ENDPOINT);
 
     if (!response.ok) {
-      console.debug(`isCodeScanCloudAlias health check request for host: ${serverUrl} failed with status code: ${response.status}.`);
+      logToCodeScanOutput(`isCodeScanCloudAlias health check request for host: ${serverUrl} failed with status code: ${response.status}.`);
       return false;
     }
 
     try {
       const responseBody = await response.json();
-      if (responseBody.status === "UP") {
+      if (responseBody.status === "UP" || responseBody.status === "DOWN") {
         return true;
       } else {
-        console.debug(`isCodeScanCloudAlias health check request for host: ${serverUrl} returned JSON with unexpected status: ${responseBody.status}.`);
+        logToCodeScanOutput(`isCodeScanCloudAlias health check request for host: ${serverUrl} returned JSON with unexpected status: ${responseBody.status}.`);
       }
     } catch (jsonError) {
-      console.debug(`isCodeScanCloudAlias health check request for host: ${serverUrl} returned invalid JSON.`);
+      logToCodeScanOutput(`isCodeScanCloudAlias health check request for host: ${serverUrl} returned invalid JSON.`);
     }
     return false;
   } catch (error) {

@@ -68,4 +68,6 @@ export namespace Commands {
   export const CHANGE_HOTSPOT_STATUS = 'CodeScan.ChangeHotspotStatus';
   export const ENABLE_VERBOSE_LOGS = 'CodeScan.EnableVerboseLogs';
   export const UPDATE_ALL_BINDINGS = 'CodeScan.UpdateAllBindings';
+
+  export const SHOW_CODESCAN_ISSUE_FILTER = 'CodeScan.ShowCodeScanIssueFilter';
 }
