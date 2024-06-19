@@ -1,3 +1,6 @@
+## 2.0.3
+* Fixed a plugin issue that caused non-recognition of CodeScan-specific JS and VF rules.
+
 ## 2.0.2
 * New CodeScan Issue Filter: Quickly sort and filter issues by type and severity for efficient code review.
 

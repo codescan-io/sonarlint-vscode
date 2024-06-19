@@ -2,7 +2,7 @@
   "name": "codescan-vscode",
   "displayName": "CodeScan",
   "description": "Linter to detect & fix coding issues locally in JS/TS, Apex, HTML/CSS, Java, Python, C++, Go, IaC. Use with CodeScan for optimal team performance.",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "icon": "images/codescan_128px.png",
   "publisher": "codescansf",
   "homepage": "https://www.codescan.io/codescan-static-code-analysis/",
