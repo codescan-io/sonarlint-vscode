@@ -12,6 +12,7 @@ import * as util from '../util/util';
 import { clean, escapeHtml, ResourceResolver } from '../util/webview';
 import { decorateContextualHtmlContentWithDiff } from './code-diff';
 import { highlightAllCodeSnippetsInDesc } from './syntax-highlight';
+import * as path from 'path';
 
 let ruleDescriptionPanel: VSCode.WebviewPanel;
 
@@ -53,6 +54,7 @@ function computeRuleDescPanelContent(
   const styleSrc = resolver.resolve('styles', 'rule.css');
   const hljsSrc = resolver.resolve('styles', 'vs.css');
   const hotspotSrc = resolver.resolve('styles', 'hotspot.css');
+  const toolkitUri = resolver.resolve('node_modules', '@vscode', 'webview-ui-toolkit', 'dist', 'toolkit.min.js');
   const severityImgSrc = resolver.resolve('images', 'severity', `${rule.severity.toLowerCase()}.png`);
   const typeImgSrc = resolver.resolve('images', 'type', `${rule.type.toLowerCase()}.png`);
   const infoImgSrc = resolver.resolve('images', 'info.png');
@@ -72,6 +74,7 @@ function computeRuleDescPanelContent(
     <link rel="stylesheet" type="text/css" href="${styleSrc}" />
     <link rel="stylesheet" type="text/css" href="${hotspotSrc}" />
     <link rel="stylesheet" type="text/css" href="${hljsSrc}" />
+    <script type="module" src="${toolkitUri}"></script>
     </head>
     <body><h1><big>${escapeHtml(rule.name)}</big> (${rule.key})</h1>
     <div>
@@ -79,6 +82,13 @@ function computeRuleDescPanelContent(
     ${clean(rule.type)}&nbsp;
     <img class="severity" alt="${rule.severity}" src="${severityImgSrc}" />&nbsp;
     ${clean(rule.severity)}
+      <vscode-button id="generatePrompt">
+        Generate Prompt
+      </vscode-button>
+      <span id="promptGenerationProgress" class="hidden">
+        <vscode-progress-ring/>
+      </span>
+      <span id="promptGenerationResult"></span>
     </div>
     ${taintBanner}
     ${hotspotBanner}
@@ -99,6 +109,18 @@ export function renderTaintBanner(rule: ShowRuleDescriptionParams, infoImgSrc: s
               the code containing your fix is analyzed by CodeScan.
             </p>
            </div>`;
+}
+
+async function getFileContentByPath(filePath: string) {
+  try {
+      const uri = VSCode.Uri.file(filePath);
+      const document = await VSCode.workspace.openTextDocument(uri);
+      const content = document.getText();
+      return content;
+  } catch (error) {
+      console.error("Error opening file: ", error);
+      return null;
+  }
 }
 
 export function renderHotspotBanner(rule: ShowRuleDescriptionParams, infoImgSrc: string) {
