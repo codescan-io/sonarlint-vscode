@@ -135,12 +135,7 @@ async function generatePrompt() {
     const fileContent = lastActiveWindow.document.getText();
     const ruleDesc = ruleParams.htmlDescription;
 
-    const content = `Help me fix - 
-        ${ruleDesc}
-
-        In the following code - 
-        ${fileContent}`
-
+    const content = `Help me fix - \n${ruleDesc}\nin the following code -\n${fileContent}`
     VSCode.env.clipboard.writeText(content);
     VSCode.window.showInformationMessage("Prompt copied to clipboard");
   }
