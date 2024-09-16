@@ -6,10 +6,9 @@
  * ------------------------------------------------------------------------------------------ */
 'use strict';
 
-const vscode = acquireVsCodeApi();
+const VSCode = acquireVsCodeApi();
 
 window.addEventListener('load', init);
-window.addEventListener('message', handleMessage);
 
 function byId(elementId) {
   return document.getElementById(elementId);
@@ -21,6 +20,7 @@ function init() {
 
 
 function onClickGeneratePrompt() {
-    vscode.env.clipboard.writeText("Text 123");
-    vscode.postMessage("Copied to Clipboard");
+  console.log("DF DEMO :::");
+  VSCode.postMessage({
+    command: 'generatePrompt'});
   }

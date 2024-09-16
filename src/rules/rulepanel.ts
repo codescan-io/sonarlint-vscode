@@ -12,15 +12,25 @@ import * as util from '../util/util';
 import { clean, escapeHtml, ResourceResolver } from '../util/webview';
 import { decorateContextualHtmlContentWithDiff } from './code-diff';
 import { highlightAllCodeSnippetsInDesc } from './syntax-highlight';
-import * as path from 'path';
 
 let ruleDescriptionPanel: VSCode.WebviewPanel;
+let lastActiveWindow;
+const GEN_PROMPT = 'generatePrompt';
+export async function handleMessage(message) {
+  switch (message.command) {
+    case GEN_PROMPT:
+      await generatePrompt();
+      break;
+  }
+}
 
 export function showRuleDescription(context: VSCode.ExtensionContext) {
   return params => {
+    lastActiveWindow = VSCode.window.activeTextEditor;
     lazyCreateRuleDescriptionPanel(context);
     ruleDescriptionPanel.webview.html = computeRuleDescPanelContent(context, ruleDescriptionPanel.webview, params);
     ruleDescriptionPanel.iconPath = util.resolveExtensionFile('images', 'codescan.svg');
+    ruleDescriptionPanel.webview.onDidReceiveMessage(handleMessage);
     ruleDescriptionPanel.reveal();
   };
 }
@@ -55,6 +65,7 @@ function computeRuleDescPanelContent(
   const hljsSrc = resolver.resolve('styles', 'vs.css');
   const hotspotSrc = resolver.resolve('styles', 'hotspot.css');
   const toolkitUri = resolver.resolve('node_modules', '@vscode', 'webview-ui-toolkit', 'dist', 'toolkit.min.js');
+  const webviewMainUri = resolver.resolve('webview-ui', 'rulepanel.js');
   const severityImgSrc = resolver.resolve('images', 'severity', `${rule.severity.toLowerCase()}.png`);
   const typeImgSrc = resolver.resolve('images', 'type', `${rule.type.toLowerCase()}.png`);
   const infoImgSrc = resolver.resolve('images', 'info.png');
@@ -69,12 +80,14 @@ function computeRuleDescPanelContent(
     <head>
     <title>${escapeHtml(rule.name)}</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-    <meta http-equiv="Content-Security-Policy"
-      content="default-src 'none'; img-src ${webview.cspSource}; style-src ${webview.cspSource}"/>
+
     <link rel="stylesheet" type="text/css" href="${styleSrc}" />
     <link rel="stylesheet" type="text/css" href="${hotspotSrc}" />
     <link rel="stylesheet" type="text/css" href="${hljsSrc}" />
     <script type="module" src="${toolkitUri}"></script>
+    <script type="module" src="${webviewMainUri}"></script>
+    
+
     </head>
     <body><h1><big>${escapeHtml(rule.name)}</big> (${rule.key})</h1>
     <div>
@@ -82,13 +95,13 @@ function computeRuleDescPanelContent(
     ${clean(rule.type)}&nbsp;
     <img class="severity" alt="${rule.severity}" src="${severityImgSrc}" />&nbsp;
     ${clean(rule.severity)}
-      <vscode-button id="generatePrompt">
+      <button style={{
+        backgroundColor: '#005fb8',
+        height: '32px',
+        color: 'white'
+      }} id="generatePrompt">
         Generate Prompt
-      </vscode-button>
-      <span id="promptGenerationProgress" class="hidden">
-        <vscode-progress-ring/>
-      </span>
-      <span id="promptGenerationResult"></span>
+      </button>
     </div>
     ${taintBanner}
     ${hotspotBanner}
@@ -111,17 +124,22 @@ export function renderTaintBanner(rule: ShowRuleDescriptionParams, infoImgSrc: s
            </div>`;
 }
 
-async function getFileContentByPath(filePath: string) {
-  try {
-      const uri = VSCode.Uri.file(filePath);
-      const document = await VSCode.workspace.openTextDocument(uri);
-      const content = document.getText();
-      return content;
-  } catch (error) {
-      console.error("Error opening file: ", error);
-      return null;
-  }
+async function generatePrompt() {
+  console.log("inside gen pmpt");
+  const activeTextEditor = lastActiveWindow;
+  console.log("act editor: "  + activeTextEditor );
+			if (activeTextEditor) {
+        console.log("inside if: ");
+				const document = activeTextEditor;
+        console.log("doc: "  + document );
+        const fileContent = document.getText();
+        console.log("file cnt: "  + fileContent );
+
+        VSCode.env.clipboard.writeText("lorem ipsum");
+        console.log("Code copied to clipboard!");
+			}
 }
+
 
 export function renderHotspotBanner(rule: ShowRuleDescriptionParams, infoImgSrc: string) {
   if (rule.type !== 'SECURITY_HOTSPOT') {
