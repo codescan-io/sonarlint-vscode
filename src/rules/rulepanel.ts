@@ -13,26 +13,31 @@ import { clean, escapeHtml, ResourceResolver } from '../util/webview';
 import { decorateContextualHtmlContentWithDiff } from './code-diff';
 import { highlightAllCodeSnippetsInDesc } from './syntax-highlight';
 
+const GENERATE_PROMPT = 'generatePrompt';
+
 let ruleDescriptionPanel: VSCode.WebviewPanel;
-let lastActiveWindow;
-const GEN_PROMPT = 'generatePrompt';
-export async function handleMessage(message) {
-  switch (message.command) {
-    case GEN_PROMPT:
-      await generatePrompt();
-      break;
-  }
-}
+let lastActiveWindow: VSCode.TextEditor;
+let ruleParams: ShowRuleDescriptionParams
 
 export function showRuleDescription(context: VSCode.ExtensionContext) {
   return params => {
     lastActiveWindow = VSCode.window.activeTextEditor;
+    ruleParams = params;
+
     lazyCreateRuleDescriptionPanel(context);
     ruleDescriptionPanel.webview.html = computeRuleDescPanelContent(context, ruleDescriptionPanel.webview, params);
     ruleDescriptionPanel.iconPath = util.resolveExtensionFile('images', 'codescan.svg');
     ruleDescriptionPanel.webview.onDidReceiveMessage(handleMessage);
     ruleDescriptionPanel.reveal();
   };
+}
+
+export async function handleMessage(message) {
+  switch (message.command) {
+    case GENERATE_PROMPT:
+      await generatePrompt();
+      break;
+  }
 }
 
 function lazyCreateRuleDescriptionPanel(context: VSCode.ExtensionContext) {
@@ -125,19 +130,20 @@ export function renderTaintBanner(rule: ShowRuleDescriptionParams, infoImgSrc: s
 }
 
 async function generatePrompt() {
-  console.log("inside gen pmpt");
-  const activeTextEditor = lastActiveWindow;
-  console.log("act editor: "  + activeTextEditor );
-			if (activeTextEditor) {
-        console.log("inside if: ");
-				const document = activeTextEditor;
-        console.log("doc: "  + document );
-        const fileContent = document.getText();
-        console.log("file cnt: "  + fileContent );
+  if (lastActiveWindow && ruleParams) {
+    console.log("Pushing to clipboard");
+    const fileContent = lastActiveWindow.document.getText();
+    const ruleDesc = ruleParams.htmlDescription;
 
-        VSCode.env.clipboard.writeText("lorem ipsum");
-        console.log("Code copied to clipboard!");
-			}
+    const content = `Help me fix - 
+        ${ruleDesc}
+
+        In the following code - 
+        ${fileContent}`
+
+    VSCode.env.clipboard.writeText(content);
+    VSCode.window.showInformationMessage("Prompt copied to clipboard");
+  }
 }
 
 
