@@ -96,17 +96,23 @@ function computeRuleDescPanelContent(
     </head>
     <body><h1><big>${escapeHtml(rule.name)}</big> (${rule.key})</h1>
     <div>
+    <table>
+    <tr>
+    <td>
     <img class="type" alt="${rule.type}" src="${typeImgSrc}" />&nbsp;
     ${clean(rule.type)}&nbsp;
+    </td>
+    <td>
     <img class="severity" alt="${rule.severity}" src="${severityImgSrc}" />&nbsp;
     ${clean(rule.severity)}
-      <button style={{
-        backgroundColor: '#005fb8',
-        height: '32px',
-        color: 'white'
-      }} id="generatePrompt">
-        Generate Prompt
-      </button>
+    </td>
+    <td>
+    <vscode-button id="generatePrompt">
+      Generate Prompt
+    </vscode-button>
+    </td>
+    </tr>
+    </table>
     </div>
     ${taintBanner}
     ${hotspotBanner}
