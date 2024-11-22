@@ -1,3 +1,6 @@
+## 2.0.4
+* Added analysis support for Codescan Sonarqube 10.7 version.
+
 ## 2.0.3
 * Fixed a plugin issue that caused non-recognition of CodeScan-specific JS and VF rules.
 
