@@ -79,12 +79,27 @@ function computeRuleDescPanelContent(
     ${clean(rule.type)}&nbsp;
     <img class="severity" alt="${rule.severity}" src="${severityImgSrc}" />&nbsp;
     ${clean(rule.severity)}
+    <button onClick="${generatePrompt(ruleDescription)}" class="promptButton" type="button">Generate Prompt</button>
     </div>
     ${taintBanner}
     ${hotspotBanner}
     ${ruleDescription}
     ${ruleParamsHtml}
     </body></html>`;
+}
+
+async function generatePrompt(ruleDescription: string): Promise<void> {
+  try {
+    const editor = VSCode.window.activeTextEditor;
+    if (editor) {
+      const document = editor.document;
+
+      await VSCode.env.clipboard.writeText('Help me fix '+ruleDescription+' in the following code '+document.getText());
+      VSCode.window.showInformationMessage('Prompt copied to clipboard');
+    }
+  } catch(err) {
+      VSCode.window.showErrorMessage('Failed to copy Prompt');
+  }
 }
 
 export function renderTaintBanner(rule: ShowRuleDescriptionParams, infoImgSrc: string) {
