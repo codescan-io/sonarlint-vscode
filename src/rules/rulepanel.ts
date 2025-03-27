@@ -13,15 +13,31 @@ import { clean, escapeHtml, ResourceResolver } from '../util/webview';
 import { decorateContextualHtmlContentWithDiff } from './code-diff';
 import { highlightAllCodeSnippetsInDesc } from './syntax-highlight';
 
+const GENERATE_PROMPT = 'generatePrompt';
+
 let ruleDescriptionPanel: VSCode.WebviewPanel;
+let lastActiveWindow: VSCode.TextEditor;
+let ruleParams: ShowRuleDescriptionParams
 
 export function showRuleDescription(context: VSCode.ExtensionContext) {
   return params => {
+    lastActiveWindow = VSCode.window.activeTextEditor;
+    ruleParams = params;
+
     lazyCreateRuleDescriptionPanel(context);
     ruleDescriptionPanel.webview.html = computeRuleDescPanelContent(context, ruleDescriptionPanel.webview, params);
     ruleDescriptionPanel.iconPath = util.resolveExtensionFile('images', 'codescan.svg');
+    ruleDescriptionPanel.webview.onDidReceiveMessage(handleMessage);
     ruleDescriptionPanel.reveal();
   };
+}
+
+export async function handleMessage(message) {
+  switch (message.command) {
+    case GENERATE_PROMPT:
+      await generatePrompt();
+      break;
+  }
 }
 
 function lazyCreateRuleDescriptionPanel(context: VSCode.ExtensionContext) {
@@ -53,6 +69,8 @@ function computeRuleDescPanelContent(
   const styleSrc = resolver.resolve('styles', 'rule.css');
   const hljsSrc = resolver.resolve('styles', 'vs.css');
   const hotspotSrc = resolver.resolve('styles', 'hotspot.css');
+  const toolkitUri = resolver.resolve('node_modules', '@vscode', 'webview-ui-toolkit', 'dist', 'toolkit.min.js');
+  const webviewMainUri = resolver.resolve('webview-ui', 'rulepanel.js');
   const severityImgSrc = resolver.resolve('images', 'severity', `${rule.severity.toLowerCase()}.png`);
   const typeImgSrc = resolver.resolve('images', 'type', `${rule.type.toLowerCase()}.png`);
   const infoImgSrc = resolver.resolve('images', 'info.png');
@@ -67,39 +85,39 @@ function computeRuleDescPanelContent(
     <head>
     <title>${escapeHtml(rule.name)}</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-    <meta http-equiv="Content-Security-Policy"
-      content="default-src 'none'; img-src ${webview.cspSource}; style-src ${webview.cspSource}"/>
+
     <link rel="stylesheet" type="text/css" href="${styleSrc}" />
     <link rel="stylesheet" type="text/css" href="${hotspotSrc}" />
     <link rel="stylesheet" type="text/css" href="${hljsSrc}" />
+    <script type="module" src="${toolkitUri}"></script>
+    <script type="module" src="${webviewMainUri}"></script>
+
+
     </head>
     <body><h1><big>${escapeHtml(rule.name)}</big> (${rule.key})</h1>
     <div>
+    <table>
+    <tr>
+    <td>
     <img class="type" alt="${rule.type}" src="${typeImgSrc}" />&nbsp;
     ${clean(rule.type)}&nbsp;
+    </td>
+    <td>
     <img class="severity" alt="${rule.severity}" src="${severityImgSrc}" />&nbsp;
     ${clean(rule.severity)}
-    <button onClick="${generatePrompt(ruleDescription)}" class="promptButton" type="button">Generate Prompt</button>
-    </div>
+    </td>
+    <td>
+    <vscode-button id="generatePrompt">
+      Generate Prompt
+    </vscode-button>
+    </td>
+    </tr>
+    </table></div>
     ${taintBanner}
     ${hotspotBanner}
     ${ruleDescription}
     ${ruleParamsHtml}
     </body></html>`;
-}
-
-async function generatePrompt(ruleDescription: string): Promise<void> {
-  try {
-    const editor = VSCode.window.activeTextEditor;
-    if (editor) {
-      const document = editor.document;
-
-      await VSCode.env.clipboard.writeText('Help me fix '+ruleDescription+' in the following code '+document.getText());
-      VSCode.window.showInformationMessage('Prompt copied to clipboard');
-    }
-  } catch(err) {
-      VSCode.window.showErrorMessage('Failed to copy Prompt');
-  }
 }
 
 export function renderTaintBanner(rule: ShowRuleDescriptionParams, infoImgSrc: string) {
@@ -114,6 +132,18 @@ export function renderTaintBanner(rule: ShowRuleDescriptionParams, infoImgSrc: s
               the code containing your fix is analyzed by CodeScan.
             </p>
            </div>`;
+}
+
+async function generatePrompt() {
+  if (lastActiveWindow && ruleParams) {
+    console.log("Pushing to clipboard");
+    const fileContent = lastActiveWindow.document.getText();
+    const ruleDesc = ruleParams.htmlDescription.replace(/(?:<BR>)?<h2>Example:.*?<\/pre>/gs, '');
+
+    const content = `Help me fix - ${ruleDesc}\n this in the following code -\n${fileContent}`
+    VSCode.env.clipboard.writeText(content);
+    VSCode.window.showInformationMessage("Prompt copied to clipboard");
+  }
 }
 
 export function renderHotspotBanner(rule: ShowRuleDescriptionParams, infoImgSrc: string) {
