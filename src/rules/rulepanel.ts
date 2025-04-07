@@ -14,6 +14,7 @@ import { decorateContextualHtmlContentWithDiff } from './code-diff';
 import { highlightAllCodeSnippetsInDesc } from './syntax-highlight';
 
 const GENERATE_PROMPT = 'generatePrompt';
+const GENERATE_PROMPT_SELECTED = 'generatePromptSelected';
 
 let ruleDescriptionPanel: VSCode.WebviewPanel;
 let lastActiveWindow: VSCode.TextEditor;
@@ -36,6 +37,9 @@ export async function handleMessage(message) {
   switch (message.command) {
     case GENERATE_PROMPT:
       await generatePrompt();
+      break;
+    case GENERATE_PROMPT_SELECTED:
+      await generatePromptSelected();
       break;
   }
 }
@@ -80,6 +84,7 @@ function computeRuleDescPanelContent(
   const taintBanner = renderTaintBanner(rule, infoImgSrc);
   const hotspotBanner = renderHotspotBanner(rule, infoImgSrc);
   const ruleDescription = renderRuleDescription(rule);
+  const fileTooLong = lastActiveWindow.document.getText().length > 1000;
 
   return `<!doctype html><html lang="en">
     <head>
@@ -107,9 +112,8 @@ function computeRuleDescPanelContent(
     ${clean(rule.severity)}
     </td>
     <td>
-    <vscode-button id="generatePrompt">
-      Generate Prompt
-    </vscode-button>
+    <vscode-button id="generatePrompt"  ${fileTooLong? 'hidden="true"' : ""}>Generate Prompt</vscode-button>
+    <vscode-button id="generatePromptSelected" ${!fileTooLong? 'hidden="true"' : ""}>Generate Prompt</vscode-button>
     </td>
     </tr>
     </table></div>
@@ -137,12 +141,28 @@ export function renderTaintBanner(rule: ShowRuleDescriptionParams, infoImgSrc: s
 async function generatePrompt() {
   if (lastActiveWindow && ruleParams) {
     console.log("Pushing to clipboard");
+
     const fileContent = lastActiveWindow.document.getText();
     const ruleDesc = ruleParams.htmlDescription.replace(/(?:<BR>)?<h2>Example:.*?<\/pre>/gs, '');
-
-    const content = `Help me fix - ${ruleDesc}\n this in the following code -\n${fileContent}`
+    const content = `Hey! CodeScan detected a ${ruleParams.type} which says ${ruleParams.name}. ${ruleDesc}\n Help me fix this in the following code -\n${fileContent}`
     VSCode.env.clipboard.writeText(content);
     VSCode.window.showInformationMessage("Prompt copied to clipboard");
+  }
+}
+
+async function generatePromptSelected() {
+  if (lastActiveWindow && ruleParams) {
+    console.log("Pushing to clipboard selected");
+
+    const fileContent = lastActiveWindow.document.getText(lastActiveWindow.selection);
+    const ruleDesc = ruleParams.htmlDescription.replace(/(?:<BR>)?<h2>Example:.*?<\/pre>/gs, '');
+    if(fileContent.length == 0 ){
+      VSCode.window.showInformationMessage('File is too long! Please select the lines of code impacted and click "Generate Prompt."');
+    } else {
+      const content = `Hey! CodeScan detected a ${ruleParams.type} which says ${ruleParams.name}. ${ruleDesc}\n Help me fix this in the following code -\n${fileContent}`
+      VSCode.env.clipboard.writeText(content);
+      VSCode.window.showInformationMessage("Prompt copied to clipboard");
+    }
   }
 }
 

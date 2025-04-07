@@ -16,6 +16,7 @@ function byId(elementId) {
 
 function init() {
     byId('generatePrompt').addEventListener('click', onClickGeneratePrompt);
+    byId('generatePromptSelected').addEventListener('click', onClickGeneratePromptSelected);
 }
 
 
@@ -23,4 +24,10 @@ function onClickGeneratePrompt() {
     console.log("DF DEMO :::");
     VSCode.postMessage({
       command: 'generatePrompt'});
+  }
+
+function onClickGeneratePromptSelected() {
+    console.log("DF DEMO :::");
+    VSCode.postMessage({
+      command: 'generatePromptSelected'});
   }
