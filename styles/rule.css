@@ -149,14 +149,3 @@ pre {
   margin-bottom: 0;
   overflow-x: auto;
 }
-
-.promptButton {
-  font-size: 0.9rem;
-  text-align: center;
-  color: #fff;
-  background-color: rgba(0, 92, 255);
-}
-
-.promptButton:hover {
-  background-color: rgba(0, 140, 255);
-}
