@@ -97,9 +97,9 @@ function downloadIfNeeded(url, dest) {
       }
     };
     if (credentialsDefined) {
-      request(url + '.sha1', { auth }, callback);
+      request(url + '.sha256', { auth }, callback);
     } else {
-      request(url + '.sha1', callback);
+      request(url + '.sha256', callback);
     }
   }
 }
