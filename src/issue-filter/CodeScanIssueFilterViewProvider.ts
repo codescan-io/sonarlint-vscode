@@ -106,8 +106,8 @@ export class CodeScanIssueFilterViewProvider implements VSCode.WebviewViewProvid
             const filteredIssues: CodeScanDiagnostic[] = [];
             
             // Remove "file://"" at the start to get relative path
-            var fileRelativePath = decodeURI(VSCode.workspace.asRelativePath(fileIssues.uri).substring(7));
-            var fileName = path.parse(fileIssues.uri).base;
+            let fileRelativePath = decodeURI(VSCode.workspace.asRelativePath(fileIssues.uri).substring(7));
+            let fileName = path.parse(fileIssues.uri).base;
       
             for (const issue of fileIssues.diagnostics) {
                 if (this.checkIssueFilterCondition(issue)) {

@@ -12,8 +12,8 @@ import { buildBaseServerUrl } from '../../src/util/bindingUtils';
 suite('Binding Utils Test Suite', () => {
 
   test('should build base server url', () => {
-    const sqBaseServerUrl = buildBaseServerUrl({serverUrl: 'http://example',  isCloudConnection: false}, 'serverUrl');
-    const scBaseServerUrl = buildBaseServerUrl({serverUrl: 'http://example.codescan.io', isCloudConnection: true}, 'orgKey');
+    const sqBaseServerUrl = buildBaseServerUrl({serverUrl: 'https://example',  isCloudConnection: false}, 'serverUrl');
+    const scBaseServerUrl = buildBaseServerUrl({serverUrl: 'https://example.codescan.io', isCloudConnection: true}, 'orgKey');
 
     expect(sqBaseServerUrl).to.be.equal('serverUrl/dashboard');
     expect(scBaseServerUrl).to.be.equal('https://app.codescan.io/project/overview');

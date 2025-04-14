@@ -69,7 +69,7 @@ suite('Secrets Test Suite', () => {
 
   test('should not find secrets in SCM ignored files', async function () {
     const fileUri = vscode.Uri.file(path.join(__dirname, secretsFolderLocation, 'ignored_file.yml'));
-    await vscode.workspace.fs.writeFile(fileUri, new TextEncoder().encode('AWS_SECRET_KEY: h1ByXvzhN6O8/UQACtwMuSkjE5/oHmWG1MJziTDw'));
+    await vscode.workspace.fs.writeFile(fileUri, new TextEncoder().encode('AWS_SECRET_KEY: sample-secret-key'));
     await vscode.window.showTextDocument(fileUri);
 
     const diags = await waitForSonarLintDiagnostics(fileUri, { timeoutMillis: 5000 });
@@ -83,7 +83,7 @@ suite('Secrets Test Suite', () => {
     const tmpFileUri = vscode.Uri.file(path.join(tmpDirPath, fileName));
     const tmpFileUrl = url.pathToFileURL(path.join(tmpDirPath, fileName));
       await fs.promises.writeFile(tmpFileUrl, new TextEncoder()
-        .encode('AWS_SECRET_KEY: h1ByXvzhN6O8/UQACtwMuSkjE5/oHmWG1MJziTDw'));
+        .encode('AWS_SECRET_KEY: sample-secret-key'));
     await vscode.window.showTextDocument(tmpFileUri);
 
     const diags = await waitForSonarLintDiagnostics(tmpFileUri, { timeoutMillis: 5000 });
