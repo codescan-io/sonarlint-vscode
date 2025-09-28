@@ -1,3 +1,6 @@
+## 2.1.2
+* Improved synchronization of resolved issues from CodeScan server
+
 ## 2.1.1
 * Added compatibility fixes for CodeScan Cloud 25.1.5
 * AI Copy and Paste
