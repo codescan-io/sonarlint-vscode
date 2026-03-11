@@ -12,6 +12,9 @@ window.addEventListener('message', event => {
             recreateFilters(categoryCounts);
             recreateListeners();
             break;
+        case 'updateSeverityNames':
+            updateSeverityNames(message.severityLabels, message.categoryCounts);
+            break;
     }
 });
 
@@ -85,7 +88,7 @@ function getIssueHtml(issueMap) {
             childrenHtml +=
                 `<div class="issue-container" data-file-uri=${fileUri} data-line-number=${issue.range.start.line}>
                     <div class="icon">
-                        <i class="fa fa-${icons.severityIcon.icon} fa-fw" title="Severity: ${issue.issueSeverity}" style="color:${icons.severityIcon.color}; padding: 1dp;"></i>
+                        <i class="fa fa-${icons.severityIcon.icon} fa-fw" title="Severity: ${IssueSeverity[issue.issueSeverity].name}" style="color:${icons.severityIcon.color}; padding: 1dp;"></i>
                         <i class="fa fa-${icons.ruleTypeIcon.icon} fa-fw" title="Type: ${issue.ruleType}" style="color:${icons.ruleTypeIcon.color}; padding: 1dp;"></i>
                     </div>
                     <div class="left-div">
@@ -185,6 +188,17 @@ function getIconsForIssue(issue) {
     return {ruleTypeIcon: ruleTypeIcon, severityIcon: severityIcon}
 }
 
+function loadSeverityLabels() {
+    vscode.postMessage({ command: 'loadSeverityLabels' });
+}
+
+function updateSeverityNames(severityLabels, categoryCounts) {
+    Object.values(IssueSeverity).forEach(sev => {
+      sev.name = severityLabels?.[sev.id] ?? sev.name;
+    });
+    recreateFilters(categoryCounts);
+}
+
 // Constants
 export const IssueSeverity = {
     INFO: {id: "INFO", name: "Info"},
@@ -203,6 +217,9 @@ export const RuleType = {
 
 // Refresh on first initiation
 function init() {
+
+    loadSeverityLabels();
+
     // Init counts
     let categoryCounts = {
         'SEVERITY-ALL': 0,

@@ -2,6 +2,7 @@ import * as VSCode from 'vscode';
 import * as path from 'path';
 import { Diagnostic, PublishDiagnosticsParams } from 'vscode-languageclient';
 import { IssueSeverity, RuleType } from '../lsp/protocol';
+import { SEVERITY_LABELS } from '../commons';
 
 export class CodeScanIssueFilterViewProvider implements VSCode.WebviewViewProvider {
     public static readonly viewType = 'CodeScanIssueFilter';
@@ -62,6 +63,9 @@ export class CodeScanIssueFilterViewProvider implements VSCode.WebviewViewProvid
                         return;
                     case 'openFileAtLocation':
                         this.openFileAtLocation(message.filePath, message.lineNumber);
+                        return;
+                    case 'loadSeverityLabels':
+                        this.loadSeverityLabels();
                         return;
                 }
             },
@@ -202,8 +206,12 @@ export class CodeScanIssueFilterViewProvider implements VSCode.WebviewViewProvid
         const issues = this.getIssues();
         this.setFilterCategoriesIssueCount();
         if (issues) {
-            this.webview.webview.postMessage({ command: 'updateIssues', issues: issues,  categoryCounts: this.categoryIssueCounts});
+            this.webview.webview.postMessage({ command: 'updateIssues', issues: issues,  categoryCounts: this.categoryIssueCounts, severityLabels: SEVERITY_LABELS});
         }
+    }
+
+    private loadSeverityLabels() {
+        this.webview.webview.postMessage({ command: 'updateSeverityNames', severityLabels: SEVERITY_LABELS , categoryCounts: this.categoryIssueCounts });
     }
 }
 

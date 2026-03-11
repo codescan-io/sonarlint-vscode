@@ -12,6 +12,7 @@ import * as util from '../util/util';
 import { clean, escapeHtml, ResourceResolver } from '../util/webview';
 import { decorateContextualHtmlContentWithDiff } from './code-diff';
 import { highlightAllCodeSnippetsInDesc } from './syntax-highlight';
+import { SEVERITY_LABELS } from '../commons';
 
 const GENERATE_PROMPT = 'generatePrompt';
 const GENERATE_PROMPT_SELECTED = 'generatePromptSelected';
@@ -109,7 +110,7 @@ function computeRuleDescPanelContent(
     </td>
     <td>
     <img class="severity" alt="${rule.severity}" src="${severityImgSrc}" />&nbsp;
-    ${clean(rule.severity)}
+    ${SEVERITY_LABELS[rule.severity] ?? clean(rule.severity)}
     </td>
     <td>
     <vscode-button id="generatePrompt"  ${fileTooLong? 'hidden="true"' : ""}>Generate Prompt</vscode-button>
