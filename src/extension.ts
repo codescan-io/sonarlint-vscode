@@ -45,7 +45,7 @@ import { showRuleDescription } from './rules/rulepanel';
 import { AllRulesTreeDataProvider, LanguageNode, RuleNode } from './rules/rules';
 import { initScm, isIgnoredByScm } from './scm/scm';
 import { isFirstSecretDetected, showNotificationForFirstSecretsIssue } from './secrets/secrets';
-import { ConnectionSettingsService, migrateConnectedModeSettings, migrateDeprecatedSettings } from './settings/connectionsettings';
+import { ConnectionSettingsService, detectIdeType, IDE, migrateConnectedModeSettings, migrateDeprecatedSettings } from './settings/connectionsettings';
 import {
   enableVerboseLogs,
   getCurrentConfiguration,
@@ -202,10 +202,12 @@ export async function activate(context: VSCode.ExtensionContext) {
     },
     diagnosticCollectionName: 'codescan',
     initializationOptions: () => {
+      const ideType = detectIdeType();
+      
       return {
-        productKey: 'vscode',
+        productKey: ideType === IDE.CURSOR ? IDE.CURSOR.toLowerCase() : IDE.VSCODE.toLowerCase(),
         telemetryStorage: Path.resolve(context.extensionPath, '..', 'codescan_usage'),
-        productName: 'CodeScan VSCode',
+        productName: ideType === IDE.CURSOR ? 'CodeScan Cursor' : 'CodeScan VSCode',
         productVersion: util.packageJson.version,
         workspaceName: VSCode.workspace.name,
         firstSecretDetected: isFirstSecretDetected(context),
@@ -213,6 +215,7 @@ export async function activate(context: VSCode.ExtensionContext) {
         showVerboseLogs: VSCode.workspace.getConfiguration().get(CODESCAN_CATEGORY + '.output.showVerboseLogs', false),
         platform: getPlatform(),
         architecture: process.arch,
+        ideType,
         additionalAttributes: {
           vscode: {
             remoteName: cleanRemoteName(VSCode.env.remoteName),
@@ -577,7 +580,7 @@ function installCustomRequestHandlers(context: VSCode.ExtensionContext) {
     VSCode.commands.executeCommand(Commands.OPEN_SETTINGS, CODESCAN_CATEGORY + '.pathToNodeExecutable')
   );
   languageClient.onNotification(protocol.BrowseToNotification.type, browseTo =>
-    VSCode.commands.executeCommand(Commands.OPEN_BROWSER, VSCode.Uri.parse(browseTo))
+    VSCode.env.openExternal(VSCode.Uri.parse(browseTo))
   );
   languageClient.onNotification(protocol.OpenConnectionSettingsNotification.type, isSonarCloud => {
     const targetSection = CODESCAN_CATEGORY + `.connectedMode.connections.servers'}`;

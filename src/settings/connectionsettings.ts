@@ -21,6 +21,11 @@ const SONARQUBE = 'sonarqube';
 const SONARCLOUD = 'sonarcloud';
 const CODESCAN_CONNECTIONS_CATEGORY = `${CODESCAN_CATEGORY}.${CONNECTIONS_SECTION}.${SERVERS}`;
 
+export enum IDE {
+  CURSOR = 'Cursor',
+  VSCODE = 'VSCode',
+}
+
 async function hasUnmigratedConnections(
   sqConnections: BaseConnection[],
   scConnections: BaseConnection[],
@@ -314,4 +319,15 @@ async function deleteDeprecatedConnectionsInConfig(migratedConnections, configCa
   if (migratedConnections.length > 0) {
     await VSCode.workspace.getConfiguration().update(configCategory, undefined, VSCode.ConfigurationTarget.Global);
   }
+}
+
+export function detectIdeType(): IDE.VSCODE | IDE.CURSOR {
+  const appName = VSCode.env.appName?.toLowerCase() ?? '';
+  const uriScheme = VSCode.env.uriScheme?.toLowerCase() ?? '';
+
+  if (appName.includes(IDE.CURSOR.toLowerCase()) || uriScheme.includes(IDE.CURSOR.toLowerCase())) {
+    return IDE.CURSOR;
+  }
+
+  return IDE.VSCODE;
 }
