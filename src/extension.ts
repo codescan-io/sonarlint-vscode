@@ -205,9 +205,9 @@ export async function activate(context: VSCode.ExtensionContext) {
       const ideType = detectIdeType();
       
       return {
-        productKey: ideType === IDE.CURSOR ? IDE.CURSOR.toLowerCase() : IDE.VSCODE.toLowerCase(),
+        productKey: ideType.toLowerCase(),
         telemetryStorage: Path.resolve(context.extensionPath, '..', 'codescan_usage'),
-        productName: ideType === IDE.CURSOR ? 'CodeScan Cursor' : 'CodeScan VSCode',
+        productName: `CodeScan ${ideType}`,
         productVersion: util.packageJson.version,
         workspaceName: VSCode.workspace.name,
         firstSecretDetected: isFirstSecretDetected(context),
