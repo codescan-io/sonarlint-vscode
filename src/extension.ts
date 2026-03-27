@@ -45,7 +45,7 @@ import { showRuleDescription } from './rules/rulepanel';
 import { AllRulesTreeDataProvider, LanguageNode, RuleNode } from './rules/rules';
 import { initScm, isIgnoredByScm } from './scm/scm';
 import { isFirstSecretDetected, showNotificationForFirstSecretsIssue } from './secrets/secrets';
-import { ConnectionSettingsService, detectIdeType, IDE, migrateConnectedModeSettings, migrateDeprecatedSettings } from './settings/connectionsettings';
+import { ConnectionSettingsService, detectIdeType, migrateConnectedModeSettings, migrateDeprecatedSettings } from './settings/connectionsettings';
 import {
   enableVerboseLogs,
   getCurrentConfiguration,
