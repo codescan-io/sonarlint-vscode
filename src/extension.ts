@@ -169,6 +169,15 @@ function toggleRule(level: protocol.ConfigLevel) {
   };
 }
 
+async function checkIfCrossFileAnalysisIsEnabled(document: VSCode.TextDocument) {
+  try {
+    const result = await languageClient.checkIfCrossFileAnalysisIsEnabled(document.uri.toString());
+    return result ? result.isCrossFileAnalysisEnabled : false;
+  } catch (e) {
+    return false;
+  }
+}
+
 export async function activate(context: VSCode.ExtensionContext) {
   const installTimeKey = 'install.time';
   context.globalState.setKeysForSync([installTimeKey]);
