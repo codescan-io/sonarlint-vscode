@@ -587,5 +587,15 @@ export namespace SslCertificateConfirmation {
   export const type = new lsp.RequestType<SslCertificateConfirmationParams, boolean, void>(
     'codescan/askSslCertificateConfirmation');
 }
-
+export interface checkIfCrossFileAnalysisParams {
+  fileUri: string;
+}
+export interface checkIfCrossFileAnalysisIsEnabledResponse {
+  isCrossFileAnalysisEnabled: boolean;
+}
+export namespace checkIfCrossFileAnalysisIsEnabled {
+  export const type = new lsp.RequestType<checkIfCrossFileAnalysisParams, checkIfCrossFileAnalysisIsEnabledResponse, null>(
+    'codescan/checkIfCrossFileAnalysisIsEnabled'
+  );
+}
 //#endregion
