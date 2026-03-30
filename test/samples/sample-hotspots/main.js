@@ -5,7 +5,7 @@ var connection = mysql.createConnection(
     host:'localhost',
     user: "admin",
     database: "project",
-    password: "mypassword", // sensitive
+    password: "", // sensitive
     multipleStatements: true
   });
 
