@@ -598,4 +598,18 @@ export namespace checkIfCrossFileAnalysisIsEnabled {
     'codescan/checkIfCrossFileAnalysisIsEnabled'
   );
 }
+export interface CrossFileAnalysisParams {
+  fileOpened: lsp.TextDocumentItem;
+  dependencyFiles: Array<lsp.TextDocumentItem>;
+}
+export namespace DidOpenWithCrossFileAnalysis {
+  export const type = new lsp.NotificationType<CrossFileAnalysisParams>(
+    'codescan/didOpenWithCrossFileAnalysis'
+  );
+}
+export namespace DidChangeWithCrossFileAnalysis {
+  export const type = new lsp.NotificationType<CrossFileAnalysisParams>(
+    'codescan/didChangeWithCrossFileAnalysis'
+  );
+}
 //#endregion

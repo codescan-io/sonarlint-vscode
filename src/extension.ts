@@ -5,6 +5,8 @@
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 'use strict';
+import { didChangeWithCrossFileAnalysis,didOpenWithCrossFileAnalysis } from './util/crossFileAnalysis';
+import { TextDocumentChangeEvent } from 'vscode';
 import * as ChildProcess from 'child_process';
 import { DateTime } from 'luxon';
 import * as Path from 'path';
@@ -79,7 +81,8 @@ const DOCUMENT_SELECTOR = [
   }
 ];
 const CODESCAN_CATEGORY = 'codescan';
-
+const APEX_EXTENSIONS = ['.cls', '.trigger'];
+const STARTUP_BINDING_DELAY_MS = 5500;
 let secondaryLocationsTree: SecondaryLocationsTree;
 let issueLocationsView: VSCode.TreeView<LocationTreeItem>;
 let languageClient: CodeScanExtendedLanguageClient;
@@ -91,6 +94,7 @@ let allHotspotsView: VSCode.TreeView<HotspotTreeViewItem>;
 let helpAndFeedbackTreeDataProvider: HelpAndFeedbackTreeDataProvider;
 let helpAndFeedbackView: VSCode.TreeView<HelpAndFeedbackLink>;
 let codeScanDiagnosticsViewProvider: CodeScanIssueFilterViewProvider;
+let allInitialized = false;
 
 
 function runJavaServer(context: VSCode.ExtensionContext): Promise<StreamInfo> {
@@ -169,11 +173,17 @@ function toggleRule(level: protocol.ConfigLevel) {
   };
 }
 
-async function checkIfCrossFileAnalysisIsEnabled(document: VSCode.TextDocument) {
+async function checkIfCrossFileAnalysisIsEnabled(document: VSCode.TextDocument): Promise<boolean> {
+  if (!APEX_EXTENSIONS.some(ext => document.fileName.endsWith(ext))) return false;
+
+  if (!allInitialized) {
+    await new Promise(resolve => setTimeout(resolve, STARTUP_BINDING_DELAY_MS));
+  }
+
   try {
     const result = await languageClient.checkIfCrossFileAnalysisIsEnabled(document.uri.toString());
-    return result ? result.isCrossFileAnalysisEnabled : false;
-  } catch (e) {
+    return result?.isCrossFileAnalysisEnabled ?? false;
+  } catch {
     return false;
   }
 }
@@ -200,6 +210,18 @@ export async function activate(context: VSCode.ExtensionContext) {
 
   // Options to control the language client
   const clientOptions: LanguageClientOptions = {
+    middleware: {
+      didOpen: async (document, next) => {
+        if (await checkIfCrossFileAnalysisIsEnabled(document)) {
+          await didOpenWithCrossFileAnalysis(document, languageClient);
+        } else await next(document);
+      },
+      didChange: async (event: TextDocumentChangeEvent, next: (ev: TextDocumentChangeEvent) => Promise<void>) => {
+        if (await checkIfCrossFileAnalysisIsEnabled(event.document)) {
+          await didChangeWithCrossFileAnalysis(event.document, languageClient);
+        } else await next(event);
+      }
+    },
     documentSelector: DOCUMENT_SELECTOR,
     synchronize: {
       configurationSection: 'codescan',
@@ -342,6 +364,7 @@ export async function activate(context: VSCode.ExtensionContext) {
   );
 
   installClasspathListener(languageClient);
+  allInitialized = true;
 }
 
 /**
