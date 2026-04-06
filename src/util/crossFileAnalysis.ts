@@ -2,7 +2,8 @@
 
 import * as vscode from 'vscode';
 import { CodeScanExtendedLanguageClient } from '../lsp/client';
-import { getDependencyFileUris } from '../util/searchMethodFromSymbol';
+// import { getDependencyFileUris } from '../util/searchMethodFromSymbol';
+import { getDependencyFileUris} from '../util/searchMethodLevelFromSymbol'
 import { AnalysisFile, CrossFileAnalysisParams } from '../lsp/protocol';
 import { tooManyFilesConfirmation } from '../util/showMessage';
 import { code2ProtocolConverter } from '../util/uri';

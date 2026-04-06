@@ -16,6 +16,7 @@ import { configureCompilationDatabase, notifyMissingCompileCommands } from './cf
 import { AutoBindingService } from './connected/autobinding';
 import { BindingService } from './connected/binding';
 import { AllConnectionsTreeDataProvider } from './connected/connections';
+import {isFindingReferences} from './util/searchMethodLevelFromSymbol';
 import {
   assistCreatingConnection,
   connectToCodeScanCloud,
@@ -82,7 +83,7 @@ const DOCUMENT_SELECTOR = [
 ];
 const CODESCAN_CATEGORY = 'codescan';
 const APEX_EXTENSIONS = ['.cls', '.trigger'];
-const STARTUP_BINDING_DELAY_MS = 5500;
+const STARTUP_BINDING_DELAY_MS = 7500;
 let secondaryLocationsTree: SecondaryLocationsTree;
 let issueLocationsView: VSCode.TreeView<LocationTreeItem>;
 let languageClient: CodeScanExtendedLanguageClient;
@@ -212,6 +213,7 @@ export async function activate(context: VSCode.ExtensionContext) {
   const clientOptions: LanguageClientOptions = {
     middleware: {
       didOpen: async (document, next) => {
+        if(isFindingReferences()) return;
         if (await checkIfCrossFileAnalysisIsEnabled(document)) {
           await didOpenWithCrossFileAnalysis(document, languageClient);
         } else await next(document);
