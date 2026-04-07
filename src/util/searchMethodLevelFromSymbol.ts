@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 
 const APEX_EXTENSIONS = ['.cls', '.trigger'];
-const DEPENDENCY_FILE_LIMIT = 100;
+const DEPENDENCY_FILE_LIMIT = 500;
 const WARMUP_DELAY_MS = 1000;
 const DEFAULT_MAX_LEVEL = 4;
 
@@ -37,15 +37,12 @@ function findEnclosingMethod(
   return undefined;
 }
 
-// ---- Symbol Cache ----
-
 class SymbolCache {
-  private cache = new Map<string, vscode.DocumentSymbol[]>();
+  private readonly cache = new Map<string, vscode.DocumentSymbol[]>();
 
   async get(uri: vscode.Uri): Promise<vscode.DocumentSymbol[] | undefined> {
     const key = uri.fsPath;
     if (this.cache.has(key)) return this.cache.get(key);
-
     const symbols = await vscode.commands.executeCommand<vscode.DocumentSymbol[]>(
       'vscode.executeDocumentSymbolProvider',
       uri
@@ -53,58 +50,65 @@ class SymbolCache {
     if (symbols) this.cache.set(key, symbols);
     return symbols;
   }
-
-  clear() {
-    this.cache.clear();
-  }
 }
-
-// ---- BFS ----
 
 async function bfsTraverseMethodUsages(
   startMethods: QueueItem[],
   maxLevel: number,
   symbolCache: SymbolCache
 ): Promise<vscode.Uri[]> {
-  const queue: QueueItem[] = [...startMethods];
+  let currentLevel: QueueItem[] = [...startMethods];
   const visitedMethods = new Set<string>();
   const uniqueFilePaths = new Set<string>();
 
-  while (queue.length > 0) {
+  for (let level = 1; level <= maxLevel; level++) {
     if (uniqueFilePaths.size >= DEPENDENCY_FILE_LIMIT) break;
+    if (currentLevel.length === 0) break;
 
-    const current = queue.shift()!;
-    const methodId = `${current.uri.fsPath}::${current.method.name}`;
-    if (visitedMethods.has(methodId)) continue;
-    visitedMethods.add(methodId);
+    // filter already visited before fetching
+    const toProcess = currentLevel.filter(item => {
+      const methodId = `${item.uri.fsPath}::${item.method.name}`;
+      if (visitedMethods.has(methodId)) return false;
+      visitedMethods.add(methodId);
+      return true;
+    });
 
-    const refs = await vscode.commands.executeCommand<vscode.Location[]>(
-      'vscode.executeReferenceProvider',
-      current.uri,
-      current.method.selectionRange.start
+    // fetch all refs at this level in parallel
+    const levelResults = await Promise.all(
+      toProcess.map(async item => {
+        const refs = await vscode.commands.executeCommand<vscode.Location[]>(
+          'vscode.executeReferenceProvider',
+          item.uri,
+          item.method.selectionRange.start
+        );
+        return refs ?? [];
+      })
     );
-    if (!refs) continue;
 
-    for (const ref of refs) {
-      if (uniqueFilePaths.size >= DEPENDENCY_FILE_LIMIT) break;
-      uniqueFilePaths.add(ref.uri.fsPath);
+    // flatten without .flat()
+    const allRefs = levelResults.reduce<vscode.Location[]>((acc, refs) => acc.concat(refs), []);
 
-      if (current.level >= maxLevel) continue;
+    // collect file paths + build next level in parallel
+    const nextLevelResults = await Promise.all(
+      allRefs.map(async ref => {
+        if (uniqueFilePaths.size < DEPENDENCY_FILE_LIMIT) {
+          uniqueFilePaths.add(ref.uri.fsPath);
+        }
+        if (level >= maxLevel) return null;
 
-      const fileSymbols = await symbolCache.get(ref.uri);
-      if (!fileSymbols) continue;
+        const fileSymbols = await symbolCache.get(ref.uri);
+        if (!fileSymbols) return null;
 
-      const callerMethod = findEnclosingMethod(fileSymbols, ref.range.start);
-      if (callerMethod) {
-        queue.push({ uri: ref.uri, method: callerMethod, level: current.level + 1 });
-      }
-    }
+        const callerMethod = findEnclosingMethod(fileSymbols, ref.range.start);
+        return callerMethod ? { uri: ref.uri, method: callerMethod, level: level + 1 } : null;
+      })
+    );
+
+    currentLevel = nextLevelResults.filter((item): item is QueueItem => item !== null);
   }
 
   return Array.from(uniqueFilePaths).map(p => vscode.Uri.file(p));
 }
-
-// ---- Entry Point ----
 
 export async function getDependencyFileUris(
   document: vscode.TextDocument | undefined,
@@ -120,27 +124,19 @@ export async function getDependencyFileUris(
     await new Promise(resolve => setTimeout(resolve, WARMUP_DELAY_MS));
 
     const symbols = await symbolCache.get(document.uri);
-    if (!symbols?.length){
-      return [];
-    }
+    if (!symbols?.length) return [];
 
     const methods = collectMethods(symbols);
-    if (!methods.length){
-       return [];
-    }
+    if (!methods.length) return [];
 
-    const initialQueue: QueueItem[] = methods.map(method => ({
-      uri: document.uri,
-      method,
-      level: 1
-    }));
+    const uris = await bfsTraverseMethodUsages(
+      methods.map(method => ({ uri: document.uri, method, level: 1 })),
+      maxLevel,
+      symbolCache
+    );
 
-    const uris = await bfsTraverseMethodUsages(initialQueue, maxLevel, symbolCache);
-
-    // exclude the opened file itself
-    const result = uris.filter(u => u.fsPath !== document.uri.fsPath);
-    return result;
+    return uris.filter(u => u.fsPath !== document.uri.fsPath);
   } finally {
-    _isFindingReferences = false; // always resets even if error thrown
+    _isFindingReferences = false;
   }
 }

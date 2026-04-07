@@ -83,7 +83,7 @@ const DOCUMENT_SELECTOR = [
 ];
 const CODESCAN_CATEGORY = 'codescan';
 const APEX_EXTENSIONS = ['.cls', '.trigger'];
-const STARTUP_BINDING_DELAY_MS = 7500;
+const STARTUP_BINDING_DELAY_MS = 10000;
 let secondaryLocationsTree: SecondaryLocationsTree;
 let issueLocationsView: VSCode.TreeView<LocationTreeItem>;
 let languageClient: CodeScanExtendedLanguageClient;
