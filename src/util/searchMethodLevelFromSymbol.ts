@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 
 const APEX_EXTENSIONS = ['.cls', '.trigger'];
 const DEPENDENCY_FILE_LIMIT = 500;
-const WARMUP_DELAY_MS = 1000;
+const WARMUP_DELAY_MS = 100;
 const DEFAULT_MAX_LEVEL = 4;
 
 let _isFindingReferences = false;
@@ -114,6 +114,7 @@ export async function getDependencyFileUris(
   document: vscode.TextDocument | undefined,
   maxLevel: number = DEFAULT_MAX_LEVEL
 ): Promise<vscode.Uri[]> {
+  if (_isFindingReferences) return [];
   if (!document) return [];
   if (!APEX_EXTENSIONS.some(ext => document.fileName.endsWith(ext))) return [];
 
