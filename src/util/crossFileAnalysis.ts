@@ -15,7 +15,7 @@ async function getDependencyFiles(openedFile: vscode.TextDocument): Promise<Anal
   const dependencyFileUris = await getDependencyFileUris(openedFile);
   const shouldAnalyze = await filesCountCheck(dependencyFileUris.length, tooManyFilesConfirmation);
   if (!shouldAnalyze) return [];
-  return buildAnalysisFiles(dependencyFileUris, vscode.workspace.textDocuments);
+  return await buildAnalysisFiles(dependencyFileUris, vscode.workspace.textDocuments);
 }
 
 async function buildAnalysisFiles(
@@ -25,7 +25,7 @@ async function buildAnalysisFiles(
   const openMap = new Map(openDocuments.map(d => [d.uri.path, d]));
 
   // parallel reads — open files are free (in memory), closed files read from disk
-  return Promise.all(
+  return await Promise.all(
     fileUris.map(async uri => {
       const openDoc = openMap.get(uri.path);
       const text = openDoc ? openDoc.getText() : new TextDecoder().decode(await vscode.workspace.fs.readFile(uri));
@@ -41,7 +41,7 @@ async function buildAnalysisFiles(
 }
 
 async function buildCrossFileAnalysisParams(openedFile: vscode.TextDocument): Promise<CrossFileAnalysisParams> {
-  const [dependencyFiles] = await Promise.all([getDependencyFiles(openedFile)]);
+  const [dependencyFiles] = await Promise.all([ await getDependencyFiles(openedFile)]);
   return {
     fileOpened: {
       uri: openedFile.uri.toString(),
