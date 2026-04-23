@@ -1,17 +1,22 @@
 import * as vscode from 'vscode';
-
+import { getCodeScanConfiguration } from '../settings/settings';
+import { CodeScanExtendedLanguageClient } from '../lsp/client';
 const APEX_EXTENSIONS = ['.cls', '.trigger'];
-const DEPENDENCY_FILE_LIMIT = 500;
 const WARMUP_DELAY_MS = 100;
-const DEFAULT_MAX_LEVEL = 4;
-
+const DEFAULT_MAX_LEVEL = 2;
+const DEFAULT_REFERENCE_FILE_LIMIT = 50;
 let _isFindingReferences = false;
+let _anyTraversalLimitReached = false;
 export const isFindingReferences = () => _isFindingReferences;
 
 interface QueueItem {
   uri: vscode.Uri;
   method: vscode.DocumentSymbol;
-  level: number;
+}
+
+interface TraversalOptions {
+  maxLevel: number;
+  referenceFileLimit: number;
 }
 
 function collectMethods(symbols: vscode.DocumentSymbol[], out: vscode.DocumentSymbol[] = []): vscode.DocumentSymbol[] {
@@ -52,22 +57,43 @@ class SymbolCache {
   }
 }
 
-async function bfsTraverseMethodUsages(
-  startMethods: QueueItem[],
-  maxLevel: number,
-  symbolCache: SymbolCache
+function getMethodId(item: QueueItem): string {
+  return `${item.uri.fsPath}::${item.method.name}::${item.method.selectionRange.start.line}:${item.method.selectionRange.start.character}`;
+}
+
+function getReferenceId(ref: vscode.Location): string {
+  return `${ref.uri.fsPath}::${ref.range.start.line}:${ref.range.start.character}`;
+}
+
+function getTraversalOptions(): TraversalOptions {
+  const configuration = getCodeScanConfiguration();
+  return {
+    maxLevel: configuration.get<number>('referenceFiles.depth') ?? DEFAULT_MAX_LEVEL,
+    referenceFileLimit: configuration.get<number>('referenceFiles.limit') ?? DEFAULT_REFERENCE_FILE_LIMIT
+  };
+}
+
+async function bfsTraverseSingleMethodUsages(
+  startMethod: QueueItem,
+  symbolCache: SymbolCache,
+  options: TraversalOptions
 ): Promise<vscode.Uri[]> {
-  let currentLevel: QueueItem[] = [...startMethods];
+  const { maxLevel, referenceFileLimit } = options;
+  let currentLevel: QueueItem[] = [startMethod];
   const visitedMethods = new Set<string>();
   const uniqueFilePaths = new Set<string>();
+  let hasSkippedFilesDueToLimit = false;
+  let hasSkippedFilesDueToDepth = false;
 
   for (let level = 1; level <= maxLevel; level++) {
-    if (uniqueFilePaths.size >= DEPENDENCY_FILE_LIMIT) break;
+    if (uniqueFilePaths.size >= referenceFileLimit) {
+      break;
+    }
     if (currentLevel.length === 0) break;
 
     // filter already visited before fetching
     const toProcess = currentLevel.filter(item => {
-      const methodId = `${item.uri.fsPath}::${item.method.name}`;
+      const methodId = getMethodId(item);
       if (visitedMethods.has(methodId)) return false;
       visitedMethods.add(methodId);
       return true;
@@ -87,38 +113,102 @@ async function bfsTraverseMethodUsages(
 
     // flatten without .flat()
     const allRefs = levelResults.reduce<vscode.Location[]>((acc, refs) => acc.concat(refs), []);
+    const seenRefs = new Set<string>();
+    const refsWithinLimit: vscode.Location[] = [];
+
+    for (const ref of allRefs) {
+      const refId = getReferenceId(ref);
+      if (seenRefs.has(refId)) {
+        continue;
+      }
+      seenRefs.add(refId);
+
+      const isKnownFile = uniqueFilePaths.has(ref.uri.fsPath);
+      if (isKnownFile || uniqueFilePaths.size < referenceFileLimit) {
+        if (!isKnownFile) {
+          uniqueFilePaths.add(ref.uri.fsPath);
+        }
+        refsWithinLimit.push(ref);
+        continue;
+      }
+
+      hasSkippedFilesDueToLimit = true;
+    }
+
+    if (level === maxLevel) {
+      const hasNextDepthCandidates = await Promise.all(
+        refsWithinLimit.map(async ref => {
+          const fileSymbols = await symbolCache.get(ref.uri);
+          if (!fileSymbols) return false;
+
+          const callerMethod = findEnclosingMethod(fileSymbols, ref.range.start);
+          if (!callerMethod) return false;
+
+          return !visitedMethods.has(
+            getMethodId({ uri: ref.uri, method: callerMethod })
+          );
+        })
+      );
+
+      hasSkippedFilesDueToDepth = await hasNextDepthCandidates.some(Boolean);
+      break;
+    }
 
     // collect file paths + build next level in parallel
     const nextLevelResults = await Promise.all(
-      allRefs.map(async ref => {
-        if (uniqueFilePaths.size < DEPENDENCY_FILE_LIMIT) {
-          uniqueFilePaths.add(ref.uri.fsPath);
-        }
-        if (level >= maxLevel) return null;
-
+      refsWithinLimit.map(async ref => {
         const fileSymbols = await symbolCache.get(ref.uri);
         if (!fileSymbols) return null;
 
         const callerMethod = findEnclosingMethod(fileSymbols, ref.range.start);
-        return callerMethod ? { uri: ref.uri, method: callerMethod, level: level + 1 } : null;
+        return callerMethod ? { uri: ref.uri, method: callerMethod } : null;
       })
     );
 
-    currentLevel = nextLevelResults.filter((item): item is QueueItem => item !== null);
+    currentLevel = await nextLevelResults.filter((item): item is QueueItem => item !== null);
+  }
+
+  if (hasSkippedFilesDueToLimit) {
+    _anyTraversalLimitReached = true;
+  }
+
+  if (hasSkippedFilesDueToDepth) {
+    _anyTraversalLimitReached = true;
   }
 
   return Array.from(uniqueFilePaths).map(p => vscode.Uri.file(p));
 }
 
-export async function getDependencyFileUris(
-  document: vscode.TextDocument | undefined,
-  maxLevel: number = DEFAULT_MAX_LEVEL
+async function bfsTraverseMethodUsages(
+  startMethods: QueueItem[],
+  symbolCache: SymbolCache,
+  options: TraversalOptions
+): Promise<vscode.Uri[]> {
+  const methodResults = await Promise.all(
+    startMethods.map(method => bfsTraverseSingleMethodUsages(method, symbolCache, options))
+  );
+  const uniqueFilePaths = new Set<string>();
+
+  for (const uris of methodResults) {
+    for (const uri of uris) {
+      uniqueFilePaths.add(uri.fsPath);
+    }
+  }
+
+  return Array.from(uniqueFilePaths).map(filePath => vscode.Uri.file(filePath));
+}
+
+export async function getReferenceFileUris(
+  document: vscode.TextDocument | undefined, languageClient: CodeScanExtendedLanguageClient
 ): Promise<vscode.Uri[]> {
   if (_isFindingReferences) return [];
   if (!document) return [];
   if (!APEX_EXTENSIONS.some(ext => document.fileName.endsWith(ext))) return [];
 
+  const options = getTraversalOptions();
+
   _isFindingReferences = true;
+  _anyTraversalLimitReached = false;
   const symbolCache = new SymbolCache();
 
   try {
@@ -131,13 +221,17 @@ export async function getDependencyFileUris(
     if (!methods.length) return [];
 
     const uris = await bfsTraverseMethodUsages(
-      methods.map(method => ({ uri: document.uri, method, level: 1 })),
-      maxLevel,
-      symbolCache
+      methods.map(method => ({ uri: document.uri, method })),
+      symbolCache,
+      options
     );
-
+    if (_anyTraversalLimitReached) {
+      languageClient.logCrossFileAnalysisLimitExceeded(document.uri.toString());
+    }
+    
     return uris.filter(u => u.fsPath !== document.uri.fsPath);
   } finally {
     _isFindingReferences = false;
+    _anyTraversalLimitReached = false;
   }
 }

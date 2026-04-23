@@ -115,6 +115,9 @@ export class CodeScanExtendedLanguageClient extends LanguageClient {
   checkIfCrossFileAnalysisIsEnabled(fileUri: string): Promise<protocol.checkIfCrossFileAnalysisIsEnabledResponse> {
     return this.sendRequest(protocol.checkIfCrossFileAnalysisIsEnabled.type, { fileUri });
   }
+  logCrossFileAnalysisLimitExceeded(fileUri: string): void {
+    this.sendNotification(protocol.logCrossFileAnalysisLimitExceeded.type, { fileUri });
+  }
   notifyDidOpenWithCrossFileAnalysis(params: protocol.CrossFileAnalysisParams) {
     this.sendNotification(protocol.DidOpenWithCrossFileAnalysis.type, params);
   }

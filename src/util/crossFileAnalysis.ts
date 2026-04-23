@@ -2,20 +2,21 @@
 
 import * as vscode from 'vscode';
 import { CodeScanExtendedLanguageClient } from '../lsp/client';
-import { getDependencyFileUris} from '../util/searchMethodLevelFromSymbol'
+import { getReferenceFileUris } from '../util/searchMethodLevelFromSymbol'
 import { AnalysisFile, CrossFileAnalysisParams } from '../lsp/protocol';
 import { tooManyFilesConfirmation } from '../util/showMessage';
 import { code2ProtocolConverter } from '../util/uri';
 import { filesCountCheck } from '../hotspot/hotspots';
+import { getCodeScanConfiguration } from '../settings/settings';
 
 const DEBOUNCE_DELAY_MS = 500;
 const debounceMap = new Map<string, NodeJS.Timeout>();
 
-async function getDependencyFiles(openedFile: vscode.TextDocument): Promise<AnalysisFile[]> {
-  const dependencyFileUris = await getDependencyFileUris(openedFile);
-  const shouldAnalyze = await filesCountCheck(dependencyFileUris.length, tooManyFilesConfirmation);
+async function getReferenceFiles(openedFile: vscode.TextDocument, languageClient: CodeScanExtendedLanguageClient): Promise<AnalysisFile[]> {
+  const referenceFileUris = await getReferenceFileUris(openedFile, languageClient);
+  const shouldAnalyze = await filesCountCheck(referenceFileUris.length, tooManyFilesConfirmation);
   if (!shouldAnalyze) return [];
-  return await buildAnalysisFiles(dependencyFileUris, vscode.workspace.textDocuments);
+  return await buildAnalysisFiles(referenceFileUris, vscode.workspace.textDocuments);
 }
 
 async function buildAnalysisFiles(
@@ -40,8 +41,8 @@ async function buildAnalysisFiles(
   );
 }
 
-async function buildCrossFileAnalysisParams(openedFile: vscode.TextDocument): Promise<CrossFileAnalysisParams> {
-  const [dependencyFiles] = await Promise.all([ await getDependencyFiles(openedFile)]);
+async function buildCrossFileAnalysisParams(openedFile: vscode.TextDocument, languageClient:  CodeScanExtendedLanguageClient): Promise<CrossFileAnalysisParams> {
+  const [referenceFiles] = await Promise.all([ await getReferenceFiles(openedFile, languageClient)]);
   return {
     fileOpened: {
       uri: openedFile.uri.toString(),
@@ -49,7 +50,7 @@ async function buildCrossFileAnalysisParams(openedFile: vscode.TextDocument): Pr
       version: openedFile.version,
       text: openedFile.getText()
     },
-    dependencyFiles: dependencyFiles
+    referenceFiles: referenceFiles
   };
 }
 
@@ -57,7 +58,7 @@ export async function didOpenWithCrossFileAnalysis(
   openedFile: vscode.TextDocument,
   languageClient: CodeScanExtendedLanguageClient
 ): Promise<void> {
-  const params = await buildCrossFileAnalysisParams(openedFile);
+  const params = await buildCrossFileAnalysisParams(openedFile, languageClient);
   languageClient.notifyDidOpenWithCrossFileAnalysis(params);
 }
 
@@ -71,10 +72,11 @@ export async function didChangeWithCrossFileAnalysis(
   if (debounceMap.has(key)) {
     clearTimeout(debounceMap.get(key)!);
   }
-
+  const delay =
+   await getCodeScanConfiguration().get<number>('debounce.delay') ?? DEBOUNCE_DELAY_MS;
   debounceMap.set(key, setTimeout(async () => {
     debounceMap.delete(key);
-    const params = await buildCrossFileAnalysisParams(openedFile);
+    const params = await buildCrossFileAnalysisParams(openedFile, languageClient);
     languageClient.notifyDidChangeWithCrossFileAnalysis(params);
-  }, DEBOUNCE_DELAY_MS));
+  },  delay));
 }
