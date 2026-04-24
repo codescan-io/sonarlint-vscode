@@ -85,7 +85,7 @@ async function bfsTraverseSingleMethodUsages(
   let hasSkippedFilesDueToLimit = false;
   let hasSkippedFilesDueToDepth = false;
 
-  for (let level = 1; level <= maxLevel; level++) {
+  for (let level = 1; level <= maxLevel + 1; level++) {
     if (uniqueFilePaths.size >= referenceFileLimit) {
       break;
     }
@@ -126,6 +126,10 @@ async function bfsTraverseSingleMethodUsages(
       const isKnownFile = uniqueFilePaths.has(ref.uri.fsPath);
       if (isKnownFile || uniqueFilePaths.size < referenceFileLimit) {
         if (!isKnownFile) {
+          if (level == maxLevel + 1) {
+            hasSkippedFilesDueToDepth = true;
+            break;
+          }
           uniqueFilePaths.add(ref.uri.fsPath);
         }
         refsWithinLimit.push(ref);
@@ -135,22 +139,7 @@ async function bfsTraverseSingleMethodUsages(
       hasSkippedFilesDueToLimit = true;
     }
 
-    if (level === maxLevel) {
-      const hasNextDepthCandidates = await Promise.all(
-        refsWithinLimit.map(async ref => {
-          const fileSymbols = await symbolCache.get(ref.uri);
-          if (!fileSymbols) return false;
-
-          const callerMethod = findEnclosingMethod(fileSymbols, ref.range.start);
-          if (!callerMethod) return false;
-
-          return !visitedMethods.has(
-            getMethodId({ uri: ref.uri, method: callerMethod })
-          );
-        })
-      );
-
-      hasSkippedFilesDueToDepth = await hasNextDepthCandidates.some(Boolean);
+    if (maxLevel + 1 == level) {
       break;
     }
 
