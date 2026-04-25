@@ -213,7 +213,7 @@ export async function activate(context: VSCode.ExtensionContext) {
   const clientOptions: LanguageClientOptions = {
     middleware: {
       didOpen: async (document, next) => {
-        if(isFindingReferences()) return;
+        if(await isFindingReferences()) return;
         if (await checkIfCrossFileAnalysisIsEnabled(document)) {
           await didOpenWithCrossFileAnalysis(document, languageClient);
         } else await next(document);
