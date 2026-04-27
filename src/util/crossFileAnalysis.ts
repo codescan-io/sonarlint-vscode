@@ -4,9 +4,7 @@ import * as vscode from 'vscode';
 import { CodeScanExtendedLanguageClient } from '../lsp/client';
 import { getReferenceFileUris } from '../util/searchMethodLevelFromSymbol'
 import { AnalysisFile, CrossFileAnalysisParams } from '../lsp/protocol';
-import { tooManyFilesConfirmation } from '../util/showMessage';
 import { code2ProtocolConverter } from '../util/uri';
-import { filesCountCheck } from '../hotspot/hotspots';
 import { getCodeScanConfiguration } from '../settings/settings';
 
 const DEBOUNCE_DELAY_MS = 500;
@@ -14,8 +12,6 @@ const debounceMap = new Map<string, NodeJS.Timeout>();
 
 async function getReferenceFiles(openedFile: vscode.TextDocument, languageClient: CodeScanExtendedLanguageClient): Promise<AnalysisFile[]> {
   const referenceFileUris = await getReferenceFileUris(openedFile, languageClient);
-  const shouldAnalyze = await filesCountCheck(referenceFileUris.length, tooManyFilesConfirmation);
-  if (!shouldAnalyze) return [];
   return await buildAnalysisFiles(referenceFileUris, vscode.workspace.textDocuments);
 }
 
