@@ -597,5 +597,39 @@ export namespace SslCertificateConfirmation {
   export const type = new lsp.RequestType<SslCertificateConfirmationParams, boolean, void>(
     'codescan/askSslCertificateConfirmation');
 }
+export interface checkIfCrossFileAnalysisParams {
+  fileUri: string;
+}
+export interface checkIfCrossFileAnalysisIsEnabledResponse {
+  isCrossFileAnalysisEnabled: boolean;
+}
+export namespace checkIfCrossFileAnalysisIsEnabled {
+  export const type = new lsp.RequestType<checkIfCrossFileAnalysisParams, checkIfCrossFileAnalysisIsEnabledResponse, null>(
+    'codescan/checkIfCrossFileAnalysisIsEnabled'
+  );
+}
 
+export interface logCrossFileAnalysisLimitExceededParam {
+  fileUri: string;
+}
+
+export namespace logCrossFileAnalysisLimitExceeded {
+  export const type = new lsp.NotificationType<logCrossFileAnalysisLimitExceededParam>(
+    'codescan/logCrossFileAnalysisLimitExceeded'
+  );
+}
+export interface CrossFileAnalysisParams {
+  fileOpened: lsp.TextDocumentItem;
+  referenceFiles: Array<lsp.TextDocumentItem>;
+}
+export namespace DidOpenWithCrossFileAnalysis {
+  export const type = new lsp.NotificationType<CrossFileAnalysisParams>(
+    'codescan/didOpenWithCrossFileAnalysis'
+  );
+}
+export namespace DidChangeWithCrossFileAnalysis {
+  export const type = new lsp.NotificationType<CrossFileAnalysisParams>(
+    'codescan/didChangeWithCrossFileAnalysis'
+  );
+}
 //#endregion

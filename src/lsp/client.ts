@@ -112,4 +112,16 @@ export class CodeScanExtendedLanguageClient extends LanguageClient {
   checkIfConnectionIsCloud(url: string): Promise<protocol.CheckIfConnectionIsCloudResponse> {
     return this.sendRequest(protocol.CheckIfConnectionIsCloud.type, { url });
   }
+  checkIfCrossFileAnalysisIsEnabled(fileUri: string): Promise<protocol.checkIfCrossFileAnalysisIsEnabledResponse> {
+    return this.sendRequest(protocol.checkIfCrossFileAnalysisIsEnabled.type, { fileUri });
+  }
+  logCrossFileAnalysisLimitExceeded(fileUri: string): void {
+    this.sendNotification(protocol.logCrossFileAnalysisLimitExceeded.type, { fileUri });
+  }
+  notifyDidOpenWithCrossFileAnalysis(params: protocol.CrossFileAnalysisParams) {
+    this.sendNotification(protocol.DidOpenWithCrossFileAnalysis.type, params);
+  }
+  notifyDidChangeWithCrossFileAnalysis(params: protocol.CrossFileAnalysisParams) {
+    this.sendNotification(protocol.DidChangeWithCrossFileAnalysis.type, params);
+  }
 }

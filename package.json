@@ -349,6 +349,30 @@
               "additionalProperties": false
             }
           ]
+        },
+        "codescan.referenceFiles.depth": {
+          "order": 99,
+          "type": "number",
+          "default": 2,
+          "minimum": 0,
+          "markdownDescription": "Maximum depth used for cross-file method reference traversal. Level 1 includes direct references, level 2 includes references discovered from those files.",
+          "scope": "resource"
+        },
+        "codescan.referenceFiles.limit": {
+          "order": 100,
+          "type": "number",
+          "default": 50,
+          "minimum": 0,
+          "markdownDescription": "Maximum number of referenced files collected for each method during cross-file analysis. Files from level 1 are prioritized before level 2.",
+          "scope": "resource"
+        },
+        "codescan.debounce.delay": {
+          "order": 101,
+          "type": "number",
+          "default": 500,
+          "minimum": 0,
+          "markdownDescription": "Delay in milliseconds before running cross-file analysis after changes. This setting applies only when cross-file analysis is enabled. Adjust based on your pace—higher values reduce frequent triggers, while lower values provide quicker feedback.",
+          "scope": "resource"
         }
       }
     },
