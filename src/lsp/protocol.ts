@@ -245,6 +245,16 @@ export namespace SetReferenceBranchNameForFolderNotification {
   export const type = new lsp.NotificationType<BranchNameForFolder>('codescan/setReferenceBranchNameForFolder');
 }
 
+export interface SeverityLabelParams {
+    labels: {
+        [key: string]: string;
+    }
+}
+
+export namespace UpdateSeverityLabelsNotification {
+  export const type = new lsp.NotificationType<SeverityLabelParams>('codescan/updateSeverityLabels');
+}
+
 export namespace NeedCompilationDatabaseRequest {
   export const type = new lsp.NotificationType('codescan/needCompilationDatabase');
 }

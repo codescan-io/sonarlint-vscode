@@ -69,6 +69,7 @@ import { isFirstCobolIssueDetected, showNotificationForFirstCobolIssue } from '.
 import { showSslCertificateConfirmationDialog } from './util/showMessage';
 import { detectConflictingPlugins } from './util/conflictingPlugins';
 import { CodeScanIssueFilterViewProvider, CodeScanPublishDiagnosticsParams } from './issue-filter/CodeScanIssueFilterViewProvider';
+import { SEVERITY_LABELS } from "./commons";
 
 
 const DOCUMENT_SELECTOR = [
@@ -391,6 +392,10 @@ function cleanRemoteName(remoteName?: string): string {
   return ret;
 }
 
+function updateSeverityLabels(params: protocol.SeverityLabelParams) {
+  Object.assign(SEVERITY_LABELS, params.labels);
+}
+
 function suggestBinding(params: protocol.SuggestBindingParams) {
   logToCodeScanOutput(`Received binding suggestions: ${JSON.stringify(params)}`);
   AutoBindingService.instance.checkConditionsAndAttemptAutobinding(params);
@@ -640,6 +645,7 @@ function installCustomRequestHandlers(context: VSCode.ExtensionContext) {
   languageClient.onNotification(protocol.PublishCodeScanDiagnosticsResult.type, async publishResult => {
     await reportPublishedCodeScanDiagnostics(publishResult);
   });
+  languageClient.onNotification(protocol.UpdateSeverityLabelsNotification.type, params => updateSeverityLabels(params));
 }
 
 function updateSonarLintViewContainerBadge() {
