@@ -8,7 +8,8 @@
 import * as followRedirects from 'follow-redirects';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as inly from 'inly';
+import * as tar from 'tar';
+import extractZip = require('extract-zip');
 
 const https = followRedirects.https;
 
@@ -98,24 +99,24 @@ export function download(options: Options, destinationDir: string): Promise<Down
   });
 }
 
-export function unzip(downloadResponse: DownloadResponse) {
+export async function unzip(downloadResponse: DownloadResponse) {
   const jreDir = path.join(downloadResponse.destinationDir, 'jre');
   if (!fs.existsSync(jreDir)) {
     fs.mkdirSync(jreDir);
   }
-  return new Promise((resolve, reject) => {
-    const extract = inly(downloadResponse.jreZipPath, jreDir);
-    extract.on('error', err => {
-      reject(err);
-    });
-    extract.on('end', () => {
-      fs.unlinkSync(downloadResponse.jreZipPath);
-      // Archive for MacOS contains a file named '._xxx' which interferes with detection of extracted directory
-      const extractedDir = fs.readdirSync(jreDir, { withFileTypes: true }).filter(d => d.isDirectory())[0].name;
-      // Binary for MacOS has actual Java home inside '<archiveRootDir>/Contents/Home'
-      const actualJavaHome =
-        downloadResponse.options.os === 'mac' ? path.join(extractedDir, 'Contents', 'Home') : extractedDir;
-      resolve(path.join(jreDir, actualJavaHome));
-    });
-  });
+
+  // Windows JRE is downloaded as a .zip, every other platform as a gzipped tar (see download()).
+  if (downloadResponse.options.os === 'windows') {
+    await extractZip(downloadResponse.jreZipPath, { dir: jreDir });
+  } else {
+    await tar.x({ file: downloadResponse.jreZipPath, cwd: jreDir });
+  }
+
+  fs.unlinkSync(downloadResponse.jreZipPath);
+  // Archive for MacOS contains a file named '._xxx' which interferes with detection of extracted directory
+  const extractedDir = fs.readdirSync(jreDir, { withFileTypes: true }).filter(d => d.isDirectory())[0].name;
+  // Binary for MacOS has actual Java home inside '<archiveRootDir>/Contents/Home'
+  const actualJavaHome =
+    downloadResponse.options.os === 'mac' ? path.join(extractedDir, 'Contents', 'Home') : extractedDir;
+  return path.join(jreDir, actualJavaHome);
 }
