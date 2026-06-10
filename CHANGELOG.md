@@ -1,3 +1,6 @@
+## 2.1.3
+* Added severity masking based on CodeScan settings
+
 ## 2.1.2
 * Improved synchronization of resolved issues from CodeScan server
 
