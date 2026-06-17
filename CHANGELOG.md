@@ -1,3 +1,6 @@
+## 2.1.4
+* Security and vulnerability fixes
+
 ## 2.1.3
 * Added severity masking based on CodeScan settings
 

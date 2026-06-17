@@ -3,9 +3,9 @@
  * Licensed under the LGPLv3 License. See LICENSE.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 'use strict';
-// Generates the CycloneDX SBOM with a version-stamped filename.
-// Replaces the former gulp 'cycloneDx' task (gulp was removed). Mirrors its behaviour:
-// `npm run cyclonedx-run -- --output sonarlint-vscode-<version>.sbom-cyclonedx.json`.
+// Generates the version-stamped CycloneDX SBOM via @cyclonedx/bom's cyclonedx-node CLI.
+// Stays on @cyclonedx/bom@3 on purpose: @cyclonedx/cyclonedx-npm pulls a native node-gyp/libxmljs2
+// chain (critical + highs) and needs Node >=20.18 — worse than v3's two dev-only moderates.
 const fs = require('fs');
 const { execFileSync } = require('child_process');
 
