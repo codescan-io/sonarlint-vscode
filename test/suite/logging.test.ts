@@ -21,7 +21,7 @@ suite('logging', () => {
     const redacted = redactSecrets(message);
 
     expect(redacted).to.not.contain(TOKEN);
-    expect(redacted).to.contain('sonar.login=******}');
+    expect(redacted).to.contain('sonar.login=squ_******}');
     expect(redacted).to.contain('sonar.organization=myorg');
     expect(redacted).to.contain('sonar.host.url=https://app.codescan.io');
   });
@@ -36,7 +36,7 @@ suite('logging', () => {
 
     const redacted = redactSecrets(message);
 
-    expect(redacted).to.equal('{"connectionId":"c1","token":"******","organizationKey":"myorg"}');
+    expect(redacted).to.equal('{"connectionId":"c1","token":"squ_******","organizationKey":"myorg"}');
   });
 
   test('should mask raw tokens anywhere', () => {
@@ -67,7 +67,7 @@ suite('logging', () => {
     channel.replace(TOKEN);
 
     expect(channel.name).to.equal('fake');
-    expect(written).to.deep.equal(['sonar.login=******', '"token": "******"', 'squ_******']);
+    expect(written).to.deep.equal(['sonar.login=squ_******', '"token": "squ_******"', 'squ_******']);
   });
 
 });

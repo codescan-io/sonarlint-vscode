@@ -13,19 +13,26 @@ let codeScanOutput: VSCode.OutputChannel;
 
 const MASK = '******';
 // `sonar.login=xxx` as printed by the language server's analysis configuration dump
-const SECRET_PROPERTY_PATTERN = /((?:sonar\.login|sonar\.token|sonar\.password)\s*=\s*)[^,}\]\s]+/gi;
+const SECRET_PROPERTY_PATTERN = /((?:sonar\.login|sonar\.token|sonar\.password)\s*=\s*)([^,}\]\s]+)/gi;
 // `"token": "xxx"` / `"sonar.login": "xxx"` as found in LSP traces and JSON payloads
-const SECRET_JSON_PATTERN = /("(?:token|password|sonar\.login|sonar\.token|sonar\.password)"\s*:\s*")[^"]*(")/gi;
+const SECRET_JSON_PATTERN = /("(?:token|password|sonar\.login|sonar\.token|sonar\.password)"\s*:\s*")([^"]*)(")/gi;
 // Raw SonarQube/CodeScan tokens (user, project, analysis) wherever they appear
 const RAW_TOKEN_PATTERN = /\b(sq[upa]_)[0-9a-f]{20,}\b/gi;
+const TOKEN_PREFIX_PATTERN = /^sq[upa]_/i;
+
+// Keeps the token type prefix (e.g. `squ_`) visible so logs still show which kind of token was used
+function mask(secret: string): string {
+  const prefix = TOKEN_PREFIX_PATTERN.exec(secret);
+  return (prefix ? prefix[0] : '') + MASK;
+}
 
 export function redactSecrets(message: string): string {
   if (typeof message !== 'string') {
     return message;
   }
   return message
-    .replace(SECRET_PROPERTY_PATTERN, `$1${MASK}`)
-    .replace(SECRET_JSON_PATTERN, `$1${MASK}$2`)
+    .replace(SECRET_PROPERTY_PATTERN, (_match, key, secret) => key + mask(secret))
+    .replace(SECRET_JSON_PATTERN, (_match, key, secret, quote) => key + mask(secret) + quote)
     .replace(RAW_TOKEN_PATTERN, `$1${MASK}`);
 }
 
