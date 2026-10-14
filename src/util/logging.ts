@@ -12,11 +12,18 @@ import { isVerboseEnabled } from '../settings/settings';
 let codeScanOutput: VSCode.OutputChannel;
 const knownTokens = new Set<string>();
 const VISIBLE_TOKEN_CHARS = 6;
-const TOKEN_FIELD_REGEX = /("token"\s*:\s*")([^"]*)(")/g;
+// `sonar.login=xxx` as printed by the language server's analysis configuration dump
+const SECRET_PROPERTY_REGEX = /((?:sonar\.login|sonar\.token|sonar\.password)\s*=\s*)([^,}\]\s]+)/gi;
+// `"token": "xxx"` / `"sonar.login": "xxx"` as found in message traces and JSON payloads
+const SECRET_JSON_REGEX = /("(?:token|password|sonar\.login|sonar\.token|sonar\.password)"\s*:\s*")([^"]*)(")/gi;
+// Raw SonarQube/CodeScan tokens (user, project, analysis) wherever they appear
+const RAW_TOKEN_REGEX = /\bsq[upa]_[0-9a-f]{20,}\b/gi;
 
 export function initLogOutput(context: VSCode.ExtensionContext) {
-  codeScanOutput = VSCode.window.createOutputChannel('CodeScan');
-  context.subscriptions.push(codeScanOutput);
+  const rawOutput = VSCode.window.createOutputChannel('CodeScan');
+  context.subscriptions.push(rawOutput);
+  // Everything written to the CodeScan output, including server logs and message traces, gets tokens masked
+  codeScanOutput = createTokenMaskingOutputChannel(rawOutput);
 }
 
 export function getLogOutput() {
@@ -65,17 +72,31 @@ export function registerTokenForMasking(token: string | undefined) {
   }
 }
 
+// Passwords are masked entirely, tokens keep their first characters
+function maskSecret(key: string, secret: string): string {
+  return /password/i.test(key) ? '*'.repeat(secret.length) : maskToken(secret);
+}
+
+/**
+ * Masks registered tokens wherever they appear, plus anything that looks like a credential,
+ * as a fallback for tokens that were never registered.
+ */
 export function maskTokens(text: string): string {
-  let masked = text.replace(TOKEN_FIELD_REGEX, (_match, before, token, after) => before + maskToken(token) + after);
+  if (typeof text !== 'string') {
+    return text;
+  }
+  let masked = text;
   knownTokens.forEach(token => {
     masked = masked.split(token).join(maskToken(token));
   });
-  return masked;
+  return masked
+    .replace(SECRET_PROPERTY_REGEX, (_match, key, secret) => key + maskSecret(key, secret))
+    .replace(SECRET_JSON_REGEX, (_match, key, secret, quote) => key + maskSecret(key, secret) + quote)
+    .replace(RAW_TOKEN_REGEX, token => maskToken(token));
 }
 
 /**
  * Wraps an output channel so that tokens are masked before anything is written to it.
- * Used for the language client's log and message trace output.
  */
 export function createTokenMaskingOutputChannel(channel: VSCode.OutputChannel): VSCode.OutputChannel {
   return {
