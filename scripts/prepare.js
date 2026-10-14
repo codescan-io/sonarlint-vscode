@@ -2,7 +2,7 @@
 const fs = require('fs');
 
 console.log("Copying language server jar....")
-const languageServerVersion = '2.20.5-CODESCAN';
+const languageServerVersion = '2.20.6-CODESCAN';
 
 if (!fs.existsSync('server')) {
   fs.mkdirSync('server');

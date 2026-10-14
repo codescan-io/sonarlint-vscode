@@ -58,7 +58,13 @@ import {
   onConfigurationChange
 } from './settings/settings';
 import { Commands } from './util/commands';
-import { getLogOutput, initLogOutput, logToCodeScanOutput, showLogOutput } from './util/logging';
+import {
+  createTokenMaskingOutputChannel,
+  getLogOutput,
+  initLogOutput,
+  logToCodeScanOutput,
+  showLogOutput
+} from './util/logging';
 import { getPlatform } from './util/platform';
 import { JAVA_HOME_CONFIG, installManagedJre, resolveRequirements } from './util/requirements';
 import { code2ProtocolConverter, protocol2CodeConverter } from './util/uri';
@@ -210,6 +216,9 @@ export async function activate(context: VSCode.ExtensionContext) {
   const pythonWatcher = VSCode.workspace.createFileSystemWatcher('**/*.py');
   context.subscriptions.push(pythonWatcher);
 
+  // Server logs and message traces ('codescan.trace.server') can contain connection tokens
+  const tokenMaskingOutput = createTokenMaskingOutputChannel(getLogOutput());
+
   // Options to control the language client
   const clientOptions: LanguageClientOptions = {
     middleware: {
@@ -262,7 +271,8 @@ export async function activate(context: VSCode.ExtensionContext) {
         enableNotebooks: true
       };
     },
-    outputChannel: getLogOutput(),
+    outputChannel: tokenMaskingOutput,
+    traceOutputChannel: tokenMaskingOutput,
     revealOutputChannelOn: 4 // never
   };
 

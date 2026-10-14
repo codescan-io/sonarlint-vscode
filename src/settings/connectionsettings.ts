@@ -9,7 +9,7 @@
 import * as VSCode from 'vscode';
 import { Connection } from '../connected/connections';
 import { CodeScanExtendedLanguageClient } from '../lsp/client';
-import { logToCodeScanOutput } from '../util/logging';
+import { logToCodeScanOutput, registerTokenForMasking } from '../util/logging';
 import { removeTrailingSlashes } from '../connected/connectionsetup';
 
 const CODESCAN_CATEGORY = 'codescan';
@@ -107,12 +107,15 @@ export class ConnectionSettingsService {
    */
   async storeServerToken(serverUrlOrOrganizationKey: string, token: string): Promise<void> {
     if (token) {
+      registerTokenForMasking(token);
       this.secretStorage.store(serverUrlOrOrganizationKey, token);
     }
   }
 
   async getServerToken(serverUrlOrOrganizationKey: string): Promise<string | undefined> {
-    return this.secretStorage.get(serverUrlOrOrganizationKey);
+    const token = await this.secretStorage.get(serverUrlOrOrganizationKey);
+    registerTokenForMasking(token);
+    return token;
   }
 
   async hasTokenForConnection(connection: BaseConnection) {
