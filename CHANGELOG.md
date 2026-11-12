@@ -1,3 +1,6 @@
+## 2.2.1
+* Bug fixes and stability improvements.
+
 ## 2.2.0
 * Security and vulnerability fixes.
 
