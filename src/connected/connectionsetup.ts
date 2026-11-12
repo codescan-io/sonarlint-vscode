@@ -19,6 +19,7 @@ import * as util from '../util/util';
 import { escapeHtml, ResourceResolver } from '../util/webview';
 import { DEFAULT_CONNECTION_ID } from '../commons';
 import { logToCodeScanOutput } from '../util/logging';
+import { connectionFailureMessage, describeConnectionFailure } from './ipAllowlist';
 
 let connectionSetupPanel: vscode.WebviewPanel;
 let unauthorizedConnectionErrorFlag: boolean;
@@ -92,7 +93,7 @@ function finishSetupAndRevealPanel(serverProductName: string) {
 export async function reportConnectionCheckResult(result: ConnectionCheckResult) {
   if (connectionSetupPanel) {
     const command = result.success ? 'connectionCheckSuccess' : 'connectionCheckFailure';
-    connectionSetupPanel.webview.postMessage({ command, ...result });
+    connectionSetupPanel.webview.postMessage({ command, ...result, reason: describeConnectionFailure(result.reason) });
   } else {
     // If connection UI is not shown, fallback to notifications
     if (result.success) {
@@ -111,9 +112,7 @@ async function handleConnectionFailureUIMessaging(result: ConnectionCheckResult)
     const editConnectionAction = 'Edit Connection';
     unauthorizedConnectionErrorFlag = true;
     const reply = await vscode.window.showErrorMessage(
-      result.reason === 'Authentication failed'
-      ? `Connection with '${result.connectionId}' failed because of authorization error. Please check your credentials.`
-      : `Connection with '${result.connectionId}' failed. Please check your connection settings.`,
+      connectionFailureMessage(result),
       editConnectionAction
     );
     if (reply === editConnectionAction) {
