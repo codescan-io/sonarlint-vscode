@@ -1,5 +1,6 @@
 ## 2.2.2
 * Improved error messages when organization access is restricted
+* Usage telemetry is now always disabled
 
 ## 2.2.1
 * Bug fixes and stability improvements.

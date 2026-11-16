@@ -25,8 +25,8 @@ export function languageServerCommand(
   const params = [];
   if (DEBUG) {
     params.push('-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000,quiet=y');
-    params.push('-Dcodescan.telemetry.disabled=true');
   }
+  params.push('-Dcodescan.telemetry.disabled=true');
   params.push('-Dcodescan.httpclient.version=' + readHttpClientVersion());
   const vmargs = getCodeScanConfiguration().get('ls.vmargs', '');
   parseVMargs(params, vmargs);
